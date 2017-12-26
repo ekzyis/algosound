@@ -1,7 +1,7 @@
 // width and height of screen
 int w=640, h=360;
 // amount of elements to sort
-int n=w/4;
+int n=w/5; 
 // elements
 Element[] e;
 // colors
@@ -9,20 +9,90 @@ color[] c;
 
 void settings()
 {
-   size(w,h); 
+   size(w,h);   
 }
 
 void setup()
-{  
-  background(25);  
+{   
+  frameRate(60);
   initColors();
   //initRainbow();
   initElements();
-  
+  //testElements();
 }
-  void draw()
+
+void draw()
 {
+  background(25);
+  // show elements
   for(Element el : e) el.show();
+  // make a bubblesort step and changes visuals according
+  visualBubblesortStep();
+}
+
+void printarr(int[] a)
+{
+  for(int v : a )
+  {
+    print(v + " ");
+  }
+  println();
+}
+
+// do one bubblesort swap operation 
+// and also change colors of elements involved if needed
+// returns 1 if swapped else 0
+int sort = 0;
+int visualBubblesortStep()
+{
+  // get element values as int[]
+  int[] a = new int[e.length];
+  // also get colors for visualization
+  int[] elcolors = new color[e.length];
+  for(int i=0;i<a.length;++i)
+  {
+    a[i] = e[i].value;
+    elcolors[i] = e[i].c;
+  }
+  printarr(a); 
+  // let bubblesort be bubblesort
+  int swap = bubblesortStep(a,sort);
+  if(swap==1)
+  {
+    // also swap colors 
+    color tmp = elcolors[sort];
+    elcolors[sort] = elcolors[sort+1];
+    elcolors[sort+1] = tmp;
+  }
+  // update elements according to what bubblesort has spoken
+  for(int i=0;i<a.length;++i)
+  {
+     e[i].value = a[i];
+     e[i].c = elcolors[i];
+  } 
+  // increase sorting index for next iteration
+  sort++;
+  if(sort == a.length-1) sort = 0;
+  printarr(a);
+  return swap;
+}
+
+// get some test elements for well ... testing purposes
+void testElements()
+{
+  e = new Element[5];
+  int[] values = {103,23,51,96,10};
+  int elementwidth = w/5;
+  int xd = 0;
+  int cd = 0;
+  for(int i=0;i<e.length;++i)
+  {
+    e[i] = new Element(xd,h,elementwidth,values[i]);
+     e[i].c = c[cd];
+     xd += elementwidth;
+     cd++;
+     if(cd==c.length) cd = 0;
+  }
 }
 
 // ** Color-array must not be null before calling this function **
@@ -38,7 +108,7 @@ void initElements()
   for(int i=0;i<e.length;++i)
   {
     int value = (int)(Math.random()*h);
-     e[i] = new Element(xd,h-value,elementwidth,value);
+     e[i] = new Element(xd,h,elementwidth,value);
      e[i].c = c[cd];
      xd += elementwidth;
      cd++;

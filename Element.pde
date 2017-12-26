@@ -12,6 +12,6 @@ class Element{
   void show()
   {
     fill(c);   
-    rect(x,y,w,value); 
+    rect(x,y-value,w,value); 
   }
 }
