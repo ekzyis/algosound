@@ -12,7 +12,7 @@ class Element{
   void show()
   {
     fill(c);   
-    rect(x,value,w,-value); 
+    rect(x,y-value,w,value); 
   }
 }
 
