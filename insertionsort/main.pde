@@ -15,7 +15,7 @@ void settings()
 }
 void setup()
 {
-  frameRate(60);
+  frameRate(30);
   initColors();
   initElements();
   sort=0;
@@ -26,9 +26,8 @@ void draw()
   background(25);
   // show elements
   for(Element el : e) el.show();
-  // make a insertionsort step and change visuals according
+  // make a insertionsort step
   if(sort==0) sort = visualInsertionsortStep();
-  
 }
 
 // print an integer-array
