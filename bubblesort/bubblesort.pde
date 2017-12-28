@@ -41,8 +41,7 @@ static int countBubblesortSteps(Element[] e)
        }
      }
   }while(swap);
-  return counter;
-  
+  return counter;  
 }
 /** 
  * check one pair of elements in array and swap if not in ascending order
@@ -66,7 +65,7 @@ static int bubblesortStep(Element[] e, int i)
 
 /** do one bubblesort swap operation 
  * and also change colors of elements involved if needed
- *returns 1 if swapped else 0
+ * returns 1 if swapped else 0
  */
 int sort = 0;
 int visualBubblesortStep()
