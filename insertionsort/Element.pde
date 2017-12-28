@@ -1,6 +1,11 @@
 class Element{
+  // (x,y)-position, height=value, width
   int x,y,value,w;
   color c;
+  /** 
+   * set if this element is currently marked by insertionsort
+   */
+  boolean marked;
   Element(int _x, int _y, int _w, int _v)
   {
     this.x = _x;
@@ -11,13 +16,19 @@ class Element{
   
   void show()
   {
+    if(marked == true)
+    {
+      fill(color(255,0,0));
+      rect(x+w/2,0,w/2,h);
+    }
     fill(c);   
     rect(x,y,w,-value); 
   }
 }
 
-// ** Color-array must not be null before calling this function **
-// init elements with random value and set color
+/** # Color-array must not be null before calling this function #
+ * init elements with random value and set color
+ */
 void initElements()
 {
   e = new Element[n];

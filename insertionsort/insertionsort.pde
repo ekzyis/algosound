@@ -13,8 +13,9 @@ static void insertionsort(int[] a){
  }
 }
 
-// do one iteration of for-loop of insertionsort
-// (insert one element)
+/** do one iteration of for-loop of insertionsort
+ * (insert one element)
+ */
 static void insertionsortStep(Element[] e, int i)
 {
   assert(i<e.length);
@@ -31,16 +32,49 @@ static void insertionsortStep(Element[] e, int i)
   e[j].c = c;
 }
 
-// do one insertionsort step
-// and also change visuals according
-// returns 1 when elements are sorted else 0
+/** 
+ * mark the two elements with red background 
+ * who are getting compared by insertionsort 
+ * in the while loop
+ *
+ * returns index of next element to compare, else -1
+ * if position to insert is found
+ */
+static int insertionsortCompare(Element[] e, int valueIndex, int j)
+{
+  assert(valueIndex<e.length);
+  // unmark old element
+  e[j].marked = false;
+  int value = e[valueIndex].value;
+  // mark value
+  e[valueIndex].marked = true;
+  if(j>0 && e[j-1].value>value) {
+    e[j-1].marked = true;
+    return j-1;
+  }
+  else return -1;
+}
+
+/** 
+ * do one insertionsort step
+ * and also change visuals according
+ * 
+ * returns 1 when elements are sorted else 0
+ */
 int index=1;
+int compareIndex=index;
 int visualInsertionsortStep()
 {
+  
+  compareIndex = insertionsortCompare(e,index,compareIndex);
   // do one iteration of for-loop
-  insertionsortStep(e,index);
-  // increase index for next iteration
-  index++;
+  if(compareIndex == -1) 
+  {
+    insertionsortStep(e,index);
+    // increase index for next iteration
+    index++;
+    compareIndex = index; 
+  }  
   // if index reached end of array, sorting is complete
   if(index==e.length) return 1;
   // still sorting
