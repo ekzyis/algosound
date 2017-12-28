@@ -34,7 +34,7 @@ static void insertionsortStep(Element[] e, int i)
 }
 
 /** 
- * mark the two elements with red background 
+ * mark the two elements with a red line
  * who are getting compared by insertionsort 
  * in the while loop
  *
@@ -66,6 +66,7 @@ int index=1;
 int compareIndex=index;
 int visualInsertionsortStep()
 {  
+  // mark element at index as sorted
   e[index].sorted = true;
   compareIndex = insertionsortCompare(e,index,compareIndex);
   // do one iteration of for-loop
