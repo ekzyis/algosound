@@ -33,12 +33,12 @@ static void insertionsortStep(Element[] e, int i)
 }
 
 /** 
- * mark the two elements with red background 
+ * mark the two elements with a red line 
  * who are getting compared by insertionsort 
  * in the while loop
  *
- * returns index of next element to compare, else -1
- * if position to insert is found
+ * returns index of next element to compare
+ * else -1 if position to insert is found
  */
 static int insertionsortCompare(Element[] e, int valueIndex, int j)
 {
@@ -64,8 +64,7 @@ static int insertionsortCompare(Element[] e, int valueIndex, int j)
 int index=1;
 int compareIndex=index;
 int visualInsertionsortStep()
-{
-  
+{  
   compareIndex = insertionsortCompare(e,index,compareIndex);
   // do one iteration of for-loop
   if(compareIndex == -1) 

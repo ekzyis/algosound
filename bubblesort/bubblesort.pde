@@ -18,8 +18,10 @@ static void bubblesort(int[] a)
   }while(swap);
 }
 
-// check one pair of elements in array and swap if not in ascending order
-// returns 1 if swapped else 0
+/** 
+ * check one pair of elements in array and swap if not in ascending order
+ * returns 1 if swapped else 0
+ */
 static int bubblesortStep(Element[] e, int i)
 {
   assert(i<e.length-1);
@@ -36,9 +38,11 @@ static int bubblesortStep(Element[] e, int i)
   return 0;
 }
 
-// do one bubblesort swap operation 
-// and also change colors of elements involved if needed
-// returns 1 if swapped else 0
+/** 
+ * do one bubblesort swap operation 
+ * and also change colors of elements involved if needed
+ * returns 1 if swapped else 0
+ */
 int sort = 0;
 int visualBubblesortStep()
 { 
