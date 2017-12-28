@@ -40,7 +40,6 @@ void draw()
     // make a bubblesort step and change visuals according 
     visualBubblesortStep();  
     stepNumber++;
-    println(stepNumber);
   }
   else
   {
