@@ -55,11 +55,11 @@ void initElements()
   for(int i=0;i<e.length;++i)
   {
     int value = (int)(Math.random()*h);
-     e[i] = new Element(xd,h,elementwidth,value);
-     e[i].c = c[cd];
-     xd += elementwidth;
-     cd++;
-     if(cd==c.length) cd = 0;
+    e[i] = new Element(xd,h,elementwidth,value);
+    e[i].c = c[cd];
+    xd += elementwidth;
+    cd++;
+    if(cd==c.length) cd = 0;
   }
 }
 
