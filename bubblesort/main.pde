@@ -20,7 +20,7 @@ void settings()
 
 void setup()
 {   
-  frameRate(60);
+  frameRate(120);
   initColors();
   //initRainbow();
   initElements();
@@ -33,12 +33,20 @@ void draw()
 {
   background(25);
   // show elements
-  for(Element el : e) el.show();
-  // make a bubblesort step and change visuals according 
+  for(Element el : e) el.show();  
+  // only draw new frame when there is a new sorting frame
   if(stepNumber <= sortSteps) 
   {
+    // make a bubblesort step and change visuals according 
     visualBubblesortStep();  
     stepNumber++;
+    println(stepNumber);
+  }
+  else
+  {
+    // unmark first two elements
+    e[0].marked = false;
+    e[1].marked = false;
   }
 }
 

@@ -1,6 +1,16 @@
 class Element{
+  // (x,y)-position, height=value, width
   int x,y,value,w;
   color c;
+  /** 
+   * set if this element is currently marked by insertionsort
+   */
+  boolean marked;
+  /**
+   * set if this element is already sorted
+   */
+  boolean sorted;
+  
   Element(int _x, int _y, int _w, int _v)
   {
     this.x = _x;
@@ -11,13 +21,30 @@ class Element{
   
   void show()
   {
+    if(sorted == true)
+    {
+      // green transparent background
+      fill(color(0,255,0,50));
+      noStroke();
+      rect(x,0,w,h);
+      stroke(0);
+    }
+    if(marked == true)
+    {
+      // red vertical line
+      fill(color(255,0,0));
+      noStroke();
+      rect(x+w/2,0,w/2,h);
+      stroke(0);
+    }    
     fill(c);   
     rect(x,y,w,-value); 
   }
 }
 
-// ** Color-array must not be null before calling this function **
-// init elements with random value and set color
+/** # Color-array must not be null before calling this function #
+ * init elements with random value and set color
+ */
 void initElements()
 {
   e = new Element[n];
@@ -29,11 +56,11 @@ void initElements()
   for(int i=0;i<e.length;++i)
   {
     int value = (int)(Math.random()*h);
-     e[i] = new Element(xd,h,elementwidth,value);
-     e[i].c = c[cd];
-     xd += elementwidth;
-     cd++;
-     if(cd==c.length) cd = 0;
+    e[i] = new Element(xd,h,elementwidth,value);
+    e[i].c = c[cd];
+    xd += elementwidth;
+    cd++;
+    if(cd==c.length) cd = 0;
   }
 }
 
@@ -48,10 +75,10 @@ void testElements()
   for(int i=0;i<e.length;++i)
   {
     e[i] = new Element(xd,h,elementwidth,values[i]);
-     e[i].c = c[cd];
-     xd += elementwidth;
-     cd++;
-     if(cd==c.length) cd = 0;
+    e[i].c = c[cd];
+    xd += elementwidth;
+    cd++;
+    if(cd==c.length) cd = 0;
   }
 }
 
