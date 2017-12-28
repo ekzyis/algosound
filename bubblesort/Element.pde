@@ -54,3 +54,14 @@ void testElements()
      if(cd==c.length) cd = 0;
   }
 }
+
+// return int[] from values of elements
+static int[] getValues(Element[] e)
+{
+  int[] values = new int[e.length];
+  for(int i=0;i<e.length;++i)
+  {
+    values[i] = e[i].value;
+  }
+  return values;
+}

@@ -18,8 +18,36 @@ static void bubblesort(int[] a)
   }while(swap);
 }
 
-// check one pair of elements in array and swap if not in ascending order
-// returns 1 if swapped else 0
+/**
+ * count how many swaps are needed to sort this elements
+ */
+static int countBubblesortSteps(Element[] e)
+{
+  int[] a = getValues(e);
+  int counter = 0;
+  boolean swap;
+  do
+  {
+    swap = false;
+     for(int i=0; i<a.length-1; ++i)
+     {
+       if(a[i]>a[i+1])
+       {
+          int tmp = a[i+1];
+          a[i+1] = a[i];
+          a[i] = tmp;
+          swap = true;
+          counter++;
+       }
+     }
+  }while(swap);
+  return counter;
+  
+}
+/** 
+ * check one pair of elements in array and swap if not in ascending order
+ * returns 1 if swapped else 0
+ */
 static int bubblesortStep(Element[] e, int i)
 {
   assert(i<e.length-1);
@@ -36,9 +64,10 @@ static int bubblesortStep(Element[] e, int i)
   return 0;
 }
 
-// do one bubblesort swap operation 
-// and also change colors of elements involved if needed
-// returns 1 if swapped else 0
+/** do one bubblesort swap operation 
+ * and also change colors of elements involved if needed
+ *returns 1 if swapped else 0
+ */
 int sort = 0;
 int visualBubblesortStep()
 { 
