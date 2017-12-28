@@ -13,7 +13,8 @@ static void insertionsort(int[] a){
  }
 }
 
-/** do one iteration of for-loop of insertionsort
+/** 
+ * do one iteration of for-loop of insertionsort
  * (insert one element)
  */
 static void insertionsortStep(Element[] e, int i)

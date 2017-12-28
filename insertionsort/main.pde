@@ -13,6 +13,7 @@ void settings()
 {
    size(w,h);   
 }
+
 void setup()
 {
   frameRate(30);
