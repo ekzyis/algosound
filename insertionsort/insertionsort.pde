@@ -65,8 +65,8 @@ static int insertionsortCompare(Element[] e, int valueIndex, int j)
 int index=1;
 int compareIndex=index;
 int visualInsertionsortStep()
-{
-  
+{  
+  e[index].sorted = true;
   compareIndex = insertionsortCompare(e,index,compareIndex);
   // do one iteration of for-loop
   if(compareIndex == -1) 
@@ -77,7 +77,10 @@ int visualInsertionsortStep()
     compareIndex = index; 
   }  
   // if index reached end of array, sorting is complete
-  if(index==e.length) return 1;
+  if(index==e.length) {
+    e[index-1].marked = false;
+    return 1;
+  }
   // still sorting
   else return 0;  
 }

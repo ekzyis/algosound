@@ -16,10 +16,12 @@ void settings()
 
 void setup()
 {
-  frameRate(30);
+  frameRate(120);
   initColors();
   initElements();
   sort=0;
+  // handle first element as sorted
+  e[0].sorted = true;
 }
 
 void draw()
