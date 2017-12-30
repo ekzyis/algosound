@@ -41,9 +41,21 @@ class Element{
     rect(x,y,w,-value); 
   }
   
+  // string representation
   String string()
   {
     return "("+x+","+y+","+w+","+value+")";
+  }
+  
+  // swap function for visual elements
+  void swap(Element e)
+  {
+    int tmpValue = e.value;
+    color tmpColor = e.c;
+    e.value = this.value;
+    e.c = this.c;
+    this.value = tmpValue;
+    this.c = tmpColor;
   }
 }
 

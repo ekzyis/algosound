@@ -23,6 +23,8 @@ void setup()
   
   printarr(getValues(e));
   printarr(e);
+  e[0].swap(e[1]);
+  printarr(e);
   e = mergesort(e);
   printarr(e);
   printarr(getValues(e));
