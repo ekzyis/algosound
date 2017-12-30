@@ -1,4 +1,9 @@
 class Element{
+  // passed to swap function
+  // swap values and colors
+  final static int VALUES = 1;
+  // swap coordinates
+  final static int COORDINATES = 2;
   // (x,y)-position, height=value, width
   int x,y,value,w;
   color c;
@@ -44,18 +49,33 @@ class Element{
   // string representation
   String string()
   {
-    return "("+x+","+y+","+w+","+value+")";
+    return "("+value+","+x+")";
   }
   
-  // swap function for visual elements
-  void swap(Element e)
+  // swap function
+  void swap(Element e, int a)
   {
-    int tmpValue = e.value;
-    color tmpColor = e.c;
-    e.value = this.value;
-    e.c = this.c;
-    this.value = tmpValue;
-    this.c = tmpColor;
+    switch(a)
+    {
+     case Element.VALUES:
+       int tmpValue = e.value;
+       color tmpColor = e.c;
+       e.value = this.value;
+       e.c = this.c;
+       this.value = tmpValue;
+       this.c = tmpColor;
+       break;
+     case Element.COORDINATES:
+       int tmpX = e.x;
+       int tmpY = e.y;
+       e.x = this.x;
+       e.y = this.y;
+       this.x = tmpX;
+       this.y = tmpY;
+       break;
+     // it must be specified how swap should be executed
+     default: assert(false);
+    }
   }
 }
 
@@ -84,9 +104,10 @@ void initElements()
 // get some test elements for well ... testing purposes
 void testElements()
 {
-  e = new Element[5];
-  int[] values = {103,23,51,96,10};
-  int elementwidth = w/5;
+  int n = 6;
+  e = new Element[n];
+  int[] values = {10,2,5,8,112,4};
+  int elementwidth = w/n;
   int xd = 0;
   int cd = 0;
   for(int i=0;i<e.length;++i)
@@ -108,4 +129,26 @@ static int[] getValues(Element[] e)
     values[i] = e[i].value;
   }
   return values;
+}
+
+// print an element array
+static void printarr(Element[] e)
+{
+  print("{");
+  for(Element el : e)
+  {
+    print(el.string());
+  }
+  print("}");
+  println();
+}
+
+// checks if an Element[] is in ascending order
+boolean isSorted(Element[] e)
+{
+  for(int i=0;i<e.length-1;++i)
+  {
+    if(e[i].value>e[i+1].value || e[i].x>e[i+1].x) return false;
+  }
+  return true;
 }

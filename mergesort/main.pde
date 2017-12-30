@@ -17,18 +17,13 @@ void setup()
   frameRate(60);
   initColors();
   //initRainbow();
-  //initElements();
-  testElements();
+  initElements();
+  //testElements();
   // demonstration of sorting algorithm
-  
-  printarr(getValues(e));
-  printarr(e);
-  e[0].swap(e[1]);
-  printarr(e);
+  //printarr(e);
   e = mergesort(e);
-  printarr(e);
-  printarr(getValues(e));
-  assert(isSorted(getValues(e)));
+  //printarr(e);
+  assert(isSorted(e));
 }
 
 void draw()
@@ -36,25 +31,14 @@ void draw()
   background(25);
   // show elements
   for(Element el : e) el.show(); 
-  
 }
 
 // print an integer-array
-void printarr(int[] a)
+static void printarr(int[] a)
 {
   for(int v : a )
   {
     print(v + " ");
-  }
-  println();
-}
-
-// print an element array
-void printarr(Element[] e)
-{
-  for(Element el : e)
-  {
-    print(el.string());
   }
   println();
 }

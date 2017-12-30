@@ -1,6 +1,6 @@
 /**
- * mergesort implementation
- * ========================
+ * natural mergesort implementation
+ * ================================
  */
 // divide set into two sets
 static int[] mergesort(int[] a)
