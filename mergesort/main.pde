@@ -17,13 +17,15 @@ void setup()
   frameRate(60);
   initColors();
   //initRainbow();
-  initElements();
-  //testElements();
-  int[] a = {45,134,57,45,5756,89567,356,357,3,235,26,37,762,52,352,7,3,624,6};
+  //initElements();
+  testElements();
   // demonstration of sorting algorithm
-  // printarr(getValues(e));
+  
+  printarr(getValues(e));
+  printarr(e);
   e = mergesort(e);
-  // printarr(getValues(e));
+  printarr(e);
+  printarr(getValues(e));
   assert(isSorted(getValues(e)));
 }
 
@@ -41,6 +43,16 @@ void printarr(int[] a)
   for(int v : a )
   {
     print(v + " ");
+  }
+  println();
+}
+
+// print an element array
+void printarr(Element[] e)
+{
+  for(Element el : e)
+  {
+    print(el.string());
   }
   println();
 }

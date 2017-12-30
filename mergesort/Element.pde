@@ -40,6 +40,11 @@ class Element{
     fill(c);   
     rect(x,y,w,-value); 
   }
+  
+  String string()
+  {
+    return "("+x+","+y+","+w+","+value+")";
+  }
 }
 
 /** # Color-array must not be null before calling this function #
