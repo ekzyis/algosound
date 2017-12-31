@@ -1,4 +1,10 @@
-// selectionsort implementation
+/**
+ * Selectionsort implementation.
+ * =================================
+ * @author ekzyis
+ * @date December 2017
+ */
+ 
 static void selectionsort(int[] a)
 {
   int n = a.length;
@@ -33,12 +39,7 @@ static void selectionsortStep(Element[] e, int index)
       minIndex = i;
     }
   }
-  int tmp = e[minIndex].value;
-  color tmp2 = e[minIndex].c;
-  e[minIndex].value = e[index].value;
-  e[minIndex].c = e[index].c;
-  e[index].value = tmp;
-  e[index].c = tmp2;
+  e[index].swap(e[minIndex], Element.VALUES | Element.COLORS);
 }
 
 /**
