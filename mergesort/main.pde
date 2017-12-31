@@ -1,3 +1,10 @@
+/**
+ * Mainfile of Mergesort visualization.
+ * ====================================
+ * @author ekzyis
+ * @date December 2017
+ */
+
 // width and height of screen
 int w=640, h=360;
 // amount of elements to sort
@@ -15,11 +22,10 @@ void settings()
 void setup()
 {   
   frameRate(60);
-  initColors();
-  //initRainbow();
-  initElements();
-  //testElements();
-  // demonstration of sorting algorithm
+  c = getColors();
+  e = getElements();
+  //e = testElements();
+  //demonstration of sorting algorithm
   //printarr(e);
   e = mergesort(e);
   //printarr(e);

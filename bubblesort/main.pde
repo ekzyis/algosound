@@ -1,3 +1,10 @@
+/**
+ * Mainfile of Bubblesort visualization.
+ * ====================================
+ * @author ekzyis
+ * @date December 2017
+ */
+
 // width and height of screen
 int w=640, h=360;
 // amount of elements to sort
@@ -21,10 +28,14 @@ void settings()
 void setup()
 {   
   frameRate(120);
-  initColors();
-  //initRainbow();
-  initElements();
-  //testElements();
+  c = getColors();
+  e = getElements();
+  /** 
+   * Count how many steps bubblesort needs
+   * sort this elements. This count will be used
+   * to know when a new frame is no longer needed to calculate
+   * since bubblesort is finished.
+   */
   sortSteps = countBubblesortSteps(e);
   stepNumber = 0;
 }
@@ -50,11 +61,21 @@ void draw()
 }
 
 // print an integer-array
-void printarr(int[] a)
+static void printarr(int[] a)
 {
   for(int v : a )
   {
     print(v + " ");
   }
   println();
+}
+
+// checks if an int[] is in ascending order
+boolean isSorted(int[] a)
+{
+  for(int i=0;i<a.length-1;++i)
+  {
+    if(a[i]>a[i+1]) return false;
+  }
+  return true;
 }

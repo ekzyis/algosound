@@ -1,3 +1,8 @@
+/**
+ * Mainfile of Insertionsort visualization.
+ * ========================================
+ */
+
 // width and height of screen
 int w=640, h=360;
 // amount of elements to sort
@@ -17,9 +22,9 @@ void settings()
 void setup()
 {
   frameRate(120);
-  initColors();
-  initElements();
-  sort=0;
+  c = getColors();
+  e = getElements();
+  sort = 0;
   // handle first element as sorted
   e[0].sorted = true;
 }
@@ -34,10 +39,21 @@ void draw()
 }
 
 // print an integer-array
-void printarr(int[] a)
+static void printarr(int[] a)
 {
-  for(int n : a){
-    print(n + " ");
+  for(int v : a )
+  {
+    print(v + " ");
   }
   println();
+}
+
+// checks if an int[] is in ascending order
+boolean isSorted(int[] a)
+{
+  for(int i=0;i<a.length-1;++i)
+  {
+    if(a[i]>a[i+1]) return false;
+  }
+  return true;
 }

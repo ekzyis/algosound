@@ -103,45 +103,57 @@ class Element{
   }
 }
 
-/** # Color-array must not be null before calling this function #
- * init elements with random value and set color
+/** 
+ * Return elements with random value and set color.
+ * If colors are not defined, colors returned by 
+ * getColors() will be used.
  */
-void initElements()
+Element[] getElements()
 {
-  e = new Element[n];
+  if(c==null)
+  {
+    c = getColors();
+  }
+  Element[] elements = new Element[n];
   int elementwidth = w/n;  
   // x offset
   int xd = 0;
   // color "offset"
   int cd = 0;  
-  for(int i=0;i<e.length;++i)
+  for(int i=0;i<elements.length;++i)
   {
     int value = (int)(Math.random()*h);
-    e[i] = new Element(xd,h,elementwidth,value);
-    e[i].c = c[cd];
+    elements[i] = new Element(xd,h,elementwidth,value);
+    elements[i].c = c[cd];
     xd += elementwidth;
     cd++;
     if(cd==c.length) cd = 0;
   }
+  return elements;
 }
 
 // get some test elements for well ... testing purposes
-void testElements()
+Element[] getTestElements()
 {
+  if(c==null)
+  {
+    c = getColors();
+  }
   int n = 6;
-  e = new Element[n];
+  Element[] elements = new Element[n];
   int[] values = {10,2,5,8,112,4};
   int elementwidth = w/n;
   int xd = 0;
   int cd = 0;
-  for(int i=0;i<e.length;++i)
+  for(int i=0;i<elements.length;++i)
   {
-    e[i] = new Element(xd,h,elementwidth,values[i]);
-    e[i].c = c[cd];
+    elements[i] = new Element(xd,h,elementwidth,values[i]);
+    elements[i].c = c[cd];
     xd += elementwidth;
     cd++;
     if(cd==c.length) cd = 0;
   }
+  return elements;
 }
 
 // return int[] from values of elements
@@ -168,7 +180,7 @@ static void printarr(Element[] e)
 }
 
 // checks if an Element[] is in ascending order
-boolean isSorted(Element[] e)
+static boolean isSorted(Element[] e)
 {
   for(int i=0;i<e.length-1;++i)
   {
