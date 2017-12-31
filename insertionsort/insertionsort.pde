@@ -1,4 +1,10 @@
-// insertionsort implementation
+/**
+ * Insertionsort implementation.
+ * =============================
+ * @author ekzyis
+ * @date December 2017
+ */
+ 
 static void insertionsort(int[] a){
  for(int i=1;i<a.length;++i)
  {
