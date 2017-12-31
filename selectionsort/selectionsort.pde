@@ -1,6 +1,6 @@
 /**
  * Selectionsort implementation.
- * =================================
+ * =============================
  * @author ekzyis
  * @date December 2017
  */
