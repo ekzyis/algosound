@@ -1,3 +1,9 @@
+/**
+ * This class saves the data for visualization.
+ * ============================================
+ * @author ekzyis
+ * @date December 2017
+ */
 class Element{
   /**
    * Values which are passed to swap function.

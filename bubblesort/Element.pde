@@ -1,3 +1,9 @@
+/**
+ * This class saves the data for visualization.
+ * ============================================
+ * @author ekzyis
+ * @date December 2017
+ */
 class Element{
   /**
    * Values which are passed to swap function.
@@ -66,7 +72,7 @@ class Element{
    */
   void swap(Element e, int a)
   {
-    println(a);
+    //println(a);
     // is bit 0 /(=2^0) set?
     if((a & 1)==1) 
     {
