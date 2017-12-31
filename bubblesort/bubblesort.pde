@@ -1,4 +1,10 @@
-// bubblesort implementation
+/**
+ * Bubblesort implementation.
+ * ==========================
+ * @author ekzyis
+ * @date December 2017
+ */
+
 static void bubblesort(int[] a)
 {
   boolean swap;
@@ -55,12 +61,8 @@ static int bubblesortStep(Element[] e, int i)
   assert(i<e.length-1);
   if(e[i].value>e[i+1].value)
   {
-    int tmp = e[i+1].value;
-    color tmp2 = e[i+1].c;
-    e[i+1].value = e[i].value;
-    e[i+1].c = e[i].c;
-    e[i].value = tmp;
-    e[i].c = tmp2;
+    // swap values and colors
+    e[i].swap(e[i+1], Element.VALUES | Element.COLORS);
     return 1;
   }
   return 0;
