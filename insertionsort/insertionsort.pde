@@ -25,6 +25,11 @@ static void insertionsortStep(Element[] e, int i)
   int j = i;
   while(j>0 && e[j-1].value>value)
   {
+    /** 
+     * elements don't really swap places
+     * the left element moves to the right
+     * overwriting the previous element on their right
+     */
     e[j].value = e[j-1].value;
     e[j].c = e[j-1].c;
     j = j-1;
