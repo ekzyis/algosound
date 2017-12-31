@@ -1,14 +1,19 @@
 class Element{
-  // passed to swap function
-  // swap values and colors
-  final static int VALUES = 1;
+  /**
+   * Values which are passed to swap function.
+   * They define which member should be swapped.
+   */
+  // swap values
+  final static int VALUES = 1; // 2^0
+  // swap colors
+  final static int COLORS = 2; // 2^1
   // swap coordinates
-  final static int COORDINATES = 2;
+  final static int COORDINATES = 4; // 2^2
   // (x,y)-position, height=value, width
   int x,y,value,w;
   color c;
   /** 
-   * set if this element is currently marked by insertionsort
+   * set if this element is currently marked by sorting algorithm
    */
   boolean marked;
   /**
@@ -16,6 +21,7 @@ class Element{
    */
   boolean sorted;
   
+  // constructor
   Element(int _x, int _y, int _w, int _v)
   {
     this.x = _x;
@@ -23,7 +29,7 @@ class Element{
     this.w = _w;    
     this.value = _v;
   }
-  
+  // how to show this on canvas
   void show()
   {
     if(sorted == true)
@@ -52,29 +58,41 @@ class Element{
     return "("+value+","+x+")";
   }
   
-  // swap function
+  /** 
+   * Swap function.
+   * This function is meant to be used with the logical operator |.
+   * This means, calling e1.swap(e2, Element.VALUES | Element.COLORS);
+   * will swap values and colors between Element e1 and e2.
+   */
   void swap(Element e, int a)
   {
-    switch(a)
+    //println(a);
+    // is bit 0 /(=2^0) set?
+    if((a & 1)==1) 
     {
-     case Element.VALUES:
-       int tmpValue = e.value;
-       color tmpColor = e.c;
-       e.value = this.value;
-       e.c = this.c;
-       this.value = tmpValue;
-       this.c = tmpColor;
-       break;
-     case Element.COORDINATES:
-       int tmpX = e.x;
-       int tmpY = e.y;
-       e.x = this.x;
-       e.y = this.y;
-       this.x = tmpX;
-       this.y = tmpY;
-       break;
-     // it must be specified how swap should be executed
-     default: assert(false);
+      //println("swapping values");
+      int tmp = e.value;
+      e.value = this.value;
+      this.value = tmp;
+    }
+    // is bit 1 set?
+    if(((a >> 1) & 1)==1)
+    {
+      //println("swapping colors");
+      color tmp = e.c;
+      e.c = this.c;
+      this.c = tmp;
+    }
+    // is bit 2 set?
+    if(((a >> 2) & 1)==1)
+    {
+      //println("swapping coordinates");
+      int tmpX = e.x;
+      int tmpY = e.y;
+      e.x = this.x;
+      e.y = this.y;
+      this.x = tmpX;
+      this.y = tmpY;
     }
   }
 }
