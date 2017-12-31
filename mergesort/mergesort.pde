@@ -1,6 +1,8 @@
 /**
- * mergesort implementation for a set of elements.
+ * Mergesort implementation for a set of elements.
  * ===============================================
+ * @author ekzyis
+ * @date December 2017
  */
 
 // divide a set into two subsets
@@ -14,14 +16,14 @@ static Element[] mergesort(Element[] e)
     //println(cut);
     // make a subset of all elements left of cut-Index
     Element[] left = (Element[])(subset(e,0,cut));
-    //print("left=");printarr(left);
+    //print("left=");printarr(left); //<>//
     // divide this subset again into two subsets
-    left = mergesort(left); //<>//
+    left = mergesort(left);
     // make a subset of all elements right of cut-Index
     Element[] right = (Element[])(subset(e,cut));
-    //print("right=");printarr(right);
+    //print("right=");printarr(right); //<>//
     // divide this subset also again into two subsets
-    right = mergesort(right); //<>//
+    right = mergesort(right);
     // merge both subsets
     return merge(left,right);
   }
@@ -38,11 +40,10 @@ static Element[] merge(Element[] left, Element[] right)
    */
   if(left.length == 0) return right;
   else if(right.length == 0) return left;
-   
   /**
-   * create array to hold all elements
+   * create array to hold all elements //<>//
    */ //<>//
-  Element[] newlist = new Element[0]; //<>//
+  Element[] newlist = new Element[0];
   // "pointer" of lists
   int j=0,k=0;
   // the "sorting" part
@@ -72,8 +73,8 @@ static Element[] merge(Element[] left, Element[] right)
       newlist = (Element[])(append(newlist,left[j]));
       j++;
     }
-    //print("newlist=");printarr(newlist);print("updated left=");printarr(left);print("updated right=");printarr(right);
-  }while(j<left.length && k<right.length); //<>//
+    //print("newlist=");printarr(newlist);print("updated left=");printarr(left);print("updated right=");printarr(right); //<>//
+  }while(j<left.length && k<right.length);
   // put the rest of the elements in newlist
   if(j<left.length)
   {
