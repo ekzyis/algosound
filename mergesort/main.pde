@@ -13,6 +13,10 @@ int n=w/5;
 Element[] e;
 // colors
 color[] c;
+// startindex of subset
+int start;
+// length of subset
+int len;
 
 void settings()
 {
@@ -23,30 +27,63 @@ void setup()
 {   
   frameRate(60);
   c = getColors();
-  e = getElements();
-  //e = testElements();
+  //e = getElements();
+  e = getTestElements();
+  start = 0;
+  len = e.length;
+  printarr(e);
   //demonstration of sorting algorithm
   //printarr(e);
-  e = mergesort(e);
+  //e = mergesort(e);
   //printarr(e);
-  assert(isSorted(e));
+  //assert(isSorted(e));
 }
 
+// how many frames?
+int frames = 8;
+int x = 0;
 void draw()
 {
   background(25);
   // show elements
   for(Element el : e) el.show(); 
+  if(x<frames) {
+    int[] res = visualMergesortStep(e,start,len);
+    start = res[0];
+    len = res[1];
+  }
+  //print("*");
+  x++;
 }
 
 // print an integer-array
 static void printarr(int[] a)
 {
-  for(int v : a )
+  print("{");
+  print(a[0]);
+  for(int i=1;i<a.length;++i)
   {
-    print(v + " ");
+    print(", "+a[i]);
   }
+  print("}");
   println();
+}
+
+// print an arraylist of integers
+static void printlist(ArrayList<int[]> list)
+{
+  print("{");
+  for(int[] a : list)
+  {
+    print("{");
+    print(a[0]);
+    for(int i=1;i<a.length;++i)
+    {
+      print(", "+a[i]);
+    }
+    print("}");
+  }
+  println("}");
 }
 
 // checks if an int[] is in ascending order

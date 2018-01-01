@@ -17,15 +17,12 @@ class Element{
   final static int COORDINATES = 4; // 2^2
   // (x,y)-position, height=value, width
   int x,y,value,w;
+  // color of this element
   color c;
-  /** 
-   * set if this element is currently marked by sorting algorithm
-   */
+  // marked background of this element
+  color marker;
+  // is this element marked?
   boolean marked;
-  /**
-   * set if this element is already sorted
-   */
-  boolean sorted;
   
   // constructor
   Element(int _x, int _y, int _w, int _v)
@@ -34,28 +31,25 @@ class Element{
     this.y = _y;
     this.w = _w;    
     this.value = _v;
+    this.marked = false;
   }
   // how to show this on canvas
   void show()
   {
-    if(sorted == true)
-    {
-      // green transparent background
-      fill(color(0,255,0,50));
-      noStroke();
-      rect(x,0,w,h);
-      stroke(0);
-    }
     if(marked == true)
     {
-      // red vertical line
-      fill(color(255,0,0));
-      noStroke();
-      rect(x+w/2,0,w/2,h);
-      stroke(0);
-    }    
+      fill(marker);
+      rect(x+w/4,0,w/2,h);
+    }
     fill(c);   
     rect(x,y,w,-value); 
+  }
+  
+  // draw this element with specified background
+  void mark(color marker)
+  {
+    this.marker = marker;
+    marked = true;
   }
   
   // string representation
@@ -141,7 +135,7 @@ Element[] getTestElements()
   }
   int n = 6;
   Element[] elements = new Element[n];
-  int[] values = {10,2,5,8,112,4};
+  int[] values = {154,25,53,310,225,17};
   int elementwidth = w/n;
   int xd = 0;
   int cd = 0;
