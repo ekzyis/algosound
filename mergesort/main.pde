@@ -27,8 +27,8 @@ void setup()
 {   
   frameRate(60);
   c = getColors();
-  //e = getElements();
-  e = getTestElements();
+  e = getElements();
+  //e = getTestElements();
   start = 0;
   len = e.length;
   printarr(e);
@@ -39,21 +39,25 @@ void setup()
   //assert(isSorted(e));
 }
 
-// how many frames?
-int frames = 8;
-int x = 0;
 void draw()
 {
   background(25);
   // show elements
   for(Element el : e) el.show(); 
-  if(x<frames) {
-    int[] res = visualMergesortStep(e,start,len);
-    start = res[0];
-    len = res[1];
+  if(sorting()) {
+    int[] nextFrame = visualMergesortStep(e,start,len);
+    start = nextFrame[0];
+    len = nextFrame[1];
   }
-  //print("*");
-  x++;
+}
+
+/**
+ * Checks if sorting is complete with recursionStack.
+ * If stack reaches zero, sorting complete.
+ */
+boolean sorting()
+{
+  return (recursionStack.length()!=0); 
 }
 
 // print an integer-array
