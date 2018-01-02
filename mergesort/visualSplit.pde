@@ -25,6 +25,9 @@ int[] visualSplit(Element[] e, int s, int len)
   print("leftss=");printarr(leftss);
   Element[] rightss = (Element[])(subset(e,s+cutLen,len-cutLen));
   print("rightss=");printarr(rightss);
+  // increase recursion level of elements
+  for(Element el : leftss) el.recursionLevel++;
+  for(Element el : rightss) el.recursionLevel++;
   // add to stacks (only this is needed)
   int[] addleftstack = {s,cutLen};
   leftStack.add(addleftstack);
@@ -41,7 +44,7 @@ int[] visualSplit(Element[] e, int s, int len)
    nextParam[0] = s; nextParam[1] = cutLen; 
    print("new leftStack=");printlist(leftStack);
    print("new rightStack=");printlist(rightStack);
-   println("new recursionLevel="+recursionStack);
+   println("new recursionStack="+recursionStack);
    println("returning: "+nextParam[0]+", "+nextParam[1]);
    return nextParam;
 }

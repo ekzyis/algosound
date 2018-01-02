@@ -83,6 +83,8 @@ int[] visualMerge(Element[] e, int[] l, int[] r)
   leftStack.remove(leftStack.size()-1);
   rightStack.remove(rightStack.size()-1);
   // after merging, recursion level is done.
+  for(Element el : lss) leftRecursion.add(el);
+  for(Element el : rss) leftRecursion.add(el);
   // return one recursion: remove last character which is 'm'
   recursionStack=recursionStack.substring(0,recursionStack.length()-1);
   /**

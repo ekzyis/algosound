@@ -58,7 +58,7 @@ int[] visualLeaveRecursion()
   }
   print("new leftStack=");printlist(leftStack);
   print("new rightStack=");printlist(rightStack);
-  println("new recursionLevel="+recursionStack);
+  println("new recursionStack="+recursionStack);
   println("returning: "+nextParam[0]+", "+nextParam[1]);
   // return parameters for next frame.
   return nextParam;

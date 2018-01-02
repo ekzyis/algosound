@@ -35,6 +35,8 @@
  */
 // elements to be unmarked next frame
 ArrayList<Element> unmarkMe = new ArrayList<Element>();
+// elements which decrease their level of recursion next frame
+ArrayList<Element> leftRecursion = new ArrayList<Element>();
 /** 
  * Simulating the recursion stack.
  * List will save start index and length of subsets.
@@ -59,10 +61,12 @@ int[] visualMergesortStep(Element[] e, int s, int len)
   char currentLevel = recursionStack.charAt(recursionStack.length()-1);
   // unmark previous elements
   clearMarkers();
-  // mark elements in subset in current frame
+  // update recursion level of elements who left recursion
+  updateRecursionLevel();
+  // mark elements in subset in current frame //<>//
   markSubset(e,s,len);
   // check if merging is planned.
-  if(currentLevel=='m')
+  if(currentLevel=='m') //<>//
   { //<>//
     // get starting index and length from stack
     int[] l = leftStack.get(leftStack.size()-1);
@@ -79,8 +83,16 @@ int[] visualMergesortStep(Element[] e, int s, int len)
   }
   else
   {
-    // no more splitting possible! go one recursion level down.
+    // no more splitting possible! go one recursion level down next frame.
     println("---leaving recursion---");
+    // increase level of recursion for current subset _this frame_.
+    Element[] subset = (Element[])(subset(e,s,len));
+    for(Element el : subset) 
+    {
+      el.recursionLevel++;
+      // decrease level of recursion next frame
+      leftRecursion.add(el);
+    }
     return visualLeaveRecursion();
   }
 }
@@ -105,6 +117,20 @@ void clearMarkers()
     for(int i=0;i<unmarkMe.size();++i)
     {
       unmarkMe.get(i).unmark();
-    }  
+    } 
+    unmarkMe.clear();
+  }
+}
+
+// decrease recursion level of elements which left recursion
+void updateRecursionLevel()
+{
+  if(!leftRecursion.isEmpty())
+  {
+    for(int i=0;i<leftRecursion.size();++i)
+    {
+      leftRecursion.get(i).recursionLevel--;
+    }
+    leftRecursion.clear();
   }
 }

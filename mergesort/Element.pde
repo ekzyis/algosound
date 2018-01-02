@@ -9,6 +9,8 @@
 color subsetColor = color(0,0,255,75);
 // marking color for merging elements
 color mergingColor = color(0,255,0,75);
+// y-offset per level of recursion
+int recursionYOffset = 20;
 class Element{
   /**
    * Values which are passed to swap function.
@@ -24,8 +26,10 @@ class Element{
   int x,y,value,w;
   // color of this element
   color c;
-  // is this element in a subset marked by mergesort?
+  // is this element in a subset currently marked by mergesort?
   boolean inSubset;
+  // how deep in recursion is this element?
+  int recursionLevel;
   // is this element in a subset being merged?
   boolean merging;
   
@@ -37,6 +41,8 @@ class Element{
     this.w = _w;    
     this.value = _v;
     this.inSubset = false;
+    this.merging = false;
+    this.recursionLevel = -1;
   }
   // how to show this on canvas
   void show()
@@ -45,18 +51,18 @@ class Element{
     {
       noStroke();
       fill(subsetColor);
-      rect(x,0,w,h);
+      rect(x,0,w,h-(recursionLevel*recursionYOffset));
       stroke(0);
     }
     else if(merging == true)
     {
       noStroke();
       fill(mergingColor);
-      rect(x,0,w,h);
+      rect(x,0,w,h-(recursionLevel*recursionYOffset));
       stroke(0);
     }
     fill(c);   
-    rect(x,y,w,-value); 
+    rect(x,y-(recursionLevel*recursionYOffset),w,-value); 
   }
   
   // unmark this element
@@ -130,7 +136,7 @@ Element[] getElements()
   int cd = 0;  
   for(int i=0;i<elements.length;++i)
   {
-    int value = (int)(Math.random()*h);
+    int value = (int)(Math.random()*(h/2));
     elements[i] = new Element(xd,h,elementwidth,value);
     elements[i].c = c[cd];
     xd += elementwidth;

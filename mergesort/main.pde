@@ -6,7 +6,7 @@
  */
 
 // width and height of screen
-int w=640, h=360;
+int w=640, h=360*2;
 // amount of elements to sort
 int n=w/5; 
 // elements
@@ -25,7 +25,7 @@ void settings()
 
 void setup()
 {   
-  frameRate(30);
+  frameRate(15);
   c = getColors();
   e = getElements();
   //e = getTestElements();
@@ -39,17 +39,25 @@ void setup()
   //assert(isSorted(e));
 }
 
+/*int frames = 1;
+int x = 0;*/
 void draw()
 {
   background(25);
   // show elements
   for(Element el : e) el.show(); 
-  if(sorting()) {
+  if(sorting() /*&& x<frames*/) {
     int[] nextFrame = visualMergesortStep(e,start,len);
     start = nextFrame[0];
     len = nextFrame[1];
+    //x++;
   }
 }
+
+/*void mousePressed()
+{
+  frames++;
+}*/
 
 /**
  * Checks if sorting is complete with recursionStack.
