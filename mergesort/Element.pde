@@ -4,6 +4,11 @@
  * @author ekzyis
  * @date December 2017
  */
+ 
+// marking color for subsets
+color subsetColor = color(0,0,255,75);
+// marking color for merging elements
+color mergingColor = color(0,255,0,75);
 class Element{
   /**
    * Values which are passed to swap function.
@@ -19,10 +24,10 @@ class Element{
   int x,y,value,w;
   // color of this element
   color c;
-  // marked background of this element
-  color marker;
-  // is this element marked?
-  boolean marked;
+  // is this element in a subset marked by mergesort?
+  boolean inSubset;
+  // is this element in a subset being merged?
+  boolean merging;
   
   // constructor
   Element(int _x, int _y, int _w, int _v)
@@ -31,25 +36,34 @@ class Element{
     this.y = _y;
     this.w = _w;    
     this.value = _v;
-    this.marked = false;
+    this.inSubset = false;
   }
   // how to show this on canvas
   void show()
   {
-    if(marked == true)
+    if(inSubset == true)
     {
-      fill(marker);
-      rect(x+w/4,0,w/2,h);
+      noStroke();
+      fill(subsetColor);
+      rect(x,0,w,h);
+      stroke(0);
+    }
+    else if(merging == true)
+    {
+      noStroke();
+      fill(mergingColor);
+      rect(x,0,w,h);
+      stroke(0);
     }
     fill(c);   
     rect(x,y,w,-value); 
   }
   
-  // draw this element with specified background
-  void mark(color marker)
+  // unmark this element
+  void unmark()
   {
-    this.marker = marker;
-    marked = true;
+    this.inSubset = false;
+    this.merging = false;
   }
   
   // string representation

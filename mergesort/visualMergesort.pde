@@ -1,9 +1,6 @@
 /**
  * Implementation of visualization steps for mergesort.
  * ====================================================
- * This function calls several other functions to do its job:
- * visualSplit(), leaveRecursion() and visualMerge()
- *
  * @author ekzyis
  * @date December 2017
  */
@@ -15,9 +12,8 @@
  * to divide all sets which are langer than 1 into two subsets.
  * It consists of cleaning the old frame, calculating new frame
  * and preparing for the next frame.
- * The parameter e is the given base set (the one you see on canvas),
- * and the parameters s and len are the starting index and length 
- * of the current subset mergesort is operating on.
+ * The parameters $e, $s and $len are the given (sub)set (=$e),
+ * and the start(=$s) and length(=$len) of the next subset for this frame.
  * 
  * Idea
  * ====
@@ -51,8 +47,6 @@ ArrayList<int[]> rightStack = new ArrayList<int[]>();
  * 0 is the start array, where we are starting to sort from.
  */
 String recursionStack = "0";
-//marking color for cut index
-color mark = color(128,64,255);
 int[] visualMergesortStep(Element[] e, int s, int len)
 {
   print("visualMergesortStep(): e=");printarr(e); 
@@ -62,21 +56,17 @@ int[] visualMergesortStep(Element[] e, int s, int len)
   println("recursionLevel="+recursionStack);
   println("recursionLevel.length()="+recursionStack.length());
   // get current recursion level
-  char currentLevel = recursionStack.charAt(recursionStack.length()-1); //<>//
-  // unmark previous elements //<>//
-  if(!unmarkMe.isEmpty())
-  {
-    for(int i=0;i<unmarkMe.size();++i) //<>//
-    {
-      unmarkMe.get(i).marked = false;
-    }  
-  }
+  char currentLevel = recursionStack.charAt(recursionStack.length()-1);
+  // unmark previous elements
+  clearMarkers();
+  // mark elements in subset in current frame
+  markSubset(e,s,len);
   // check if merging is planned.
   if(currentLevel=='m')
-  {
+  { //<>//
     // get starting index and length from stack
     int[] l = leftStack.get(leftStack.size()-1);
-    int[] r = rightStack.get(rightStack.size()-1);
+    int[] r = rightStack.get(rightStack.size()-1); //<>//
     // set parameters for next frame
     return visualMerge(e,l,r);
   }
@@ -92,5 +82,29 @@ int[] visualMergesortStep(Element[] e, int s, int len)
     // no more splitting possible! go one recursion level down.
     println("---leaving recursion---");
     return visualLeaveRecursion();
+  }
+}
+
+// mark current subset
+void markSubset(Element[] e, int s, int len)
+{
+  int i=0;
+  while(i<len)
+  {
+    e[s+i].inSubset = true;
+    unmarkMe.add(e[s+i]);
+    i++;
+  }
+}
+
+// clear markers from last frame
+void clearMarkers()
+{
+  if(!unmarkMe.isEmpty())
+  {
+    for(int i=0;i<unmarkMe.size();++i)
+    {
+      unmarkMe.get(i).unmark();
+    }  
   }
 }

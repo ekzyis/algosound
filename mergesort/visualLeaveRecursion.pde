@@ -1,7 +1,7 @@
 /**
  * Implementation of returning recursion by manipulating 
  * recursionStack of type String.
- * =============================================================
+ * =====================================================
  * @author ekzyis
  * date January 2018
  */

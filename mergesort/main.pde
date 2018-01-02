@@ -25,7 +25,7 @@ void settings()
 
 void setup()
 {   
-  frameRate(60);
+  frameRate(30);
   c = getColors();
   e = getElements();
   //e = getTestElements();
