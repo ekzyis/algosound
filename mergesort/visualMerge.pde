@@ -16,6 +16,8 @@
 int[] visualMerge(Element[] e, int[] l, int[] r)
 {
   println("---merging---");
+  // mark the two subsets as merging
+  markMerging(e,l,r);
   // merge the last two subsets
   print("l=");printarr(l);
   print("r=");printarr(r);
@@ -87,4 +89,17 @@ int[] visualMerge(Element[] e, int[] l, int[] r)
    * Now leave recursion like splitting not possible.
    */
   return visualLeaveRecursion();
+}
+
+// mark subsets specified by l and r as merging
+void markMerging(Element[] e,int[] l, int[] r)
+{
+  int i=0;
+  int len = l[1]+r[1];
+  while(i<len)
+  {
+    e[l[0]+i].merging = true;
+    unmarkMe.add(e[l[0]+i]);
+    i++;
+  } 
 }

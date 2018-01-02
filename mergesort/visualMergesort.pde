@@ -47,8 +47,6 @@ ArrayList<int[]> rightStack = new ArrayList<int[]>();
  * 0 is the start array, where we are starting to sort from.
  */
 String recursionStack = "0";
-//marking color for cut index
-color mark = color(128,64,255);
 int[] visualMergesortStep(Element[] e, int s, int len)
 {
   print("visualMergesortStep(): e=");printarr(e); 
@@ -58,16 +56,17 @@ int[] visualMergesortStep(Element[] e, int s, int len)
   println("recursionLevel="+recursionStack);
   println("recursionLevel.length()="+recursionStack.length());
   // get current recursion level
-  char currentLevel = recursionStack.charAt(recursionStack.length()-1); //<>//
+  char currentLevel = recursionStack.charAt(recursionStack.length()-1);
   // unmark previous elements
   clearMarkers();
-  
+  // mark elements in subset in current frame
+  markSubset(e,s,len);
   // check if merging is planned.
-  if(currentLevel=='m') //<>//
-  {
+  if(currentLevel=='m')
+  { //<>//
     // get starting index and length from stack
-    int[] l = leftStack.get(leftStack.size()-1); //<>//
-    int[] r = rightStack.get(rightStack.size()-1);
+    int[] l = leftStack.get(leftStack.size()-1);
+    int[] r = rightStack.get(rightStack.size()-1); //<>//
     // set parameters for next frame
     return visualMerge(e,l,r);
   }
@@ -86,13 +85,26 @@ int[] visualMergesortStep(Element[] e, int s, int len)
   }
 }
 
+// mark current subset
+void markSubset(Element[] e, int s, int len)
+{
+  int i=0;
+  while(i<len)
+  {
+    e[s+i].inSubset = true;
+    unmarkMe.add(e[s+i]);
+    i++;
+  }
+}
+
+// clear markers from last frame
 void clearMarkers()
 {
   if(!unmarkMe.isEmpty())
   {
     for(int i=0;i<unmarkMe.size();++i)
     {
-      unmarkMe.get(i).marked = false;
+      unmarkMe.get(i).unmark();
     }  
   }
 }

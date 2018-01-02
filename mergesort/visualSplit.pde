@@ -8,10 +8,11 @@
 /**
  * This function splits the set e into two subsets.
  * The start and length of each subsets is pushed onto stack.
- * The element between those subsets gets marked.
+ * The current subset gets marked with blue transparent background.
  * 
  * Returns parameters for next frame.
  */
+
 int[] visualSplit(Element[] e, int s, int len)
 {
   // declare array for next-frame-parameters
@@ -32,9 +33,7 @@ int[] visualSplit(Element[] e, int s, int len)
   // go left next frame.
   println("going left next frame.");
   recursionStack+="l";
-  // mark cut index in this frame
-  e[s+cutLen].mark(mark);
-  unmarkMe.add(e[s+cutLen]);
+  
   /**
    * Since we go left next frame, next parameters
    * will be indizes of left subset.
