@@ -9,7 +9,6 @@
  * @author ekzyis
  * @date January 2018
  */ //<>//
- 
 static void quicksort(int a[])
 {
   int lower = 0;
@@ -27,8 +26,8 @@ static void quicksort(int a[], int lower, int upper)
     { 
       l++;  
     }
-    while (a[r]>pivot) //<>//
-    {
+    while (a[r]>pivot)
+    { //<>//
       r--;
     }                                                                   
     if (l<=r) 
