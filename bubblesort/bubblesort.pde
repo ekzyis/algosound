@@ -93,6 +93,14 @@ int visualBubblesortStep()
   e[index+1].marked = true;
   // let bubblesort be bubblesort
   int swap = bubblesortStep(e,index);
+  // if swapped, send osc msg
+  if(swap==1)
+  {
+    OscMessage msg = new OscMessage("/swapped");
+    float pitch = map(abs(e[index].value-e[index+1].value), 0, h, 200, 1200);
+    msg.add(pitch);
+    osc.send(msg,supercollider);
+  }
   // increase index for next iteration
   index++;
   // restart bubblesort's for-loop

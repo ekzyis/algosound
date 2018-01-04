@@ -5,6 +5,10 @@
  * @date December 2017
  */
 
+import netP5.*;
+import oscP5.*;
+import supercollider.*;
+
 // width and height of screen
 int w=640, h=360;
 // amount of elements to sort
@@ -20,6 +24,10 @@ color[] c;
 int sortSteps;
 // current step number
 int stepNumber;
+
+OscP5 osc;
+NetAddress supercollider;
+
 void settings()
 {
    size(w,h);   
@@ -27,7 +35,7 @@ void settings()
 
 void setup()
 {   
-  frameRate(120);
+  frameRate(5);
   c = getColors();
   e = getElements();
   /** 
@@ -38,6 +46,9 @@ void setup()
    */
   sortSteps = countBubblesortSteps(e);
   stepNumber = 0;
+  
+  osc = new OscP5(this, 12000);
+  supercollider = new NetAddress("127.0.0.1", 57120);
 }
 
 void draw()
