@@ -101,6 +101,13 @@ int visualBubblesortStep()
     msg.add(pitch);
     osc.send(msg,supercollider);
   }
+  else
+  {
+    OscMessage msg = new OscMessage("/notSwapped");
+    float pitch = map(abs(e[index].value-e[index+1].value), 0, h, 200, 1200);
+    msg.add(pitch);
+    osc.send(msg, supercollider);
+  }
   // increase index for next iteration
   index++;
   // restart bubblesort's for-loop
