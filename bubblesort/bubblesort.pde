@@ -1,12 +1,12 @@
 /**
-* Bubblesort implementation.
-* ==========================
-* This class handles the execution of bubblesort
-* and notifying to draw new frames.
-* 
-* @author ekzyis
-* @date 09 January 2018
-*/
+ * Bubblesort implementation.
+ * ==========================
+ * This class handles the execution of bubblesort
+ * and notifying to draw new frames.
+ * 
+ * @author ekzyis
+ * @date 09 January 2018
+ */
 class Bubblesort extends Thread
 {
     // Array which should be sorted
@@ -36,7 +36,7 @@ class Bubblesort extends Thread
     @Override
     public void run()
     {
-        // Gain access to monitor
+        // Gain access to monitor. If not possible, wait here.
         synchronized(lock)
         {
             // Wait until first frame has been drawn.
@@ -63,6 +63,7 @@ class Bubblesort extends Thread
                 swap = false;
                 for(int i=0; i<a.length-1; ++i)
                 {
+                    // They are in false order. Swap them.
                     if(a[i]>a[i+1])
                     {
                         int tmp = a[i+1];
@@ -92,6 +93,11 @@ class Bubblesort extends Thread
                     frameDrawn = false;
                 }
             }while(swap);
+            /** 
+             * Bubblesort keeps iterating through the whole array 
+             * until not a single time a swap has happened.
+             */
+
         }
     }
 
@@ -125,7 +131,8 @@ class Bubblesort extends Thread
         /**
          * Elements need to swap their x-position AND their position in the array!
          * Otherwise, next iteration of the for-loop would cause severe bugs since
-         * Bubblesort swaps the integers in the array and assumes the same for the 
+         * Bubblesort swaps the integers in the array (= change their index)
+         * and assumes the corresponding element is at the same index in the 
          * elements array.
          */
         elements[index].swap(elements[index+1],Element.COORDINATES);
@@ -151,6 +158,7 @@ class Bubblesort extends Thread
         {
             e.unmark();
         }
+        // remove all elements from list since a new frame will begin now.
         unmarkMe.clear();
     }
 }
