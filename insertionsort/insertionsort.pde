@@ -38,7 +38,7 @@ class Insertionsort extends Thread
     {
         // Gain access to monitor. If not possible, wait here.
         synchronized(lock)
-        { //<>//
+        {
             // Wait until first frame has been drawn.
             while(!frameIsDrawn())
             {
