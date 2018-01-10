@@ -151,4 +151,25 @@ class Selectionsort extends Thread
         // remove all elements from list since a new frame will begin now.
         unmarkMe.clear();
     }
+
+    // Native selectionsort implementation.
+    void sort(int[] a)
+    {
+        int start = 0;
+        do
+        {
+            int minIndex = start;
+            for(int i=minIndex+1;i<a.length;++i)
+            {
+                if(a[i]<a[minIndex])
+                {
+                    minIndex = i;
+                }
+            }
+            int tmp = a[minIndex];
+            a[minIndex] = a[start];
+            a[start] = tmp;
+            start++;
+        }while(start<a.length);
+    }
 }

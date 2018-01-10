@@ -50,11 +50,15 @@ void setup()
     lock = new Object();
     // Initialize selectionsort thread.
     sort = new Selectionsort(a,lock,elements);
+    // Assert that implementation is sorting correctly.
+    int[] test = getRndArr(N);
+    sort.sort(test);
+    assert(isSorted(test));
     // Start selectionsort thread.
     sort.start();
 }
 
-void draw()
+void draw() 
 {
     synchronized(lock)
     {
@@ -76,4 +80,25 @@ void draw()
         sort.notifyFrameDraw();
         lock.notify();
     }
+}
+
+// Return a random integer array of size n.
+int[] getRndArr(int n)
+{
+    int[] ret = new int[n];
+    for(int i=0;i<n;++i)
+    {
+        ret[i] = (int)(Math.random()*H);
+    }
+    return ret;
+}
+
+// Check if given array is in ascending order.
+boolean isSorted(int[] a)
+{
+    for(int i=0;i<a.length-1;++i)
+    {
+        if(a[i]>a[i+1]) return false;
+    }
+    return true;
 }

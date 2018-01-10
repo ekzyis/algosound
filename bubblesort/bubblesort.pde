@@ -153,4 +153,24 @@ class Bubblesort extends Thread
         // remove all elements from list since a new frame will begin now.
         unmarkMe.clear();
     }
+
+    void sort(int[] a)
+    {
+        boolean swap;
+        do
+        {
+            swap = false;
+            for(int i=0; i<a.length-1; ++i)
+            {
+                // They are in false order. Swap them.
+                if(a[i]>a[i+1])
+                {
+                    int tmp = a[i+1];
+                    a[i+1] = a[i];
+                    a[i] = tmp;
+                    swap = true;
+                }
+            }
+        }while(swap);
+    }
 }
