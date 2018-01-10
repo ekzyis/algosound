@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  * 
  * @author ekzyis
- * @date 09 January 2018
+ * @date 10 January 2018
  */
 class Bubblesort extends Thread
 {
@@ -40,18 +40,7 @@ class Bubblesort extends Thread
         synchronized(lock)
         {
             // Wait until first frame has been drawn.
-            while(!frameIsDrawn())
-            {
-                try
-                {
-                    lock.wait();
-                }
-                catch(InterruptedException e)
-                {
-                }
-            }
-            // New frame needs to be calculated. Therefore, it has not been drawn yet.
-            frameDrawn = false;
+            notifyFrameReady();
             /** 
              * ==================================
              * Start of actual sorting algorithm.
@@ -76,29 +65,13 @@ class Bubblesort extends Thread
                     // Mark elements accessed by bubblesort.
                     mark(i);
                     mark(i+1);
-                    frameReady = true;
-                    // Notify since new frame is ready.
-                    lock.notify();
-                    while(!frameIsDrawn())
-                    {
-                        try
-                        {
-                            lock.wait();
-                        }
-                        catch(InterruptedException e)
-                        {
-                        }
-                    }
-                    // Clean markers from last frame.
-                    clearMarkers();
-                    frameDrawn = false;
+                    notifyFrameReady();
                 }
             }while(swap);
             /** 
              * Bubblesort keeps iterating through the whole array 
              * until not a single time a swap has happened.
              */
-
         }
     }
 
@@ -110,6 +83,26 @@ class Bubblesort extends Thread
     boolean frameIsDrawn()
     {
         return frameDrawn;
+    }
+
+    // Notify thread waiting for lock that new frame is ready.
+    void notifyFrameReady()
+    {
+        frameReady = true;
+        lock.notify();
+        while(!frameIsDrawn())
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+        // Clean markers from last frame.
+        clearMarkers();
+        frameDrawn = false;
     }
 
     // Notify thread that new frame has been drawn.

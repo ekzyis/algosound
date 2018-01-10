@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  * 
  * @author ekzyis
- * @date 09 January 2017
+ * @date 10 January 2017
  */
 class Insertionsort extends Thread
 {
@@ -40,34 +40,10 @@ class Insertionsort extends Thread
         synchronized(lock)
         {
             // Wait until first frame has been drawn.
-            while(!frameIsDrawn())
-            {
-                try
-                {
-                    lock.wait();
-                }
-                catch(InterruptedException e)
-                {
-                }
-            }
-            frameDrawn = false;
+            notifyFrameReady();
             // First frame of insertionsort consists only of marking first element as sorted.
             elements[0].setSorted();
-            frameReady = true;
-            // Notify since new frame is ready.
-            lock.notify();
-            while(!frameIsDrawn())
-            {
-                try
-                {
-                    lock.wait();
-                }
-                catch(InterruptedException e)
-                {
-                }
-            }
-            // New frame needs to be calculated. Therefore, it has not been drawn yet.
-            frameDrawn = false;
+            notifyFrameReady();
             /** 
              * ==================================
              * Start of actual sorting algorithm.
@@ -107,48 +83,17 @@ class Insertionsort extends Thread
                     a[j] = a[j-1];
                     // Also move visual elements to the right.
                     moveRight(j-1);
-                    //
                     mark(j-1);
-                    // decrement j
                     j = j-1;
-                    frameReady = true;
                     // Notify since new frame is ready.
-                    lock.notify();
-                    while(!frameIsDrawn())
-                    {
-                        try
-                        {
-                            lock.wait();
-                        }
-                        catch(InterruptedException e)
-                        {
-                        }
-                    }
-                    // Clean markers from last frame.
-                    clearMarkers();
-                    frameDrawn = false;
+                    notifyFrameReady();
                 }
                 // Place to insert has been found!
                 a[j] = value;
+                // Visualize inserting by modified element to look like the element which should be inserted.
                 elements[j].setValue(value);
                 elements[j].setColor(insertColor);
-                
-                frameReady = true;
-                // Notify since new frame is ready.
-                lock.notify();
-                while(!frameIsDrawn())
-                {
-                    try
-                    {
-                        lock.wait();
-                    }
-                    catch(InterruptedException e)
-                    {
-                    }
-                }
-                // Clean markers from last frame.
-                clearMarkers();
-                frameDrawn = false;
+                notifyFrameReady();
             }
         }
 
@@ -164,7 +109,27 @@ class Insertionsort extends Thread
         return frameDrawn;
     }
 
-    // Notify thread that new frame has been drawn.
+    // Notify thread waiting for lock that new frame is ready.
+    void notifyFrameReady()
+    {
+        frameReady = true;
+        lock.notify();
+        while(!frameIsDrawn())
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+        // Clean markers from last frame.
+        clearMarkers();
+        frameDrawn = false;
+    }
+
+    // Notify this thread that new frame has been drawn.
     void notifyFrameDraw()
     {
         frameDrawn = true;
