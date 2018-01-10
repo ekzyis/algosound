@@ -71,10 +71,11 @@ class Bubblesort extends Thread
                         a[i] = tmp;
                         swap = true;
                         // Elements need to swap their x-position to ensure visualization.
-                        swap(i);
+                        swap(i,i+1);
                     }
                     // Mark elements accessed by bubblesort.
                     mark(i);
+                    mark(i+1);
                     frameReady = true;
                     // Notify since new frame is ready.
                     lock.notify();
@@ -126,7 +127,7 @@ class Bubblesort extends Thread
     }
 
     // Swap element at given index with neighbour to ensure visualization.
-    void swap(int index)
+    void swap(int i, int j)
     {
         /**
          * Elements need to swap their x-position AND their position in the array!
@@ -135,20 +136,18 @@ class Bubblesort extends Thread
          * and assumes the corresponding element is at the same index in the 
          * elements array.
          */
-        elements[index].swap(elements[index+1],Element.COORDINATES);
-        Element tmp = elements[index];
-        elements[index] = elements[index+1];
-        elements[index+1] = tmp;
+        elements[i].swap(elements[j],Element.COORDINATES);
+        Element tmp = elements[i];
+        elements[i] = elements[j];
+        elements[j] = tmp;
     }
 
     // Mark currently accessed elements.
-    void mark(int index)
+    void mark(int i)
     {
-        elements[index].mark();
-        elements[index+1].mark();
+        elements[i].mark();
         // Add those elements to list of elements which get unmarked next frame.
-        unmarkMe.add(elements[index]);
-        unmarkMe.add(elements[index+1]);
+        unmarkMe.add(elements[i]);
     }
 
     // Clear markers from last frame.
