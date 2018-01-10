@@ -34,7 +34,7 @@ private Bubblesort t;
 
 public void settings() 
 {
-    size(640, 320);
+    size(W, H);
 }
 
 void setup() 
