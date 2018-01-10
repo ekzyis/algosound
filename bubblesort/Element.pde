@@ -116,6 +116,27 @@ class Element
     {
         this.sorted = true;
     }
+
+    int getX() { return x; }
+
+    void setX(int _x) { this.x = _x; }
+
+    int getY() { return y; }
+
+    void setY(int _y) { this.y = _y; }
+
+    int getWidth() { return w; }
+
+    void setWidth(int _w) { this.w = _w; }
+
+    int getValue() { return value; }
+
+    void setValue(int _v) { this.value = _v; }
+
+    color getColor() { return c; }
+
+    void setColor(color _c) { this.c = _c; }
+
 }
 
 /** 
