@@ -176,6 +176,7 @@ class Insertionsort extends Thread
         unmarkMe.clear();
     }
 
+    // Native insertionsort implementation.
     void sort(int[] a)
     {
         for(int i=1;i<a.length;++i)

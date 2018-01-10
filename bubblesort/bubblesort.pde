@@ -154,6 +154,7 @@ class Bubblesort extends Thread
         unmarkMe.clear();
     }
 
+    // Native bubblesort implementation.
     void sort(int[] a)
     {
         boolean swap;
