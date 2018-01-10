@@ -30,7 +30,7 @@ private int[] a;
 // Object for synchronization of algorithm and visualization.
 private Object lock;
 // The bubblesort thread.
-private Bubblesort t;
+private Bubblesort sort;
 
 public void settings() 
 {
@@ -49,9 +49,9 @@ void setup()
     // Initialize lock object.
     lock = new Object();
     // Initialize bubblesort thread.
-    t = new Bubblesort(a,lock,elements);
+    sort = new Bubblesort(a,lock,elements);
     // Start bubblesort thread.
-    t.start();
+    sort.start();
 }
 
 void draw()
@@ -60,7 +60,7 @@ void draw()
     {
         background(25);
         // Wait until new frame is ready.
-        while(!t.frameIsReady())
+        while(!sort.frameIsReady())
         {
             try
             {
@@ -71,9 +71,9 @@ void draw()
             }
         }
         // Draw elements.
-        for(Element e : t.getElements()) e.show();
+        for(Element e : sort.getElements()) e.show();
         // Notify bubblesort thread that frame has been drawn.
-        t.notifyFrameDraw();
+        sort.notifyFrameDraw();
         lock.notify();
     }
 }
