@@ -1,114 +1,270 @@
 /**
- * Mergesort implementation for a set of elements.
- * ===============================================
+ * Mergesort implementation.
+ * =============================
+ * This class handles the execution of mergesort
+ * and notifying to draw new frames.
+ * 
  * @author ekzyis
- * @date December 2017
+ * @date 12 January 2018
  */
+import java.util.Stack;
 
-// divide a set into two subsets
-static Element[] mergesort(Element[] e)
+class Mergesort extends Thread
 {
-  if(e.length <= 1) return e;
-  else
-  {
-    // truncating division
-    int cut = e.length/2;
-    //println(cut);
-    // make a subset of all elements left of cut-Index
-    Element[] left = (Element[])(subset(e,0,cut));
-    //print("left=");printarr(left); //<>//
-    // divide this subset again into two subsets
-    left = mergesort(left);
-    // make a subset of all elements right of cut-Index
-    Element[] right = (Element[])(subset(e,cut));
-    //print("right=");printarr(right); //<>//
-    // divide this subset also again into two subsets
-    right = mergesort(right);
-    // merge both subsets
-    return merge(left,right);
-  }
-}
+    // Variables to pass mergesort() to determine mode.
+    final static byte NATIVE = 1;
+    final static byte THREAD = 2;
+    // Array which should be sorted
+    private int[] a;
+    // Elements which have to be swapped according to integers.
+    private Element[] elements;
+    // Is a new frame ready?
+    private boolean frameReady;
+    // Has the new frame been drawn?
+    private boolean frameDrawn;
+    // Object for synchronization of threads.
+    private Object lock;
+    // List of elements to unmark next frame.
+    private ArrayList<Element> unmarkMe;    
 
-// merge two subsets assuming both are sorted
-static Element[] merge(Element[] left, Element[] right)
-{
-  //println("--- entering merge ---");
-  //print("left=");printarr(left);print("right=");printarr(right);
-  /** 
-   * if one list is empty, return the other one
-   * since we can assume it's already sorted
-   */
-  if(left.length == 0) return right;
-  else if(right.length == 0) return left;
-  /**
-   * create array to hold all elements //<>//
-   */ //<>//
-  Element[] newlist = new Element[0];
-  // "pointer" of lists
-  int j=0,k=0;
-  // the "sorting" part
-  do
-  {  
-    // compare the elements of both arrays
-    if(left[j].value>right[k].value) 
+    Mergesort(int[] _a, Object _lock, Element[] _elements)
     {
-      /**
-       * Value of element in right list is smaller.
-       * Since elements with a lesser value should be 
-       * left, the coordinates have to swap but swapping the coordinates 
-       * breaks the assumption of mergesort that both subsets
-       * are already sorted (according to value AND coordinates!) 
-       * thus valid sorting is no longer guaranteed.
-       * Before progressing, sorting of both subsets is needed
-       * which is done by restoreOrder()
-       */
-      left[j].swap(right[k],Element.COORDINATES);
-      newlist = (Element[])(append(newlist,right[k]));
-      restoreOrder(left,j);
-      restoreOrder(right,k);
-      k++;
+        this.a = _a;
+        this.lock = _lock;
+        this.elements = _elements;
+        // First frame is ready before first iteration.
+        this.frameReady = true;
+        this.frameDrawn = false;
+        this.unmarkMe = new ArrayList<Element>();        
     }
-    else
-    {
-      newlist = (Element[])(append(newlist,left[j]));
-      j++;
-    }
-    //print("newlist=");printarr(newlist);print("updated left=");printarr(left);print("updated right=");printarr(right); //<>//
-  }while(j<left.length && k<right.length);
-  // put the rest of the elements in newlist
-  if(j<left.length)
-  {
-    for(;j<left.length;j++) newlist = (Element[])(append(newlist,left[j]));
-  }
-  else if(k<right.length)
-  {
-    for(;k<right.length;k++) newlist = (Element[])(append(newlist,right[k]));
-  }
-  // newlist is sorted and contains all elements of both subsets
-  //print("newlist=");printarr(newlist);
-  return newlist;
-}
 
-// WE SHALL RESTORE ORDER BY SUPERIOR FORCE - General Marder
-/**
- * restore order of a previously sorted set of elements 
- * in which element at index has been swapped during merging
- */
-static void restoreOrder(Element[] list, int index)
-{
-  for(int i=index;i<list.length-1;++i)
-  {
-    Element e1 = list[i];
-    Element e2 = list[i+1];
-    if(e1.value > e2.value)
+    @Override
+    public void run()
     {
-      e1.swap(e2,Element.VALUES);
+        // Gain access to monitor. If not possible, wait here.
+        synchronized(lock)
+        {
+            // Wait until first frame has been drawn.
+            notifyFrameReady();
+            // Start sorting.
+            a = mergesort(a,0,a.length-1,Mergesort.THREAD);
+        }
     }
-    if(e1.x > e2.x)
+
+    /** 
+     * Native mergesort implementation with mode NATURAL.
+     * Visual mergesort implementation with mode THREAD.
+     */
+
+    int[] mergesort(int[] a, int l, int r, byte MODE)
     {
-      e1.swap(e2,Element.COORDINATES);
+        if(l<r)
+        {
+            int len = r-l+1;
+            int cut = l+r/2;
+            
+            if(MODE==THREAD) 
+            {
+                /**
+                 * TODO:
+                 * First (logical) frame:
+                 * Mark cut index.
+                 */
+                mark(cut);
+                notifyFrameReady();
+            }
+            
+            int[] left = subset(a,l,floor(len/2));            
+            
+            if(MODE==THREAD)
+            {
+                /**
+                 * TODO: 
+                 * Second frame:
+                 * Mark cut index and mark left subset.
+                 */
+            }
+            left = mergesort(a,l,cut,MODE);
+            int[] right = subset(a,cut+1,ceil(len/2));
+
+            if(MODE==THREAD)
+            {
+                /** 
+                 * TODO:
+                 * Third frame:
+                 * Mark cut index and mark right subset.
+                 */
+            }            
+            right = mergesort(a,cut+1,r,MODE);
+            /**
+             * TODO:
+             * Define frames in merge().
+             */
+            return merge(left,right,MODE);
+        }
+        else return subset(a,l,r);
     }
-  }
+    // Merge sets together into a 
+    private int[] merge(int[] left, int[] right, byte MODE)
+    {
+        /** 
+        * If one list should be empty (which shouldn't be the case),
+        * return the other one since we can assume it's already sorted
+        */
+        if(left.length == 0) return right;
+        else if(right.length == 0) return left;
+        /** 
+         * Create a new list big enough to hold all elements 
+         * of both lists
+         */
+        int[] newlist = new int[left.length + right.length];
+        assert(newlist.length>=2);
+        // "pointer" of lists
+        int i=0,j=0,k=0;
+        // the "sorting" part
+        do
+        {  
+            if(left[j]>right[k]) 
+            {
+                newlist[i] = right[k];
+                k++;
+            }
+            else 
+            {
+                newlist[i] = left[j];
+                j++;
+            }
+            i++;
+        }while(j<left.length && k<right.length);
+        // put the rest of the elements in newlist
+        if(j<left.length)
+        {
+            for(;j<left.length;++j)
+            {
+                newlist[i] = left[j];
+                i++;
+            }
+        }
+        else if(k<right.length)
+        {
+            for(;k<right.length;++k)
+            {
+                newlist[i] = right[k];
+                i++;
+            }
+        }
+        else
+        {
+            // this should never be reached
+            assert(false);
+        }
+        // newlist should be sorted now
+        return newlist;
+    }
+
+    boolean frameIsReady()
+    {
+        return frameReady;
+    }
+
+    boolean frameIsDrawn()
+    {
+        return frameDrawn;
+    }
+
+    // Notify main thread that new frame is ready and clears all markers after drawing.
+    void notifyFrameReady()
+    {
+        frameReady = true;
+        // Notify since new frame is ready.
+        lock.notify();
+        while(!frameIsDrawn())
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+        // Clear markers from last frame.
+        clearMarkers();
+        frameDrawn = false;
+    }
+
+    // Notify thread that new frame has been drawn.
+    void notifyFrameDraw()
+    {
+        frameDrawn = true;
+        // New frame has just been drawn. Next frame is not ready yet. 
+        frameReady = false;
+    }
+
+    // Return updated elements.
+    Element[] getElements()
+    {
+        return elements;
+    }
+
+    // Swap element at given index with neighbour to ensure visualization.
+    void swap(int i, int j)
+    {
+        /**
+         * Elements need to swap their x-position AND their position in the array!
+         * Otherwise, next iteration of the for-loop would cause severe bugs since
+         * Bubblesort swaps the integers in the array (= change their index)
+         * and assumes the corresponding element is at the same index in the 
+         * elements array.
+         */
+        elements[i].swap(elements[j],Element.COORDINATES);
+        Element tmp = elements[i];
+        elements[i] = elements[j];
+        elements[j] = tmp;
+    }
+
+    // Mark currently accessed elements in elements array.
+    void mark(int i)
+    {
+        elements[i].setMark(true);
+        // Add element to list of elements which get unmarked next frame.
+        unmarkMe.add(elements[i]);
+    }
+
+    /** 
+     * Mark elements as being in a subset on which mergesort is currently operating.
+     * This also increases level of recursion by one.
+     */
+    void markInSubset(Element[] e)
+    {
+        for(Element el : e)
+        {
+            el.setInSubset(true);
+            el.incrementRecursionLvl();
+            unmarkMe.add(el);
+        }
+    }
+
+    // Mark elements as being merged by mergesort.
+    void markMerging(Element[] e)
+    {
+        for(Element el : e)
+        {
+            el.setMerging(true);
+            unmarkMe.add(el);
+        }
+    }
+
+    // Clear markers from last frame.
+    void clearMarkers()
+    {
+        for(Element e : unmarkMe)
+        {
+            e.setMark(false);
+            e.setInSubset(false);
+            e.setMerging(false);
+        }
+        // remove all elements from list since a new frame will begin now.
+        unmarkMe.clear();
+    }
 }
- 
- 

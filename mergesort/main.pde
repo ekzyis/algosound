@@ -1,109 +1,104 @@
 /**
- * Mainfile of Mergesort visualization.
- * ====================================
+ * Mainfile of mergesort visualization.
+ * =====================================
+ * This sketch produces a visualization of mergesort
+ * by creating a "mergesort-thread" which periodically notifies
+ * the draw function when a new frame has been calculated. 
+ *
  * @author ekzyis
- * @date December 2017
+ * @date 10 January 2018
  */
-
-// width and height of screen
-int w=640, h=360*2;
-// amount of elements to sort
-int n=w/5; 
-// elements
-Element[] e;
-// colors
-color[] c;
-// startindex of subset
-int start;
-// length of subset
-int len;
-
-void settings()
-{
-   size(w,h);   
-}
-
-void setup()
-{   
-  frameRate(15);
-  c = getColors();
-  e = getElements();
-  //e = getTestElements();
-  start = 0;
-  len = e.length;
-  printarr(e);
-  //demonstration of sorting algorithm
-  //printarr(e);
-  //e = mergesort(e);
-  //printarr(e);
-  //assert(isSorted(e));
-}
-
-/*int frames = 1;
-int x = 0;*/
-void draw()
-{
-  background(25);
-  // show elements
-  for(Element el : e) el.show(); 
-  if(sorting() /*&& x<frames*/) {
-    int[] nextFrame = visualMergesortStep(e,start,len);
-    start = nextFrame[0];
-    len = nextFrame[1];
-    //x++;
-  }
-}
-
-/*void mousePressed()
-{
-  frames++;
-}*/
 
 /**
- * Checks if sorting is complete with recursionStack.
- * If stack reaches zero, sorting complete.
+ * Global variables.
+ * -----------------
  */
-boolean sorting()
+ // Width and height of canvas.
+final int W=640,H=320*2;
+ // Number of elements to be sorted.
+final int N=W/5;
+ // Framerate of visualization.
+final int FR = 10;
+/*
+ * -----------------
+ **/
+
+// The elements to sort.
+private Element[] elements;
+// Integer array representation of the elements values.
+private int[] a;
+// Object for synchronization of algorithm and visualization.
+private Object lock;
+// The mergesort thread.
+private Mergesort sort;
+
+public void settings() 
 {
-  return (recursionStack.length()!=0); 
+    size(W, H);
 }
 
-// print an integer-array
-static void printarr(int[] a)
+void setup() 
 {
-  print("{");
-  print(a[0]);
-  for(int i=1;i<a.length;++i)
-  {
-    print(", "+a[i]);
-  }
-  print("}");
-  println();
+    // Define frame rate.
+    frameRate(FR);
+    // Initialize elements.
+    elements = getTestElements(getColors());
+    //elements = getElements(getColors());
+    // Initialize integer array.
+    a = getValues(elements);
+    // Initialize lock object.
+    lock = new Object();
+    // Initialize mergesort thread.
+    sort = new Mergesort(a,lock,elements);
+    // Assert that implementation is sorting correctly.
+    int[] test = getRndArr(N);
+    test = sort.mergesort(test,0,test.length-1,Mergesort.NATIVE);
+    assert(isSorted(test));
+    // Start mergesort thread.
+    sort.start();
 }
 
-// print an arraylist of integers
-static void printlist(ArrayList<int[]> list)
+void draw()
 {
-  print("{");
-  for(int[] a : list)
-  {
-    print("{");
-    print(a[0]);
-    for(int i=1;i<a.length;++i)
+    synchronized(lock)
     {
-      print(", "+a[i]);
+        background(25);  
+        // Wait until new frame is ready.
+        while(!sort.frameIsReady())
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+        // Draw elements.
+        for(Element e : sort.getElements()) e.show();
+        // Notify sorting thread that frame has been drawn.
+        sort.notifyFrameDraw();
+        lock.notify();
     }
-    print("}");
-  }
-  println("}");
 }
 
-// checks if an int[] is in ascending order
+// Return a random integer array of size n.
+int[] getRndArr(int n)
+{
+    int[] ret = new int[n];
+    for(int i=0;i<n;++i)
+    {
+        ret[i] = (int)(Math.random()*H);
+    }
+    return ret;
+}
+
+// Check if given array is in ascending order.
 boolean isSorted(int[] a)
 {
-  for(int i=0;i<a.length-1;++i)
-  {
-    if(a[i]>a[i+1]) return false;
-  }
-  return true;
+    for(int i=0;i<a.length-1;++i)
+    {
+        if(a[i]>a[i+1]) return false;
+    }
+    return true;
 }
