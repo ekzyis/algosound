@@ -58,7 +58,7 @@ class Mergesort extends Thread
     }
 
     /** 
-     * Native mergesort implementation with mode NATURAL.
+     * Native mergesort implementation with mode NATIVE.
      * Visual mergesort implementation with mode THREAD.
      */
     int[] mergesort(int[] a, byte MODE)                                                      
