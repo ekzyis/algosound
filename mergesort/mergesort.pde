@@ -7,7 +7,6 @@
  * @author ekzyis
  * @date 12 January 2018
  */
-import java.util.Stack;
 
 class Mergesort extends Thread
 {
@@ -47,7 +46,7 @@ class Mergesort extends Thread
             // Wait until first frame has been drawn.
             notifyFrameReady();
             // Start sorting.
-            a = mergesort(a,0,a.length-1,Mergesort.THREAD);
+            a = mergesort(a,Mergesort.THREAD);
         }
     }
 
@@ -56,12 +55,11 @@ class Mergesort extends Thread
      * Visual mergesort implementation with mode THREAD.
      */
 
-    int[] mergesort(int[] a, int l, int r, byte MODE)
+    int[] mergesort(int[] a, byte MODE)
     {
-        if(l<r)
-        {
-            int len = r-l+1;
-            int cut = l+r/2;
+        if(a.length>1)
+        {            
+            int cut = a.length/2;
             
             if(MODE==THREAD) 
             {
@@ -74,7 +72,7 @@ class Mergesort extends Thread
                 notifyFrameReady();
             }
             
-            int[] left = subset(a,l,floor(len/2));            
+            int[] left = subset(a,0,cut);            
             
             if(MODE==THREAD)
             {
@@ -84,8 +82,8 @@ class Mergesort extends Thread
                  * Mark cut index and mark left subset.
                  */
             }
-            left = mergesort(a,l,cut,MODE);
-            int[] right = subset(a,cut+1,ceil(len/2));
+            left = mergesort(left,MODE);
+            int[] right = subset(a,cut+1);
 
             if(MODE==THREAD)
             {
@@ -95,14 +93,14 @@ class Mergesort extends Thread
                  * Mark cut index and mark right subset.
                  */
             }            
-            right = mergesort(a,cut+1,r,MODE);
+            right = mergesort(right,MODE);
             /**
              * TODO:
              * Define frames in merge().
              */
             return merge(left,right,MODE);
         }
-        else return subset(a,l,r);
+        else return a;
     }
     // Merge sets together into a 
     private int[] merge(int[] left, int[] right, byte MODE)

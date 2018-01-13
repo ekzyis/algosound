@@ -52,7 +52,7 @@ void setup()
     sort = new Mergesort(a,lock,elements);
     // Assert that implementation is sorting correctly.
     int[] test = getRndArr(N);
-    test = sort.mergesort(test,0,test.length-1,Mergesort.NATIVE);
+    test = sort.mergesort(test,Mergesort.NATIVE);
     assert(isSorted(test));
     // Start mergesort thread.
     sort.start();
