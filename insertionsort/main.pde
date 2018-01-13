@@ -6,9 +6,8 @@
  * the draw function when a new frame has been calculated. 
  *
  * @author ekzyis
- * @date 09 January 2018
+ * @date 10 January 2018
  */
-
 /**
  * Global variables.
  * -----------------

@@ -8,7 +8,6 @@
  * @author ekzyis
  * @date 10 January 2018
  */
-
 /**
  * Global variables.
  * -----------------

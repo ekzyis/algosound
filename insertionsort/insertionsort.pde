@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  * 
  * @author ekzyis
- * @date 10 January 2017
+ * @date 10 January 2018
  */
 class Insertionsort extends Thread
 {
