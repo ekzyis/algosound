@@ -222,7 +222,7 @@ Element[] getTestElements(color[] c)
 {
     int n = 6;
     Element[] elements = new Element[n];
-    int[] values = {10,2,5,8,112,4};
+    int[] values = {340,234,53,83,405,147};
     int elementwidth = W/n;
     int xd = 0;
     int cd = 0;
