@@ -7,7 +7,7 @@ import java.util.Stack;
  * and notifying to draw new frames.
  * 
  * @author ekzyis
- * @date 12 January 2018
+ * @date 13 January 2018
  */
 
 class Mergesort extends Thread
@@ -68,8 +68,8 @@ class Mergesort extends Thread
             int cut = a.length/2;         
             int realCut = cutStack.peek() + cut;       
             int[] left = subset(a,0,cut);            
-            //print("a=");printarr(a);
-            //println("len="+a.length+", cut="+cut+", realCut="+realCut);
+            print("a=");printarr(a);
+            println("len="+a.length+", cut="+cut+", realCut="+realCut);
             if(MODE==THREAD) 
             {
                 /**
@@ -77,30 +77,53 @@ class Mergesort extends Thread
                  * First (logical) frame:
                  * Mark cut index.
                  */
-                println(realCut);
+                // println(realCut);
                 mark(realCut);                                
                 notifyFrameReady();
             }         
-            //println("go left.");   
-            left = mergesort(left,MODE);
+            println("go left.");
             if(MODE==THREAD) 
             {
                 /**
                  * TODO:
-                 * First (logical) frame:
-                 * Mark cut index.
+                 * Second (logical) frame:
+                 * Mark cut index and left subset.
                  */            
-                println(realCut);
-                mark(realCut);                                
+                //println(realCut);
+                mark(realCut);
+                int l = cutStack.peek();
+                int len = floor(a.length/2.0);
+                Element[] subset = (Element[])(subset(elements,l,len));
+                markInSubset(subset);
+                println("l="+l+", len="+len);
                 notifyFrameReady();
             }
+            left = mergesort(left,MODE);
             int[] right = subset(a,cut);
-            //print("a=");printarr(a);
-            //println("len="+a.length+", cut="+cut+", realCut="+realCut);
-            //println("stack.push("+realCut+") & go right.");
+            print("a=");printarr(a);
+            println("len="+a.length+", cut="+cut+", realCut="+realCut);
+            println("stack.push("+realCut+") & go right.");
             // Will go right now. Push current cut index to stack.
             cutStack.push(realCut);
+            if(MODE==THREAD) 
+            {
+                /**
+                 * TODO:
+                 * Third (logical) frame:
+                 * Mark cut index and right subset.
+                 */
+                //println(realCut);            
+                mark(realCut);
+                int l = realCut;
+                int len = ceil(a.length/2.0);
+                Element[] subset = (Element[])(subset(elements,l,len));
+                markInSubset(subset);
+                println("l="+l+", len="+len);
+                notifyFrameReady();
+            }
             right = mergesort(right,MODE);
+            println("stack.pop()");
+            cutStack.pop();
             if(MODE==THREAD) 
             {
                 /**
@@ -108,12 +131,10 @@ class Mergesort extends Thread
                  * First (logical) frame:
                  * Mark cut index.
                  */
-                println(realCut);            
+                // println(realCut);
                 mark(realCut);                                
                 notifyFrameReady();
             }
-            //println("stack.pop()");
-            cutStack.pop();
             /**
              * TODO:
              * Define frames in merge().
@@ -122,7 +143,7 @@ class Mergesort extends Thread
         }
         else
         {
-            //println("return");
+            println("return");
             return a;
         }
     }
@@ -267,12 +288,16 @@ class Mergesort extends Thread
         }
     }
 
-    // Mark elements as being merged by mergesort.
+    /**
+     * Mark elements as being merged by mergesort.
+     * This also decreases level of recursion by one.
+     */
     void markMerging(Element[] e)
     {
         for(Element el : e)
         {
             el.setMerging(true);
+            el.decrementRecursionLvl();
             unmarkMe.add(el);
         }
     }
