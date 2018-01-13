@@ -1,119 +1,177 @@
 /**
  * Bubblesort implementation.
  * ==========================
- * @author ekzyis
- * @date December 2017
- */
-
-static void bubblesort(int[] a)
-{
-  boolean swap;
-  do
-  {
-    swap = false;
-     for(int i=0; i<a.length-1; ++i)
-     {
-       if(a[i]>a[i+1])
-       {
-          int tmp = a[i+1];
-          a[i+1] = a[i];
-          a[i] = tmp;
-          swap = true;
-       }
-     }
-  }while(swap);
-}
-
-/**
- * count how many swaps are needed to sort this elements
- */
-static int countBubblesortSteps(Element[] e)
-{
-  int[] a = getValues(e);
-  int counter = 0;
-  boolean swap;
-  do
-  {
-    swap = false;
-     for(int i=0; i<a.length-1; ++i)
-     {
-       if(a[i]>a[i+1])
-       {
-          int tmp = a[i+1];
-          a[i+1] = a[i];
-          a[i] = tmp;
-          swap = true;
-       }
-       counter++;
-     }
-  }while(swap);
-  return counter;  
-}
-
-/** 
- * check one pair of elements in array and swap if not in ascending order
+ * This class handles the execution of bubblesort
+ * and notifying to draw new frames.
  * 
- * returns 1 if swapped else 0
+ * @author ekzyis
+ * @date 10 January 2018
  */
- int xd = 0;
-static int bubblesortStep(Element[] e, int i)
+class Bubblesort extends Thread
 {
-  assert(i<e.length-1);
-  if(e[i].value>e[i+1].value)
-  {
-    // swap values and colors
-    e[i].swap(e[i+1], Element.VALUES | Element.COLORS);
-    return 1;
-  }
-  return 0;
-}
+    // Array which should be sorted
+    private int[] a;
+    // Elements which have to be swapped according to integers.
+    private Element[] elements;
+    // Is a new frame ready?
+    private boolean frameReady;
+    // Has the new frame been drawn?
+    private boolean frameDrawn;
+    // Object for synchronization of threads.
+    private Object lock;
+    // List of elements to unmark next frame.
+    private ArrayList<Element> unmarkMe;
 
-/** 
- * do one bubblesort swap operation 
- * and also change colors of elements involved if needed
- *
- * returns 1 if swapped else 0
- */
-int index = 0;
-int visualBubblesortStep()
-{ 
-  // unmark element marked on last frame
-  if(index>0) e[index-1].marked = false;  
-  else 
-  {
-    /**
-     * unmark last two elements in list
-     * since probably sort got reset to 0
-     */
-    e[e.length-1].marked = false;
-    e[e.length-2].marked = false;
-  }
-  // mark elements which are going to get compared this frame
-  e[index].marked = true;
-  e[index+1].marked = true;
-  // let bubblesort be bubblesort
-  int swap = bubblesortStep(e,index);
-  // if swapped, send osc msg
-  if(swap==1)
-  {
-    OscMessage msg = new OscMessage("/swapped");
-    float pitch = map(abs(e[index].value-e[index+1].value), 0, h, 200, 1200);
-    msg.add(pitch);
-    osc.send(msg,supercollider);
-  }
-  else
-  {
-    OscMessage msg = new OscMessage("/notSwapped");
-    float pitch = map(abs(e[index].value-e[index+1].value), 0, h, 200, 1200);
-    msg.add(pitch);
-    osc.send(msg, supercollider);
-  }
-  // increase index for next iteration
-  index++;
-  // restart bubblesort's for-loop
-  if(index == e.length-1) 
-  {  
-    index = 0;
-  }
-  return swap;
+    Bubblesort(int[] _a, Object _lock, Element[] _elements)
+    {
+        this.a = _a;
+        this.lock = _lock;
+        this.elements = _elements;
+        // First frame is ready before first iteration.
+        frameReady = true;
+        frameDrawn = false;
+        unmarkMe = new ArrayList<Element>();
+    }
+
+    @Override
+    public void run()
+    {
+        // Gain access to monitor. If not possible, wait here.
+        synchronized(lock)
+        {
+            // Wait until first frame has been drawn.
+            notifyFrameReady();
+            /** 
+             * ==================================
+             * Start of actual sorting algorithm.
+             * ==================================
+             */
+            boolean swap;
+            do
+            {
+                swap = false;
+                for(int i=0; i<a.length-1; ++i)
+                {
+                    // They are in false order. Swap them.
+                    if(a[i]>a[i+1])
+                    {
+                        int tmp = a[i+1];
+                        a[i+1] = a[i];
+                        a[i] = tmp;
+                        swap = true;
+                        // Elements need to swap their x-position to ensure visualization.
+                        swap(i,i+1);
+                    }
+                    // Mark elements accessed by bubblesort.
+                    mark(i);
+                    mark(i+1);
+                    notifyFrameReady();
+                }
+            }while(swap);
+            /** 
+             * Bubblesort keeps iterating through the whole array 
+             * until not a single time a swap has happened.
+             */
+        }
+    }
+
+    boolean frameIsReady()
+    {
+        return frameReady;
+    }
+
+    boolean frameIsDrawn()
+    {
+        return frameDrawn;
+    }
+
+    // Notify thread waiting for lock that new frame is ready.
+    void notifyFrameReady()
+    {
+        frameReady = true;
+        lock.notify();
+        while(!frameIsDrawn())
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+        // Clean markers from last frame.
+        clearMarkers();
+        frameDrawn = false;
+    }
+
+    // Notify thread that new frame has been drawn.
+    void notifyFrameDraw()
+    {
+        frameDrawn = true;
+        // New frame has just been drawn. Next frame is not ready yet. 
+        frameReady = false;
+    }
+
+    // Return updated elements.
+    Element[] getElements()
+    {
+        return elements;
+    }
+
+    // Swap element at given index with neighbour to ensure visualization.
+    void swap(int i, int j)
+    {
+        /**
+         * Elements need to swap their x-position AND their position in the array!
+         * Otherwise, next iteration of the for-loop would cause severe bugs since
+         * Bubblesort swaps the integers in the array (= change their index)
+         * and assumes the corresponding element is at the same index in the 
+         * elements array.
+         */
+        elements[i].swap(elements[j],Element.COORDINATES);
+        Element tmp = elements[i];
+        elements[i] = elements[j];
+        elements[j] = tmp;
+    }
+
+    // Mark currently accessed elements.
+    void mark(int i)
+    {
+        elements[i].mark();
+        // Add those elements to list of elements which get unmarked next frame.
+        unmarkMe.add(elements[i]);
+    }
+
+    // Clear markers from last frame.
+    void clearMarkers()
+    {
+        for(Element e : unmarkMe)
+        {
+            e.unmark();
+        }
+        // remove all elements from list since a new frame will begin now.
+        unmarkMe.clear();
+    }
+
+    // Native bubblesort implementation.
+    void sort(int[] a)
+    {
+        boolean swap;
+        do
+        {
+            swap = false;
+            for(int i=0; i<a.length-1; ++i)
+            {
+                // They are in false order. Swap them.
+                if(a[i]>a[i+1])
+                {
+                    int tmp = a[i+1];
+                    a[i+1] = a[i];
+                    a[i] = tmp;
+                    swap = true;
+                }
+            }
+        }while(swap);
+    }
 }

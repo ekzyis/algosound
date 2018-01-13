@@ -1,59 +1,104 @@
 /**
- * Mainfile of Insertionsort visualization.
- * ========================================
+ * Mainfile of insertionsort visualization.
+ * =====================================
+ * This sketch produces a visualization of insertionsort
+ * by creating a "insertionsort-thread" which periodically notifies
+ * the draw function when a new frame has been calculated. 
+ *
+ * @author ekzyis
+ * @date 09 January 2018
  */
 
-// width and height of screen
-int w=640, h=360;
-// amount of elements to sort
-int n=w/5; 
-// elements
-Element[] e;
-// colors
-color[] c;
-// still sorting?
-int sort;
+/**
+ * Global variables.
+ * -----------------
+ */
+ // Width and height of canvas.
+final int W=640,H=320;
+ // Number of elements to be sorted.
+final int N=W/5;
+ // Framerate of visualization.
+final int FR = 120;
+/*
+ * -----------------
+ **/
 
-void settings()
+// The elements to sort.
+private Element[] elements;
+// Integer array representation of the elements values.
+private int[] a;
+// Object for synchronization of algorithm and visualization.
+private Object lock;
+// The insertionsort thread.
+private Insertionsort sort;
+
+public void settings() 
 {
-   size(w,h);   
+    size(W, H);
 }
 
-void setup()
+void setup() 
 {
-  frameRate(120);
-  c = getColors();
-  e = getElements();
-  sort = 0;
-  // handle first element as sorted
-  e[0].sorted = true;
+    // Define frame rate.
+    frameRate(FR);
+    // Initialize elements.
+    //elements = getElements(getColors());
+    elements = getElements(getColors());
+    // Initialize integer array.
+    a = getValues(elements);
+    // Initialize lock object.
+    lock = new Object();
+    // Initialize insertionsort thread.
+    sort = new Insertionsort(a,lock,elements);
+    // Assert that implementation is sorting correctly.
+    int[] test = getRndArr(N);
+    sort.sort(test);
+    assert(isSorted(test));
+    // Start insertionsort thread.
+    sort.start();
 }
 
 void draw()
 {
-  background(25);
-  // show elements
-  for(Element el : e) el.show();
-  // make a insertionsort step
-  if(sort==0) sort = visualInsertionsortStep();
+    synchronized(lock)
+    {
+        background(25);
+        // Wait until new frame is ready.
+        while(!sort.frameIsReady())
+        {
+            try
+            {
+                lock.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+        // Draw elements.
+        for(Element e : sort.getElements()) e.show();
+        // Notify sorting thread that frame has been drawn.
+        sort.notifyFrameDraw();
+        lock.notify();
+    }
 }
 
-// print an integer-array
-static void printarr(int[] a)
+// Return a random integer array of size n.
+int[] getRndArr(int n)
 {
-  for(int v : a )
-  {
-    print(v + " ");
-  }
-  println();
+    int[] ret = new int[n];
+    for(int i=0;i<n;++i)
+    {
+        ret[i] = (int)(Math.random()*H);
+    }
+    return ret;
 }
 
-// checks if an int[] is in ascending order
+// Check if given array is in ascending order.
 boolean isSorted(int[] a)
 {
-  for(int i=0;i<a.length-1;++i)
-  {
-    if(a[i]>a[i+1]) return false;
-  }
-  return true;
+    for(int i=0;i<a.length-1;++i)
+    {
+        if(a[i]>a[i+1]) return false;
+    }
+    return true;
 }
