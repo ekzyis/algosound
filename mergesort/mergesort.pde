@@ -40,7 +40,7 @@ class Mergesort extends Thread
         this.frameDrawn = false;
         this.unmarkMe = new ArrayList<Element>();
         this.cutStack = new Stack<Integer>();
-        // Needed for proper cut index visualization.
+        // Needed for proper cut index and subset visualization.
         this.cutStack.push(0);
     }
 
@@ -147,35 +147,87 @@ class Mergesort extends Thread
             return a;
         }
     }
-    // Merge sets together into a 
+    // Merge sets together into a.
     private int[] merge(int[] left, int[] right, byte MODE)
     {
+        println("### MERGING ###");
         /** 
         * If one list should be empty (which shouldn't be the case),
-        * return the other one since we can assume it's already sorted
+        * return the other one since we can assume it's already sorted.
         */
         if(left.length == 0) return right;
         else if(right.length == 0) return left;
+
+        // Length of resulting set.
+        int len = left.length + right.length;
+        // Cut index.
+        int cut = len/2;
+        // Real startindex of left subset.
+        int leftStart = cutStack.peek();
+        // Length of left subset.
+        int leftLen = floor(len/2.0);
+        println("leftStart="+leftStart+", leftLength="+leftLen);
+        // Real startindex of right subset.
+        int rightStart = cutStack.peek() + cut;
+        // Length of right subset.
+        int rightLen = ceil(len/2.0);
+        println("rightstart="+rightStart+", rightLength="+rightLen);
+        // Get subsets.
+        Element[] leftSub = (Element[])(subset(elements,leftStart,leftLen));
+        Element[] rightSub = (Element[])(subset(elements,rightStart,rightLen));
+        // Create new set to contain merged elements.
+        Element[] merged = new Element[len];
+        // Fill with elements from subsets for now.
+        for(int i=0;i<leftLen;++i)
+        {
+            merged[i] = leftSub[i];
+        }
+        {
+            int k=0;
+            for(int j=leftLen;j<len;++j)
+            {
+                merged[j] = rightSub[k];
+                k++; 
+            }
+        }
         /** 
          * Create a new list big enough to hold all elements 
-         * of both lists
+         * of both lists.
          */
         int[] newlist = new int[left.length + right.length];
         assert(newlist.length>=2);
         // "pointer" of lists
         int i=0,j=0,k=0;
-        // the "sorting" part
+        // Real indizes of subset elements.
+        int realJ = leftStart, realK=rightStart;
+        // The sorting part:
         do
         {  
             if(left[j]>right[k]) 
             {
                 newlist[i] = right[k];
+                if(MODE==THREAD)
+                {
+                    swap(realJ,realK);
+                    merged[i] = rightSub[k];
+                    realK++;
+                }
                 k++;
             }
             else 
             {
                 newlist[i] = left[j];
+                if(MODE==THREAD)
+                {
+                    merged[i] = leftSub[j];
+                    realJ++;
+                }
                 j++;
+            }
+            if(MODE==THREAD)
+            {
+                updateElements(merged,leftStart,len);
+                notifyFrameReady();
             }
             i++;
         }while(j<left.length && k<right.length);
@@ -185,7 +237,13 @@ class Mergesort extends Thread
             for(;j<left.length;++j)
             {
                 newlist[i] = left[j];
+                merged[i] = leftSub[j];
                 i++;
+                if(MODE==THREAD)
+                {
+                    updateElements(merged,leftStart,len);
+                    notifyFrameReady();
+                }
             }
         }
         else if(k<right.length)
@@ -193,6 +251,12 @@ class Mergesort extends Thread
             for(;k<right.length;++k)
             {
                 newlist[i] = right[k];
+                merged[i] = rightSub[k];
+                if(MODE==THREAD)
+                {
+                    updateElements(merged,leftStart,len);
+                    notifyFrameReady();
+                }
                 i++;
             }
         }
@@ -244,20 +308,30 @@ class Mergesort extends Thread
         frameReady = false;
     }
 
+    // Update elements with merge step.
+    void updateElements(Element[] merged, int left, int len)
+    {
+        int j = 0;
+        for(int i=left;i<left+len;++i)
+        {
+            elements[i] = merged[j];
+            j++;
+        }
+    }
+
     // Return updated elements.
     Element[] getElements()
     {
         return elements;
     }
 
-    // Swap element at given index with neighbour to ensure visualization.
+    // Swap element at given indizes to ensure visualization.
     void swap(int i, int j)
     {
         /**
          * Elements need to swap their x-position AND their position in the array!
-         * Otherwise, next iteration of the for-loop would cause severe bugs since
-         * Bubblesort swaps the integers in the array (= change their index)
-         * and assumes the corresponding element is at the same index in the 
+         * Otherwise, next iteration would cause severe bugs since implementation
+         * assumes the corresponding element is at the same index in the 
          * elements array.
          */
         elements[i].swap(elements[j],Element.COORDINATES);
