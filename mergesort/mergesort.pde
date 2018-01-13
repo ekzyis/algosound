@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 /**
  * Mergesort implementation.
  * =============================
@@ -25,6 +27,8 @@ class Mergesort extends Thread
     private Object lock;
     // List of elements to unmark next frame.
     private ArrayList<Element> unmarkMe;    
+    // Keep track of stack of the cut indizes while sorting for proper visualization.
+    private Stack<Integer> cutStack;
 
     Mergesort(int[] _a, Object _lock, Element[] _elements)
     {
@@ -34,7 +38,10 @@ class Mergesort extends Thread
         // First frame is ready before first iteration.
         this.frameReady = true;
         this.frameDrawn = false;
-        this.unmarkMe = new ArrayList<Element>();        
+        this.unmarkMe = new ArrayList<Element>();
+        this.cutStack = new Stack<Integer>();
+        // Needed for proper cut index visualization.
+        this.cutStack.push(0);
     }
 
     @Override
@@ -54,13 +61,15 @@ class Mergesort extends Thread
      * Native mergesort implementation with mode NATURAL.
      * Visual mergesort implementation with mode THREAD.
      */
-
-    int[] mergesort(int[] a, byte MODE)
+    int[] mergesort(int[] a, byte MODE)                                                      
     {
         if(a.length>1)
         {            
-            int cut = a.length/2;
-            
+            int cut = a.length/2;         
+            int realCut = cutStack.peek() + cut;       
+            int[] left = subset(a,0,cut);            
+            //print("a=");printarr(a);
+            //println("len="+a.length+", cut="+cut+", realCut="+realCut);
             if(MODE==THREAD) 
             {
                 /**
@@ -68,39 +77,54 @@ class Mergesort extends Thread
                  * First (logical) frame:
                  * Mark cut index.
                  */
-                mark(cut);
+                println(realCut);
+                mark(realCut);                                
                 notifyFrameReady();
-            }
-            
-            int[] left = subset(a,0,cut);            
-            
-            if(MODE==THREAD)
+            }         
+            //println("go left.");   
+            left = mergesort(left,MODE);
+            if(MODE==THREAD) 
             {
                 /**
-                 * TODO: 
-                 * Second frame:
-                 * Mark cut index and mark left subset.
-                 */
-            }
-            left = mergesort(left,MODE);
-            int[] right = subset(a,cut+1);
-
-            if(MODE==THREAD)
-            {
-                /** 
                  * TODO:
-                 * Third frame:
-                 * Mark cut index and mark right subset.
-                 */
-            }            
+                 * First (logical) frame:
+                 * Mark cut index.
+                 */            
+                println(realCut);
+                mark(realCut);                                
+                notifyFrameReady();
+            }
+            int[] right = subset(a,cut);
+            //print("a=");printarr(a);
+            //println("len="+a.length+", cut="+cut+", realCut="+realCut);
+            //println("stack.push("+realCut+") & go right.");
+            // Will go right now. Push current cut index to stack.
+            cutStack.push(realCut);
             right = mergesort(right,MODE);
+            if(MODE==THREAD) 
+            {
+                /**
+                 * TODO:
+                 * First (logical) frame:
+                 * Mark cut index.
+                 */
+                println(realCut);            
+                mark(realCut);                                
+                notifyFrameReady();
+            }
+            //println("stack.pop()");
+            cutStack.pop();
             /**
              * TODO:
              * Define frames in merge().
              */
             return merge(left,right,MODE);
         }
-        else return a;
+        else
+        {
+            //println("return");
+            return a;
+        }
     }
     // Merge sets together into a 
     private int[] merge(int[] left, int[] right, byte MODE)

@@ -18,7 +18,7 @@ final int W=640,H=320*2;
  // Number of elements to be sorted.
 final int N=W/5;
  // Framerate of visualization.
-final int FR = 10;
+final int FR = 1;
 /*
  * -----------------
  **/
@@ -51,9 +51,9 @@ void setup()
     // Initialize mergesort thread.
     sort = new Mergesort(a,lock,elements);
     // Assert that implementation is sorting correctly.
-    int[] test = getRndArr(N);
-    test = sort.mergesort(test,Mergesort.NATIVE);
-    assert(isSorted(test));
+    //int[] test = getRndArr(N);
+    //test = sort.mergesort(test,Mergesort.NATIVE);
+    //assert(isSorted(test));
     // Start mergesort thread.
     sort.start();
 }
@@ -101,4 +101,14 @@ boolean isSorted(int[] a)
         if(a[i]>a[i+1]) return false;
     }
     return true;
+}
+
+void printarr(int[] a)
+{
+    print("{");
+    for(int i=0;i<a.length-1;++i)
+    {
+        print(a[i] + ", ");
+    }
+    println(a[a.length-1]+"}");
 }
