@@ -193,6 +193,16 @@ class Element
 
     void setColor(color _c) { this.c = _c; }
 
+    // Returns a copy of this instance.
+    Element copy()
+    {
+        Element e = new Element(x,y,w,value,c);
+        e.marked = this.marked;
+        e.sorted = this.sorted;
+        e.recursionLevel = this.recursionLevel;
+        e.merging = this.merging;
+        return e;
+    }
 }
 
 /**
