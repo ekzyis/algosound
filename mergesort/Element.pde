@@ -1,7 +1,7 @@
 /**
  * This class saves the data for visualization.
  * ============================================
- * Instances of this class are the objects you can 
+ * Instances of this class are the objects you can
  * see getting sorted on the canvas.
  *
  * @author ekzyis
@@ -20,7 +20,7 @@ class Element
     // swap coordinates
     final static byte COORDINATES = 4; // 2^2
     // (x,y)-position, height=value, width, color
-    private int x,y,value,w; 
+    private int x,y,value,w;
     private color c;
     // Was this element accessed by the sorting algorithm during current frame?
     private boolean marked;
@@ -45,7 +45,7 @@ class Element
     {
         this.x = _x;
         this.y = _y;
-        this.w = _w;    
+        this.w = _w;
         this.value = _v;
         this.c = _c;
         this.marked = false;
@@ -69,13 +69,13 @@ class Element
             stroke(0);
         }
         if(marked == true)
-        { 
+        {
             // red vertical line
             fill(color(255,0,0));
             noStroke();
             rect(x+w/4,0,w/2,H);
             stroke(0);
-        }    
+        }
         if(inSubset == true)
         {
             // blueish transparent background
@@ -92,7 +92,7 @@ class Element
             rect(x,0,w,H-(recursionLevel*recursionYOffset));
             stroke(0);
         }
-        fill(c);   
+        fill(c);
         rect(x,y-(recursionLevel*recursionYOffset),w,-value/2);
     }
 
@@ -102,7 +102,7 @@ class Element
         return "(v:"+value+", x:"+x+")";
     }
 
-    /** 
+    /**
      * Swap function.
      * This function is meant to be used with the logical operator |.
      * This means, calling e1.swap(e2, Element.VALUES | Element.COLORS);
@@ -111,7 +111,7 @@ class Element
     void swap(Element e, byte a)
     {
         // is bit 0 (=2^0) set?
-        if((a & 1)==1) 
+        if((a & 1)==1)
         {
             int tmp = e.value;
             e.value = this.value;
@@ -195,17 +195,17 @@ class Element
 
 }
 
-/** 
+/**
  * Return elements with random value and given color(s).
  */
 Element[] getElements(color[] c)
 {
     Element[] elements = new Element[N];
-    int elementwidth = W/N;  
+    int elementwidth = W/N;
     // x offset
     int xd = 0;
     // color array offset
-    int cd = 0;  
+    int cd = 0;
     for(int i=0;i<elements.length;++i)
     {
         int value = (int)(Math.random()*H);
