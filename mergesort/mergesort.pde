@@ -96,22 +96,22 @@ class Mergesort extends Thread
      *         {12,8,6}
      *           0 1 2
      *             c
-     *   But the real cut index is not 1, it is 2.
+     *   But the real cut index is not 1, it is 3.
      *   If you go into the right subset, the element at the cut index becomes the first element
      *   of the subset. This means, everytime you go right, that real index for the start element is
      *   the real cut index of the superset. Everytime you go left, the real index of the first element stays
-     *   the same since the first element in the subset is also the first element in the subset.
+     *   the same since the first element in the subset is also the first element in the superset.
      *   To keep track of the previous real cut index during recursion, a stack (FILO) will help us.
      *   -------------------------------------------------------------------------------------------
      *   To visualize the merging, the subsets with their corresponding real indizes will be stored in arrays.
-     *   Just like mergesort creates a array to contain the merged elements, a array of elements will be created
-     *   which will contain the visual elements after merging. For now, it will be filled up with the elements in its current
-     *   state before merging. While merging, they will be swapped to be sorted. The following example probably explains
+     *   Just like mergesort creates a array to contain the merged ints, a array of elements will be created
+     *   which will contain the (visual) elements after merging. For now, it will be filled with the elements in its current
+     *   state before merging. While merging, they will be manipulated to look sorted. The following example probably explains
      *   this issue better:
      *   --Example: We have the base array of the previous example; a set of length 5.
      *         {5,2,12,8,6}
      *          0 1  2 3 4
-     *   We 'fast-forward' to the point, when mergesort will merge the right subset {3,8,6} into one.
+     *   We 'fast-forward' to the point, when mergesort will merge the right subset {12,8,6} into one.
      *   At this point, 8 and 6 will have swapped places.
      *          {12} {6,8}
      *   Mergesort will now compare the first two elements and insert the smaller one into a new array.
@@ -123,7 +123,8 @@ class Mergesort extends Thread
      *   Frame after frame all elements will reappear sorted.
      *   This means, after the first swap, the base array which is visualized will look like this:
      *         {5,2,6,8,6};
-     *   Second swap: {5,2,6,8,6}; Last swap: {5,2,6,8,12}
+     *   Second swap: {5,2,6,8,6} -Notice that nothing changed, because 8 was already at correct place.;
+     *   Last swap: {5,2,6,8,12}
      *   Since for the visualization the index does not matter but the assigned x-Position of the elements
      *   (If you swap two elements in a array, when drawing, there will be no difference since the same elements
      *    do still have the same positions), a queue (FIFO) will assign the correct x-Position to ensure a sorted order
@@ -172,8 +173,6 @@ class Mergesort extends Thread
             }
             left = mergesort(left,MODE);
             int[] right = subset(a,cut);
-            // After left subset got merged,
-            realCut = cutStack.peek() + cut;
             if(MODE==THREAD)
             {
                 /**
@@ -184,6 +183,8 @@ class Mergesort extends Thread
                   * Will go right now. Push current cut index to stack to know
                   * where the index is at base level (=real cut index).
                   */
+                  // After left subset got merged,
+                realCut = cutStack.peek() + cut;
                 cutStack.push(realCut);
                 mark(realCut);
                 // Startindex of right subset is at index=realCut.
