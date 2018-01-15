@@ -18,7 +18,7 @@ final int W=640,H=320*2;
  // Number of elements to be sorted.
 final int N=W/5;
  // Framerate of visualization.
-final int FR = 1;
+final int FR = 30;
 /*
  * -----------------
  **/
@@ -42,8 +42,8 @@ void setup()
     // Define frame rate.
     frameRate(FR);
     // Initialize elements.
-    elements = getTestElements(getColors());
-    //elements = getElements(getColors());
+    //elements = getTestElements(getColors());
+    elements = getElements(getColors());
     // Initialize integer array.
     a = getValues(elements);
     // Initialize lock object.
@@ -51,8 +51,6 @@ void setup()
     // Initialize mergesort thread.
     sort = new Mergesort(a,lock,elements);
     // Assert that implementation is sorting correctly.
-    Mergesort test = new Mergesort(getRndArr(N),null,null);
-    int[] test = test.mergesort(test,Mergesort.NATIVE);
     int[] test = getRndArr(N);
     test = sort.mergesort(test,Mergesort.NATIVE);
     assert(isSorted(test));

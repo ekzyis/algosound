@@ -1,13 +1,15 @@
 import java.util.Stack;
+import java.util.ArrayDeque;
 
 /**
  * Mergesort implementation.
- * =============================
+ * =========================
  * This class handles the execution of mergesort
  * and notifying to draw new frames.
- * 
+ * For more information see comments in this file.
+ *
  * @author ekzyis
- * @date 13 January 2018
+ * @date 14 January 2018
  */
 
 class Mergesort extends Thread
@@ -26,7 +28,7 @@ class Mergesort extends Thread
     // Object for synchronization of threads.
     private Object lock;
     // List of elements to unmark next frame.
-    private ArrayList<Element> unmarkMe;    
+    private ArrayList<Element> unmarkMe;
     // Keep track of stack of the cut indizes while sorting for proper visualization.
     private Stack<Integer> cutStack;
 
@@ -57,193 +59,303 @@ class Mergesort extends Thread
         }
     }
 
-    /** 
-     * Native mergesort implementation with mode NATIVE.
-     * Visual mergesort implementation with mode THREAD.
+    /**
+     * ===================================================
+     *  Native mergesort implementation with mode NATIVE.
+     * ===================================================
+     *   This will skip visualization steps.
+     *   The given array will be sorted and be returned.
+     *   -----------------------------------------------
+     * ===================================================
+     *  Visual mergesort implementation with mode THREAD.
+     * ===================================================
+     *   To visualize the dividing, algorithm will
+     *   keep track of the cut index to be able to tell
+     *   the 'real cut index'. The real cut index is the index,
+     *   on which the corresponding element is located in the
+     *   base array (=start array at zero recursion).
+     *   --Example:
+     *   We have a set of length 5 and this will be our base array. Below
+     *   are the indizes of the elements.
+     *          {5,2,12,8,6}
+     *           0 1  2 3 4
+     *   When we want to cut this set into two subsets, the cut index will be
+     *   2 since 5/2=2.5 and cast to integer makes 2.
+     *          {5,2,12,8,6}
+     *           0 1  2 3 4
+     *                c
+     *   This will lead to two subsets:
+     *         {5,2} {12,8,6}
+     *          0 1    2 3 4
+     *   After the left subset is sorted, the right subset will start getting sorted.
+     *   Notice that we now dismissed the previous indizes and are now starting again with index 0.
+     *         {12,8,6}
+     *           0 1 2
+     *   Since the subset's size is greater than 1, it will be cut again into two subsets.
+     *   This time, the cut index is 1.
+     *         {12,8,6}
+     *           0 1 2
+     *             c
+     *   But the real cut index is not 1, it is 2.
+     *   If you go into the right subset, the element at the cut index becomes the first element
+     *   of the subset. This means, everytime you go right, that real index for the start element is
+     *   the real cut index of the superset. Everytime you go left, the real index of the first element stays
+     *   the same since the first element in the subset is also the first element in the subset.
+     *   To keep track of the previous real cut index during recursion, a stack (FILO) will help us.
+     *   -------------------------------------------------------------------------------------------
+     *   To visualize the merging, the subsets with their corresponding real indizes will be stored in arrays.
+     *   Just like mergesort creates a array to contain the merged elements, a array of elements will be created
+     *   which will contain the visual elements after merging. For now, it will be filled up with the elements in its current
+     *   state before merging. While merging, they will be swapped to be sorted. The following example probably explains
+     *   this issue better:
+     *   --Example: We have the base array of the previous example; a set of length 5.
+     *         {5,2,12,8,6}
+     *          0 1  2 3 4
+     *   We 'fast-forward' to the point, when mergesort will merge the right subset {3,8,6} into one.
+     *   At this point, 8 and 6 will have swapped places.
+     *          {12} {6,8}
+     *   Mergesort will now compare the first two elements and insert the smaller one into a new array.
+     *   merged = {6}
+     *   remaining = {12} {8}
+     *   At this step, the element at real index 3, which is the 6 here (and was 8), will override the element
+     *   at real index 2 since that is the start of the merging set and 6 is the smallest number in this set.
+     *   Since we saved the subsets individually, overriding the elements during merging is not a problem.
+     *   Frame after frame all elements will reappear sorted.
+     *   This means, after the first swap, the base array which is visualized will look like this:
+     *         {5,2,6,8,6};
+     *   Second swap: {5,2,6,8,6}; Last swap: {5,2,6,8,12}
+     *   Since for the visualization the index does not matter but the assigned x-Position of the elements
+     *   (If you swap two elements in a array, when drawing, there will be no difference since the same elements
+     *    do still have the same positions), a queue (FIFO) will assign the correct x-Position to ensure a sorted order
+     *   when drawing.
+     *   -------------
+     * ====================
+     *  Visualization code
+     * ====================
+     * Code which accesses the elements array passed when constructing
+     * this instance is always in an if-statement which checks for the mode.
+     * This ensure that running this method at mode NATIVE doesn't cause
+     * any problems when sorting array is not equal to the array consisting
+     * of the values of the elements.
      */
-    int[] mergesort(int[] a, byte MODE)                                                      
+    int[] mergesort(int[] a, byte MODE)
     {
         if(a.length>1)
-        {            
-            int cut = a.length/2;         
-            int realCut = cutStack.peek() + cut;       
-            int[] left = subset(a,0,cut);            
-            print("a=");printarr(a);
-            println("len="+a.length+", cut="+cut+", realCut="+realCut);
-            if(MODE==THREAD) 
+        {
+            int cut = a.length/2;
+            // Real cut index of current set. Will be initialized later.
+            int realCut = -1;
+            int[] left = subset(a,0,cut);
+            if(MODE==THREAD)
             {
                 /**
-                 * TODO:
                  * First (logical) frame:
-                 * Mark cut index.
+                 * Mark cut index element.
                  */
-                // println(realCut);
-                mark(realCut);                                
+                realCut = cutStack.peek() + cut;
+                mark(realCut);
                 notifyFrameReady();
-            }         
-            println("go left.");
-            if(MODE==THREAD) 
+            }
+            if(MODE==THREAD)
             {
                 /**
-                 * TODO:
                  * Second (logical) frame:
-                 * Mark cut index and left subset.
-                 */            
-                //println(realCut);
+                 * Mark cut index element and left subset.
+                 */
                 mark(realCut);
+                // Startindex of left subset is at previous realCut Index.
                 int l = cutStack.peek();
                 int len = floor(a.length/2.0);
                 Element[] subset = (Element[])(subset(elements,l,len));
                 markInSubset(subset);
-                println("l="+l+", len="+len);
                 notifyFrameReady();
             }
             left = mergesort(left,MODE);
             int[] right = subset(a,cut);
-            print("a=");printarr(a);
-            println("len="+a.length+", cut="+cut+", realCut="+realCut);
-            println("stack.push("+realCut+") & go right.");
-            // Will go right now. Push current cut index to stack.
-            cutStack.push(realCut);
-            if(MODE==THREAD) 
+            // After left subset got merged,
+            realCut = cutStack.peek() + cut;
+            if(MODE==THREAD)
             {
                 /**
-                 * TODO:
                  * Third (logical) frame:
-                 * Mark cut index and right subset.
+                 * Mark cut index element and right subset.
                  */
-                //println(realCut);            
+                 /**
+                  * Will go right now. Push current cut index to stack to know
+                  * where the index is at base level (=real cut index).
+                  */
+                cutStack.push(realCut);
                 mark(realCut);
-                int l = realCut;
+                // Startindex of right subset is at index=realCut.
+                int r = realCut;
                 int len = ceil(a.length/2.0);
-                Element[] subset = (Element[])(subset(elements,l,len));
+                Element[] subset = (Element[])(subset(elements,r,len));
                 markInSubset(subset);
-                println("l="+l+", len="+len);
                 notifyFrameReady();
             }
             right = mergesort(right,MODE);
-            println("stack.pop()");
-            cutStack.pop();
-            if(MODE==THREAD) 
+            if(MODE==THREAD)
             {
                 /**
-                 * TODO:
-                 * First (logical) frame:
+                 * Third (logical) frame:
                  * Mark cut index.
                  */
-                // println(realCut);
-                mark(realCut);                                
+                mark(realCut);
                 notifyFrameReady();
             }
             /**
-             * TODO:
-             * Define frames in merge().
+             * Next frames:
+             * See comments in merge().
              */
             return merge(left,right,MODE);
         }
         else
         {
-            println("return");
             return a;
         }
     }
     // Merge sets together into a.
     private int[] merge(int[] left, int[] right, byte MODE)
     {
-        println("### MERGING ###");
-        /** 
-        * If one list should be empty (which shouldn't be the case),
+        /**
+        * If one array should be empty (which shouldn't be the case),
         * return the other one since we can assume it's already sorted.
         */
         if(left.length == 0) return right;
         else if(right.length == 0) return left;
 
+        /**
+         * ======================
+         *   VISUALIZATION CODE
+         * ======================
+         */
+        // This will contain the new merged visual elements.
+        Element[] merged = new Element[0];
+        // Subsets which are going to merge.
+        Element[] leftSub = new Element[0];
+        Element[] rightSub = new Element[0];
+        // Save a ordered state of posX to assign correct x-values to sorted elements.
+        ArrayDeque<Integer> posXqueue = new ArrayDeque<Integer>();
+        // (Real) Index at which the subsets start. Is initialized correctly later.
+        int leftStart = 0, rightStart = 0;
         // Length of resulting set.
         int len = left.length + right.length;
-        // Cut index.
-        int cut = len/2;
-        // Real startindex of left subset.
-        int leftStart = cutStack.peek();
-        // Length of left subset.
-        int leftLen = floor(len/2.0);
-        println("leftStart="+leftStart+", leftLength="+leftLen);
-        // Real startindex of right subset.
-        int rightStart = cutStack.peek() + cut;
-        // Length of right subset.
-        int rightLen = ceil(len/2.0);
-        println("rightstart="+rightStart+", rightLength="+rightLen);
-        // Get subsets.
-        Element[] leftSub = (Element[])(subset(elements,leftStart,leftLen));
-        Element[] rightSub = (Element[])(subset(elements,rightStart,rightLen));
-        // Create new set to contain merged elements.
-        Element[] merged = new Element[len];
-        // Fill with elements from subsets for now.
-        for(int i=0;i<leftLen;++i)
+        if(MODE==THREAD)
         {
-            merged[i] = leftSub[i];
-        }
-        {
-            int k=0;
-            for(int j=leftLen;j<len;++j)
+            // Real startindex of right subset is last pushed real cut index.
+            rightStart = cutStack.pop();
+            // Length of right subset.
+            int rightLen = ceil(len/2.0);
+            /**
+             * Real startindex of left subset is now - after pop() at initializing rightStart -
+             * the last pushed real cut index.
+             */
+            leftStart = cutStack.peek();
+            // Length of left subset.
+            int leftLen = floor(len/2.0);
+            // Get subsets as copies.
+            leftSub = new Element[leftLen];
+            for(int i=0;i<leftLen;++i)
             {
-                merged[j] = rightSub[k];
-                k++; 
+                leftSub[i] = elements[leftStart+i].copy();
+            }
+            rightSub = (Element[])(subset(elements,rightStart,rightLen));
+            for(int i=0;i<rightLen;++i)
+            {
+                rightSub[i] = elements[rightStart+i].copy();
+            }
+            // Init new set to contain merged elements.
+            merged = new Element[0];
+            // Fill it with old (current) elements for now and push all xPos to queue.
+            for(Element el : leftSub)
+            {
+                posXqueue.add(el.getX());
+                merged = (Element[])append(merged, el);
+            }
+            for(Element el : rightSub)
+            {
+                posXqueue.add(el.getX());
+                merged = (Element[])append(merged, el);
+            }
+            // Some checks to identify bugs ASAP.
+            assert(leftSub.length==left.length);
+            assert(rightSub.length==right.length);
+            assert(merged.length==left.length+right.length);
+            for(int i=0;i<leftSub.length;++i)
+            {
+                assert(leftSub[i].value==left[i]);
+            }
+            for(int i=0;i<rightSub.length;++i)
+            {
+                assert(rightSub[i].value==right[i]);
             }
         }
-        /** 
-         * Create a new list big enough to hold all elements 
+        /**
+         * ================
+         *  MERGESORT CODE
+         * ================
+         * Create a new list big enough to hold all elements
          * of both lists.
          */
         int[] newlist = new int[left.length + right.length];
         assert(newlist.length>=2);
-        // "pointer" of lists
+        // "Pointer" of lists
         int i=0,j=0,k=0;
-        // Real indizes of subset elements.
-        int realJ = leftStart, realK=rightStart;
         // The sorting part:
         do
-        {  
-            if(left[j]>right[k]) 
+        {
+            if(left[j]>right[k])
             {
+                // Next element in sorted order is in the right subset.
                 newlist[i] = right[k];
                 if(MODE==THREAD)
                 {
-                    swap(realJ,realK);
-                    merged[i] = rightSub[k];
-                    realK++;
+                    Element e = rightSub[k].copy();
+                    // Assing correct x-position for correct visualization of sorting.
+                    e.setX(posXqueue.poll());
+                    // Mark element as merging but not unmark next frame.
+                    e.setMerging(true);
+                    merged[i] = e;
                 }
                 k++;
             }
-            else 
+            else
             {
+                // Next element in sorted order is in the left subset.
                 newlist[i] = left[j];
                 if(MODE==THREAD)
                 {
-                    merged[i] = leftSub[j];
-                    realJ++;
+                    Element e = leftSub[j].copy();
+                    e.setX(posXqueue.poll());
+                    e.setMerging(true);
+                    merged[i] = e;
                 }
                 j++;
             }
             if(MODE==THREAD)
             {
+                // Every swap is one frame.
                 updateElements(merged,leftStart,len);
                 notifyFrameReady();
             }
             i++;
         }while(j<left.length && k<right.length);
-        // put the rest of the elements in newlist
+        // Put the rest of the elements in the merged list since they are already sorted.
         if(j<left.length)
         {
             for(;j<left.length;++j)
             {
                 newlist[i] = left[j];
-                merged[i] = leftSub[j];
-                i++;
                 if(MODE==THREAD)
                 {
+                    Element e = leftSub[j].copy();
+                    e.setX(posXqueue.poll());
+                    e.setMerging(true);
+                    merged[i] = e;
                     updateElements(merged,leftStart,len);
                     notifyFrameReady();
                 }
+                i++;
             }
         }
         else if(k<right.length)
@@ -251,9 +363,12 @@ class Mergesort extends Thread
             for(;k<right.length;++k)
             {
                 newlist[i] = right[k];
-                merged[i] = rightSub[k];
                 if(MODE==THREAD)
                 {
+                    Element e = rightSub[k].copy();
+                    e.setX(posXqueue.poll());
+                    e.setMerging(true);
+                    merged[i] = e;
                     updateElements(merged,leftStart,len);
                     notifyFrameReady();
                 }
@@ -262,10 +377,25 @@ class Mergesort extends Thread
         }
         else
         {
-            // this should never be reached
+            // This should never be reached.
             assert(false);
         }
-        // newlist should be sorted now
+        if(MODE==THREAD)
+        {
+            /**
+             * Merging complete. Now unmark merge markers from elements next frame
+             * and decrement level of recursion.
+             */
+            for(Element el : merged)
+            {
+                unmarkMe.add(el);
+                el.decrementRecursionLvl();
+            }
+            // Show new frame.
+            updateElements(merged,leftStart,len);
+            notifyFrameReady();
+        }
+        // Newlist should be sorted; consisting all elements from both subsets.
         return newlist;
     }
 
@@ -304,7 +434,7 @@ class Mergesort extends Thread
     void notifyFrameDraw()
     {
         frameDrawn = true;
-        // New frame has just been drawn. Next frame is not ready yet. 
+        // New frame has just been drawn. Next frame is not ready yet.
         frameReady = false;
     }
 
@@ -312,9 +442,9 @@ class Mergesort extends Thread
     void updateElements(Element[] merged, int left, int len)
     {
         int j = 0;
-        for(int i=left;i<left+len;++i)
+        for(int i=0;i<len;++i)
         {
-            elements[i] = merged[j];
+            elements[left+i] = merged[j];
             j++;
         }
     }
@@ -325,21 +455,6 @@ class Mergesort extends Thread
         return elements;
     }
 
-    // Swap element at given indizes to ensure visualization.
-    void swap(int i, int j)
-    {
-        /**
-         * Elements need to swap their x-position AND their position in the array!
-         * Otherwise, next iteration would cause severe bugs since implementation
-         * assumes the corresponding element is at the same index in the 
-         * elements array.
-         */
-        elements[i].swap(elements[j],Element.COORDINATES);
-        Element tmp = elements[i];
-        elements[i] = elements[j];
-        elements[j] = tmp;
-    }
-
     // Mark currently accessed elements in elements array.
     void mark(int i)
     {
@@ -348,7 +463,7 @@ class Mergesort extends Thread
         unmarkMe.add(elements[i]);
     }
 
-    /** 
+    /**
      * Mark elements as being in a subset on which mergesort is currently operating.
      * This also increases level of recursion by one.
      */
@@ -358,20 +473,6 @@ class Mergesort extends Thread
         {
             el.setInSubset(true);
             el.incrementRecursionLvl();
-            unmarkMe.add(el);
-        }
-    }
-
-    /**
-     * Mark elements as being merged by mergesort.
-     * This also decreases level of recursion by one.
-     */
-    void markMerging(Element[] e)
-    {
-        for(Element el : e)
-        {
-            el.setMerging(true);
-            el.decrementRecursionLvl();
             unmarkMe.add(el);
         }
     }
