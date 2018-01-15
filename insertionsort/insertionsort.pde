@@ -3,7 +3,7 @@
  * =============================
  * This class handles the execution of insertionsort
  * and notifying to draw new frames.
- * 
+ *
  * @author ekzyis
  * @date 10 January 2018
  */
@@ -44,7 +44,7 @@ class Insertionsort extends Thread
             // First frame of insertionsort consists only of marking first element as sorted.
             elements[0].setSorted();
             notifyFrameReady();
-            /** 
+            /**
              * ==================================
              * Start of actual sorting algorithm.
              * ==================================
@@ -56,7 +56,7 @@ class Insertionsort extends Thread
              */
             for(int i=1;i<a.length;++i)
             {
-                /** 
+                /**
                  * All elements to the left of current element are sorted.
                  * To visualize this, everytime the left element will be marked as sorted.
                  * This leads to all element to the left of the current element being sorted.
@@ -74,7 +74,7 @@ class Insertionsort extends Thread
                  */
                 while(j>0 && a[j-1]>value)
                 {
-                    /** 
+                    /**
                      * The integers don't swap places;
                      * the left element moves to the right
                      * overwriting the previous element on their right
@@ -133,7 +133,7 @@ class Insertionsort extends Thread
     void notifyFrameDraw()
     {
         frameDrawn = true;
-        // New frame has just been drawn. Next frame is not ready yet. 
+        // New frame has just been drawn. Next frame is not ready yet.
         frameReady = false;
     }
 
@@ -143,7 +143,7 @@ class Insertionsort extends Thread
         return elements;
     }
 
-    /** 
+    /**
      * Copies element one step to the right, overriding the previous element.
      * On its previous place, there is still the same element.
      */
