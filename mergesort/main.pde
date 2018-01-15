@@ -1,12 +1,12 @@
 /**
  * Mainfile of mergesort visualization.
- * =====================================
+ * ====================================
  * This sketch produces a visualization of mergesort
  * by creating a "mergesort-thread" which periodically notifies
- * the draw function when a new frame has been calculated. 
+ * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 10 January 2018
+ * @date 14 January 2018
  */
 
 /**
@@ -32,12 +32,12 @@ private Object lock;
 // The mergesort thread.
 private Mergesort sort;
 
-public void settings() 
+public void settings()
 {
     size(W, H);
 }
 
-void setup() 
+void setup()
 {
     // Define frame rate.
     frameRate(FR);
@@ -51,9 +51,11 @@ void setup()
     // Initialize mergesort thread.
     sort = new Mergesort(a,lock,elements);
     // Assert that implementation is sorting correctly.
-    //int[] test = getRndArr(N);
-    //test = sort.mergesort(test,Mergesort.NATIVE);
-    //assert(isSorted(test));
+    Mergesort test = new Mergesort(getRndArr(N),null,null);
+    int[] test = test.mergesort(test,Mergesort.NATIVE);
+    int[] test = getRndArr(N);
+    test = sort.mergesort(test,Mergesort.NATIVE);
+    assert(isSorted(test));
     // Start mergesort thread.
     sort.start();
 }
@@ -62,7 +64,7 @@ void draw()
 {
     synchronized(lock)
     {
-        background(25);  
+        background(25);
         // Wait until new frame is ready.
         while(!sort.frameIsReady())
         {
