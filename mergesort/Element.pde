@@ -5,7 +5,7 @@
  * see getting sorted on the canvas.
  *
  * @author ekzyis
- * @date 09 January 2017
+ * @date 15 January 2018
  */
 class Element
 {
@@ -73,7 +73,7 @@ class Element
             // red vertical line
             fill(color(255,0,0));
             noStroke();
-            rect(x+w/4,0,w/2,H);
+            rect(x-w/4,0,w/2,H);
             stroke(0);
         }
         if(inSubset == true)
