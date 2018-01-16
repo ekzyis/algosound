@@ -5,7 +5,7 @@
  * see getting sorted on the canvas.
  *
  * @author ekzyis
- * @date 15 January 2018
+ * @date 16 January 2018
  */
 class Element
 {
@@ -93,7 +93,7 @@ class Element
             stroke(0);
         }
         fill(c);
-        rect(x,y-(recursionLevel*recursionYOffset),w,-value/2);
+        rect(x,y-(recursionLevel*recursionYOffset),w,-value);
     }
 
     // string representation
@@ -216,9 +216,14 @@ Element[] getElements(color[] c)
     int xd = 0;
     // color array offset
     int cd = 0;
+    /**
+     * Heightlimit for elements. Without this, elements could go higher
+     * than actual canvas height due to recursion lifting the elements.
+     */
+    int maxHeight = (int)(H-(Math.log(N)/Math.log(2))*20);
     for(int i=0;i<elements.length;++i)
     {
-        int value = (int)(Math.random()*H);
+        int value = (int)(Math.random()*maxHeight);
         elements[i] = new Element(xd,H,elementwidth,value,c[cd]);
         xd += elementwidth;
         cd++;

@@ -6,18 +6,19 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 14 January 2018
+ * @date 16 January 2018
  */
 
 /**
  * Global variables.
  * -----------------
  */
- // Width and height of canvas.
-final int W=640,H=320*2;
- // Number of elements to be sorted.
+// Width and height of canvas.
+// To height the maximal possible height increase due to recursion of one element is added.
+final int W=640,H=320+(int)(Math.log(640/5)/Math.log(2))*20;
+// Number of elements to be sorted.
 final int N=W/5;
- // Framerate of visualization.
+// Framerate of visualization.
 final int FR = 30;
 /*
  * -----------------
