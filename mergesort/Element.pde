@@ -60,6 +60,7 @@ class Element
     // how to show this on canvas
     void show()
     {
+        int realHeight = H-(recursionLevel*recursionYOffset);
         if(sorted == true)
         {
             // green transparent background
@@ -73,7 +74,7 @@ class Element
             // red vertical line
             fill(color(255,0,0));
             noStroke();
-            rect(x-w/4,0,w/2,H);
+            rect(x+3*w/4,0,w/2,realHeight);
             stroke(0);
         }
         if(inSubset == true)
@@ -81,7 +82,7 @@ class Element
             // blueish transparent background
             noStroke();
             fill(subsetColor);
-            rect(x,0,w,H-(recursionLevel*recursionYOffset));
+            rect(x,0,w,realHeight);
             stroke(0);
         }
         else if(merging == true)
@@ -89,11 +90,11 @@ class Element
             // greenish transparent background
             noStroke();
             fill(mergingColor);
-            rect(x,0,w,H-(recursionLevel*recursionYOffset));
+            rect(x,0,w,realHeight);
             stroke(0);
         }
         fill(c);
-        rect(x,y-(recursionLevel*recursionYOffset),w,-value);
+        rect(x,realHeight,w,-value);
     }
 
     // string representation

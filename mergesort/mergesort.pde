@@ -459,9 +459,17 @@ class Mergesort extends Thread
     // Mark currently accessed elements in elements array.
     void mark(int i)
     {
-        elements[i].setMark(true);
+        /**
+         * Mark left element since in show(), the marker will be between
+         * the cut index (=i) and its left element. When left element is marked,
+         * order of drawing is like following:
+         * 1. Mark between left element and element at cut index.
+         * 2. Left element.
+         * 3. Cut index element.
+         */
+        elements[i-1].setMark(true);
         // Add element to list of elements which get unmarked next frame.
-        unmarkMe.add(elements[i]);
+        unmarkMe.add(elements[i-1]);
     }
 
     /**
