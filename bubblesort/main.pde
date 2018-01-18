@@ -3,10 +3,10 @@
  * =====================================
  * This sketch produces a visualization of bubblesort
  * by creating a "bubblesort-thread" which periodically notifies
- * the draw function when a new frame has been calculated. 
+ * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 09 January 2018
+ * @date 18 January 2018
  */
 /**
  * Global variables.
@@ -17,38 +17,25 @@ final int W=640,H=320;
  // Number of elements to be sorted.
 final int N=W/5;
  // Framerate of visualization.
-final int FR = 120;
+final int FR = 300;
 /*
  * -----------------
  **/
 
-// The elements to sort.
-private Element[] elements;
-// Integer array representation of the elements values.
-private int[] a;
-// Object for synchronization of algorithm and visualization.
-private Object lock;
 // The bubblesort thread.
 private Bubblesort sort;
 
-public void settings() 
+public void settings()
 {
     size(W, H);
 }
 
-void setup() 
+void setup()
 {
     // Define frame rate.
     frameRate(FR);
-    // Initialize elements.
-    //elements = getElements(getColors());
-    elements = getElements(getColors());
-    // Initialize integer array.
-    a = getValues(elements);
-    // Initialize lock object.
-    lock = new Object();
     // Initialize bubblesort thread.
-    sort = new Bubblesort(a,lock,elements);
+    sort = new Bubblesort(N);
     // Assert that implementation is sorting correctly.
     int[] test = getRndArr(N);
     sort.sort(test);
@@ -59,7 +46,7 @@ void setup()
 
 void draw()
 {
-    synchronized(lock)
+    synchronized(sort)
     {
         background(25);
         // Wait until new frame is ready.
@@ -67,7 +54,7 @@ void draw()
         {
             try
             {
-                lock.wait();
+                sort.wait();
             }
             catch(InterruptedException e)
             {
@@ -77,7 +64,7 @@ void draw()
         for(Element e : sort.getElements()) e.show();
         // Notify bubblesort thread that frame has been drawn.
         sort.notifyFrameDraw();
-        lock.notify();
+        sort.notify();
     }
 }
 

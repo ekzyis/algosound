@@ -3,9 +3,9 @@
  * ==========================
  * This class handles the execution of bubblesort
  * and notifying to draw new frames.
- * 
+ *
  * @author ekzyis
- * @date 10 January 2018
+ * @date 18 January 2018
  */
 class Bubblesort extends Thread
 {
@@ -17,16 +17,13 @@ class Bubblesort extends Thread
     private boolean frameReady;
     // Has the new frame been drawn?
     private boolean frameDrawn;
-    // Object for synchronization of threads.
-    private Object lock;
     // List of elements to unmark next frame.
     private ArrayList<Element> unmarkMe;
 
-    Bubblesort(int[] _a, Object _lock, Element[] _elements)
+    Bubblesort(int N)
     {
-        this.a = _a;
-        this.lock = _lock;
-        this.elements = _elements;
+        elements = createElements(N);
+        a = getValues(elements);
         // First frame is ready before first iteration.
         frameReady = true;
         frameDrawn = false;
@@ -37,11 +34,11 @@ class Bubblesort extends Thread
     public void run()
     {
         // Gain access to monitor. If not possible, wait here.
-        synchronized(lock)
+        synchronized(this)
         {
             // Wait until first frame has been drawn.
             notifyFrameReady();
-            /** 
+            /**
              * ==================================
              * Start of actual sorting algorithm.
              * ==================================
@@ -68,8 +65,8 @@ class Bubblesort extends Thread
                     notifyFrameReady();
                 }
             }while(swap);
-            /** 
-             * Bubblesort keeps iterating through the whole array 
+            /**
+             * Bubblesort keeps iterating through the whole array
              * until not a single time a swap has happened.
              */
         }
@@ -89,12 +86,12 @@ class Bubblesort extends Thread
     void notifyFrameReady()
     {
         frameReady = true;
-        lock.notify();
+        this.notify();
         while(!frameIsDrawn())
         {
             try
             {
-                lock.wait();
+                this.wait();
             }
             catch(InterruptedException e)
             {
@@ -109,7 +106,7 @@ class Bubblesort extends Thread
     void notifyFrameDraw()
     {
         frameDrawn = true;
-        // New frame has just been drawn. Next frame is not ready yet. 
+        // New frame has just been drawn. Next frame is not ready yet.
         frameReady = false;
     }
 
@@ -126,7 +123,7 @@ class Bubblesort extends Thread
          * Elements need to swap their x-position AND their position in the array!
          * Otherwise, next iteration of the for-loop would cause severe bugs since
          * Bubblesort swaps the integers in the array (= change their index)
-         * and assumes the corresponding element is at the same index in the 
+         * and assumes the corresponding element is at the same index in the
          * elements array.
          */
         elements[i].swap(elements[j],Element.COORDINATES);
