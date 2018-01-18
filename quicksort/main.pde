@@ -1,58 +1,90 @@
 /**
- * Mainfile of Quicksort visualization.
- * ====================================
+ * Mainfile of quicksort visualization.
+ * =====================================
+ * This sketch produces a visualization of quicksort
+ * by creating a "quicksort-thread" which periodically notifies
+ * the draw function when a new frame has been calculated.
+ *
  * @author ekzyis
- * @date January 2018
+ * @date 18 January 2018
  */
- 
+/**
+ * Global variables.
+ * -----------------
+ */
+ // Width and height of canvas.
+final int W=640,H=320;
+ // Number of elements to be sorted.
+final int N=W/5;
+ // Framerate of visualization.
+final int FR = 120;
+/*
+ * -----------------
+ **/
+
+// The quicksort thread.
+private Quicksort sort;
+
+public void settings()
+{
+    size(W, H);
+}
+
 void setup()
 {
-  for(int i=0;i<100;++i)
-  {
-    int[] a = getRndArr(10000,100000);
-    //printarr(a);
-    quicksort(a);
-    //printarr(a);
-    assert(isSorted(a));
-  }
-  print("success!");
+    // Define frame rate.
+    frameRate(FR);
+    // Initialize quicksort thread.
+    sort = new Quicksort(N);
+    // Assert that implementation is sorting correctly.
+    int[] test = getRndArr(N);
+    sort.quicksort(test);
+    assert(isSorted(test));
+    // Start quicksort thread.
+    sort.start();
 }
 
-// get random int values to sort
-int[] getRndArr(int n, int max)
+void draw()
 {
-  int[] ret = new int[n];
-  for(int i=0;i<ret.length;++i)
-  {
-    ret[i] = (int)(Math.random()*max);
-  }
-  return ret;
+    synchronized(sort)
+    {
+        background(25);
+        // Wait until new frame is ready.
+        while(!sort.frameIsReady())
+        {
+            try
+            {
+                sort.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+        // Draw elements.
+        for(Element e : sort.getElements()) e.show();
+        // Notify sorting thread that frame has been drawn.
+        sort.notifyFrameDraw();
+        sort.notify();
+    }
 }
 
-// print an integer-array
-static void printarr(int[] a)
+// Return a random integer array of size n.
+int[] getRndArr(int n)
 {
-  print("{");
-  print(a[0]);
-  for(int i=1;i<a.length;++i)
-  {
-    print(", "+a[i]);
-  }
-  print("}");
-  println();
+    int[] ret = new int[n];
+    for(int i=0;i<n;++i)
+    {
+        ret[i] = (int)(Math.random()*H);
+    }
+    return ret;
 }
 
-// checks if an int[] is in ascending order
+// Check if given array is in ascending order.
 boolean isSorted(int[] a)
 {
-  for(int i=0;i<a.length-1;++i)
-  {
-    //println(i);
-    if(a[i]>a[i+1]) 
+    for(int i=0;i<a.length-1;++i)
     {
-      println(i);
-      return false;
+        if(a[i]>a[i+1]) return false;
     }
-  }
-  return true;
+    return true;
 }
