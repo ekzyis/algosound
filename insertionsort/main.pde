@@ -3,10 +3,10 @@
  * =====================================
  * This sketch produces a visualization of insertionsort
  * by creating a "insertionsort-thread" which periodically notifies
- * the draw function when a new frame has been calculated. 
+ * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 10 January 2018
+ * @date 18 January 2018
  */
 /**
  * Global variables.
@@ -22,33 +22,20 @@ final int FR = 120;
  * -----------------
  **/
 
-// The elements to sort.
-private Element[] elements;
-// Integer array representation of the elements values.
-private int[] a;
-// Object for synchronization of algorithm and visualization.
-private Object lock;
 // The insertionsort thread.
 private Insertionsort sort;
 
-public void settings() 
+public void settings()
 {
     size(W, H);
 }
 
-void setup() 
+void setup()
 {
     // Define frame rate.
     frameRate(FR);
-    // Initialize elements.
-    //elements = getElements(getColors());
-    elements = getElements(getColors());
-    // Initialize integer array.
-    a = getValues(elements);
-    // Initialize lock object.
-    lock = new Object();
     // Initialize insertionsort thread.
-    sort = new Insertionsort(a,lock,elements);
+    sort = new Insertionsort(N);
     // Assert that implementation is sorting correctly.
     int[] test = getRndArr(N);
     sort.sort(test);
@@ -59,7 +46,7 @@ void setup()
 
 void draw()
 {
-    synchronized(lock)
+    synchronized(sort)
     {
         background(25);
         // Wait until new frame is ready.
@@ -67,7 +54,7 @@ void draw()
         {
             try
             {
-                lock.wait();
+                sort.wait();
             }
             catch(InterruptedException e)
             {
@@ -77,7 +64,7 @@ void draw()
         for(Element e : sort.getElements()) e.show();
         // Notify sorting thread that frame has been drawn.
         sort.notifyFrameDraw();
-        lock.notify();
+        sort.notify();
     }
 }
 

@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 10 January 2018
+ * @date 18 January 2018
  */
 class Insertionsort extends Thread
 {
@@ -17,16 +17,13 @@ class Insertionsort extends Thread
     private boolean frameReady;
     // Has the new frame been drawn?
     private boolean frameDrawn;
-    // Object for synchronization of threads.
-    private Object lock;
     // List of elements to unmark next frame.
     private ArrayList<Element> unmarkMe;
 
-    Insertionsort(int[] _a, Object _lock, Element[] _elements)
+    Insertionsort(int N)
     {
-        this.a = _a;
-        this.lock = _lock;
-        this.elements = _elements;
+        elements = createElements(N);
+        a = getValues(elements);
         // First frame is ready before first iteration.
         frameReady = true;
         frameDrawn = false;
@@ -37,7 +34,7 @@ class Insertionsort extends Thread
     public void run()
     {
         // Gain access to monitor. If not possible, wait here.
-        synchronized(lock)
+        synchronized(this)
         {
             // Wait until first frame has been drawn.
             notifyFrameReady();
@@ -113,12 +110,12 @@ class Insertionsort extends Thread
     void notifyFrameReady()
     {
         frameReady = true;
-        lock.notify();
+        this.notify();
         while(!frameIsDrawn())
         {
             try
             {
-                lock.wait();
+                this.wait();
             }
             catch(InterruptedException e)
             {
