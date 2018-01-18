@@ -1,11 +1,11 @@
 /**
  * This class saves the data for visualization.
  * ============================================
- * Instances of this class are the objects you can 
+ * Instances of this class are the objects you can
  * see getting sorted on the canvas.
  *
  * @author ekzyis
- * @date 09 January 2017
+ * @date 18 January 2017
  */
 class Element
 {
@@ -20,7 +20,7 @@ class Element
     // swap coordinates
     final static byte COORDINATES = 4; // 2^2
     // (x,y)-position, height=value, width, color
-    private int x,y,value,w; 
+    private int x,y,value,w;
     private color c;
     // Was this element accessed by the sorting algorithm during current frame?
     private boolean marked;
@@ -32,7 +32,7 @@ class Element
     {
         this.x = _x;
         this.y = _y;
-        this.w = _w;    
+        this.w = _w;
         this.value = _v;
         this.c = _c;
     }
@@ -139,13 +139,14 @@ class Element
 
 }
 
-/** 
+/**
  * Return elements with random value and given color(s).
  */
-Element[] getElements(color[] c)
+Element[] createElements(int n)
 {
-    Element[] elements = new Element[N];
-    int elementwidth = W/N;
+    Element[] elements = new Element[n];
+    int elementwidth = W/n;
+    color[] c = getColors();
     // x offset
     int xd = 0;
     // color array offset

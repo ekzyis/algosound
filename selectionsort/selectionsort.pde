@@ -3,9 +3,9 @@
  * =============================
  * This class handles the execution of selectionsort
  * and notifying to draw new frames.
- * 
+ *
  * @author ekzyis
- * @date 10 January 2017
+ * @date 18 January 2017
  */
 class Selectionsort extends Thread
 {
@@ -17,31 +17,28 @@ class Selectionsort extends Thread
     private boolean frameReady;
     // Has the new frame been drawn?
     private boolean frameDrawn;
-    // Object for synchronization of threads.
-    private Object lock;
     // List of elements to unmark next frame.
     private ArrayList<Element> unmarkMe;
 
-    Selectionsort(int[] _a, Object _lock, Element[] _elements)
+    Selectionsort(int N)
     {
-        this.a = _a;
-        this.lock = _lock;
-        this.elements = _elements;
+        elements = createElements(N);
+        a = getValues(elements);
         // First frame is ready before first iteration.
-        frameReady = true;
-        frameDrawn = false;
-        unmarkMe = new ArrayList<Element>();
+        this.frameReady = true;
+        this.frameDrawn = false;
+        this.unmarkMe = new ArrayList<Element>();
     }
 
     @Override
     public void run()
     {
         // Gain access to monitor. If not possible, wait here.
-        synchronized(lock)
+        synchronized(this)
         {
             // Wait until first frame has been drawn.
             notifyFrameReady();
-            /** 
+            /**
              * ==================================
              * Start of actual sorting algorithm.
              * ==================================
@@ -87,12 +84,12 @@ class Selectionsort extends Thread
     {
         frameReady = true;
         // Notify since new frame is ready.
-        lock.notify();
+        this.notify();
         while(!frameIsDrawn())
         {
             try
             {
-                lock.wait();
+                this.wait();
             }
             catch(InterruptedException e)
             {
@@ -107,7 +104,7 @@ class Selectionsort extends Thread
     void notifyFrameDraw()
     {
         frameDrawn = true;
-        // New frame has just been drawn. Next frame is not ready yet. 
+        // New frame has just been drawn. Next frame is not ready yet.
         frameReady = false;
     }
 
@@ -124,7 +121,7 @@ class Selectionsort extends Thread
          * Elements need to swap their x-position AND their position in the array!
          * Otherwise, next iteration of the for-loop would cause severe bugs since
          * Bubblesort swaps the integers in the array (= change their index)
-         * and assumes the corresponding element is at the same index in the 
+         * and assumes the corresponding element is at the same index in the
          * elements array.
          */
         elements[i].swap(elements[j],Element.COORDINATES);
