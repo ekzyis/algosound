@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
  * For more information see comments in this file.
  *
  * @author ekzyis
- * @date 14 January 2018
+ * @date 18 January 2018
  */
 
 class Mergesort extends Thread
@@ -25,18 +25,15 @@ class Mergesort extends Thread
     private boolean frameReady;
     // Has the new frame been drawn?
     private boolean frameDrawn;
-    // Object for synchronization of threads.
-    private Object lock;
     // List of elements to unmark next frame.
     private ArrayList<Element> unmarkMe;
     // Keep track of stack of the cut indizes while sorting for proper visualization.
     private Stack<Integer> cutStack;
 
-    Mergesort(int[] _a, Object _lock, Element[] _elements)
+    Mergesort(int N)
     {
-        this.a = _a;
-        this.lock = _lock;
-        this.elements = _elements;
+        elements = createElements(N);
+        a = getValues(elements);
         // First frame is ready before first iteration.
         this.frameReady = true;
         this.frameDrawn = false;
@@ -50,7 +47,7 @@ class Mergesort extends Thread
     public void run()
     {
         // Gain access to monitor. If not possible, wait here.
-        synchronized(lock)
+        synchronized(this)
         {
             // Wait until first frame has been drawn.
             notifyFrameReady();
@@ -415,12 +412,12 @@ class Mergesort extends Thread
     {
         frameReady = true;
         // Notify since new frame is ready.
-        lock.notify();
+        this.notify();
         while(!frameIsDrawn())
         {
             try
             {
-                lock.wait();
+                this.wait();
             }
             catch(InterruptedException e)
             {

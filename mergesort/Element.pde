@@ -5,7 +5,7 @@
  * see getting sorted on the canvas.
  *
  * @author ekzyis
- * @date 16 January 2018
+ * @date 18 January 2018
  */
 class Element
 {
@@ -207,12 +207,13 @@ class Element
 }
 
 /**
- * Return elements with random value and given color(s).
+ * Return n elements with random values.
  */
-Element[] getElements(color[] c)
+Element[] createElements(int n)
 {
-    Element[] elements = new Element[N];
-    int elementwidth = W/N;
+    Element[] elements = new Element[n];
+    color[] c = getColors();
+    int elementwidth = W/n;
     // x offset
     int xd = 0;
     // color array offset
@@ -221,7 +222,7 @@ Element[] getElements(color[] c)
      * Heightlimit for elements. Without this, elements could go higher
      * than actual canvas height due to recursion lifting the elements.
      */
-    int maxHeight = (int)(H-(Math.log(N)/Math.log(2))*20);
+    int maxHeight = (int)(H-(Math.log(n)/Math.log(2))*20);
     for(int i=0;i<elements.length;++i)
     {
         int value = (int)(Math.random()*maxHeight);
