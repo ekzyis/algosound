@@ -19,7 +19,10 @@ class Quicksort extends Thread
     private boolean frameDrawn;
     // List of elements to unmark next frame.
     private ArrayList<Element> unmarkMe;
-
+    // Color of pivot element
+    private color pivotColor = color(255,0,0);
+    // Color of elements which are getting compared.
+    private color compareColor = color(0,255,0);
     Quicksort(int N)
     {
         elements = createElements(N);
@@ -38,6 +41,63 @@ class Quicksort extends Thread
         {
             // Wait until first frame has been drawn.
             notifyFrameReady();
+            int lower = 0;
+            int upper = a.length-1;
+            quicksortVisual(a, lower, upper);
+        }
+    }
+
+    void quicksortVisual(int[] a, int lower, int upper)
+    {
+        // This indizes will iterate over the set and find elements to swap.
+        int l = lower;
+        int r = upper;
+        int pivotIndex = (int)((l+r)/2);
+        /**
+         * After one do-loop, the element at the pivot index will be inserted
+         * where the iterating indizes l and r met. The pivot element will be sorted then
+         * since all elements left to it will be smaller and right to it larger than itself.
+         */
+        int pivot = a[pivotIndex];
+        mark(pivotIndex,pivotColor);
+        mark(l,compareColor);
+        mark(r,compareColor);
+        notifyFrameReady();
+        do
+        {
+            while (a[l]<pivot)
+            {
+                l++;
+                mark(pivotIndex,pivotColor);
+                mark(l,compareColor);
+                mark(r,compareColor);
+                notifyFrameReady();
+            }
+            while (a[r]>pivot)
+            {
+                r--;
+                mark(pivotIndex,pivotColor);
+                mark(l,compareColor);
+                mark(r,compareColor);
+                notifyFrameReady();
+            }
+            if (l<=r)
+            {
+                int tmp = a[l];
+                a[l] = a[r];
+                a[r]=tmp;
+                elements[l].swap(elements[r], (byte)(Element.VALUES | Element.COLORS));
+                l++;
+                r--;
+            }
+        }while(l<=r);
+        if (lower<r)
+        {
+            quicksortVisual(a,lower, r);
+        }
+        if (l<upper)
+        {
+            quicksortVisual(a, l, upper);
         }
     }
 
@@ -85,10 +145,10 @@ class Quicksort extends Thread
         return elements;
     }
 
-    // Mark currently accessed elements.
-    void mark(int i)
+    // Mark currently accessed elements with given color.
+    void mark(int i, color c)
     {
-        elements[i].mark();
+        elements[i].mark(c);
         // Add element to list of elements which get unmarked next frame.
         unmarkMe.add(elements[i]);
     }

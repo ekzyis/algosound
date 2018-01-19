@@ -24,6 +24,8 @@ class Element
     private color c;
     // Was this element accessed by the sorting algorithm during current frame?
     private boolean marked;
+    // With what color is this element marked? (If it is.)
+    private color markedColor;
     // Is this element in a sorted state?
     private boolean sorted;
 
@@ -51,7 +53,7 @@ class Element
         if(marked == true)
         {
             // red vertical line
-            fill(color(255,0,0));
+            fill(markedColor);
             noStroke();
             rect(x+w/4,0,w/2,H);
             stroke(0);
@@ -101,9 +103,10 @@ class Element
     }
 
     // Set this element as marked.
-    void mark()
+    void mark(color c)
     {
         this.marked = true;
+        this.markedColor = c;
     }
     // Unmark this element.
     void unmark()
