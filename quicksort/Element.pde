@@ -24,10 +24,20 @@ class Element
     private color c;
     // Was this element accessed by the sorting algorithm during current frame?
     private boolean marked;
+
     // With what color is this element marked? (If it is.)
     private color markedColor;
+    // Marking color for subsets
+    private color subsetColor = color(0,0,255,75);
+    // Marking color for merging elements
+    private color swapColor = color(0,255,0,75);
+
+    // Is this element in a subset currently marked by quicksort?
+    private boolean inSubset;
     // Is this element in a sorted state?
     private boolean sorted;
+    // Is this element currently being swapped by quicksort?
+    private boolean swapping;
 
     // constructor
     Element(int _x, int _y, int _w, int _v, color _c)
@@ -42,12 +52,13 @@ class Element
     // how to show this on canvas
     void show()
     {
+        int realHeight = H;
         if(sorted == true)
         {
             // green transparent background
             fill(color(0,255,0,50));
             noStroke();
-            rect(x,0,w,H);
+            rect(x,0,w,realHeight);
             stroke(0);
         }
         if(marked == true)
@@ -55,7 +66,26 @@ class Element
             // red vertical line
             fill(markedColor);
             noStroke();
-            rect(x+w/4,0,w/2,H);
+            rectMode(CENTER);
+            PVector center = new PVector(x+w/2,(H-value)/2);
+            rect(center.x,center.y,1,H-value);
+            rectMode(CORNER);
+            stroke(0);
+        }
+        if(inSubset == true)
+        {
+            // blueish transparent background
+            noStroke();
+            fill(subsetColor);
+            rect(x,0,w,realHeight);
+            stroke(0);
+        }
+        else if(swapping == true)
+        {
+            // greenish transparent background
+            noStroke();
+            fill(swapColor);
+            rect(x,0,w,realHeight);
             stroke(0);
         }
         fill(c);
@@ -115,9 +145,21 @@ class Element
     }
 
     // Set this element's state as sorted.
-    void setSorted()
+    void setSorted(boolean set)
     {
-        this.sorted = true;
+        this.sorted = set;
+    }
+
+    // Set this element's state as in a subset.
+    void setInSubset(boolean set)
+    {
+        this.inSubset = set;
+    }
+
+    // Mark element as swapping.
+    void setSwapping(boolean set)
+    {
+        this.swapping = set;
     }
 
     int getX() { return x; }
@@ -171,7 +213,7 @@ Element[] getTestElements()
     color[] c = getColors();
     int n = 6;
     Element[] elements = new Element[n];
-    int[] values = {10,2,5,8,112,4};
+    int[] values = {254,200,310,87,112,44};
     int elementwidth = W/n;
     int xd = 0;
     int cd = 0;
