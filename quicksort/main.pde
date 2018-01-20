@@ -17,17 +17,21 @@ final int W=640,H=320;
  // Number of elements to be sorted.
 final int N=W/5;
  // Framerate of visualization.
-final int FR = 120;
+final int FR = 30;
 /*
  * -----------------
  **/
 
+// Font of frame text.
+private PFont font;
 // The quicksort thread.
 private Quicksort sort;
+// Width of one element.
+int elementwidth = W/N;
 
 public void settings()
 {
-    size(W, H);
+    size(W+elementwidth, H);
 }
 
 void setup()
@@ -40,9 +44,12 @@ void setup()
     int[] test = getRndArr(N);
     sort.quicksort(test);
     assert(isSorted(test));
+    // Set font for drawing later.
+    font = createFont("Courier",12,true);
     // Start quicksort thread.
     sort.start();
 }
+
 
 void draw()
 {
@@ -61,11 +68,23 @@ void draw()
             }
         }
         // Draw elements.
+        translate(elementwidth,0);
         for(Element e : sort.getElements()) e.show();
+        translate(-elementwidth,0);
+        // Draw pivot line.
+        fill(255);
+        rect(0,H,elementwidth,-sort.getPivot());
+        text("Pivot",0,H-sort.getPivot()-2);
+        fill(255);
         // Notify sorting thread that frame has been drawn.
         sort.notifyFrameDraw();
         sort.notify();
+        //noLoop();
     }
+}
+void mousePressed()
+{
+    loop();
 }
 
 // Return a random integer array of size n.

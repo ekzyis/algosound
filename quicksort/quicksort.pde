@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 18 January 2018
+ * @date 20 January 2018
  */
 class Quicksort extends Thread
 {
@@ -23,8 +23,10 @@ class Quicksort extends Thread
     private color pivotColor = color(255,0,0);
     // Color of elements which are getting compared.
     private color compareColor = color(0,255,0);
+
     Quicksort(int N)
     {
+        //elements = getTestElements();
         elements = createElements(N);
         a = getValues(elements);
         // First frame is ready before first iteration.
@@ -47,6 +49,8 @@ class Quicksort extends Thread
         }
     }
 
+    // Class member to be able to return the pivot height for visualization.
+    int pivot;
     void quicksortVisual(int[] a, int lower, int upper)
     {
         // This indizes will iterate over the set and find elements to swap.
@@ -58,8 +62,13 @@ class Quicksort extends Thread
          * where the iterating indizes l and r met. The pivot element will be sorted then
          * since all elements left to it will be smaller and right to it larger than itself.
          */
-        int pivot = a[pivotIndex];
+        pivot = a[pivotIndex];
+        Element[] subset = (Element[])(subset(elements,l,r-l+1));
+        // Mark pivot element.
         mark(pivotIndex,pivotColor);
+        // Mark subset.
+        markInSubset(subset);
+        // Mark iterator indizes.
         mark(l,compareColor);
         mark(r,compareColor);
         notifyFrameReady();
@@ -69,6 +78,7 @@ class Quicksort extends Thread
             {
                 l++;
                 mark(pivotIndex,pivotColor);
+                markInSubset(subset);
                 mark(l,compareColor);
                 mark(r,compareColor);
                 notifyFrameReady();
@@ -77,6 +87,7 @@ class Quicksort extends Thread
             {
                 r--;
                 mark(pivotIndex,pivotColor);
+                markInSubset(subset);
                 mark(l,compareColor);
                 mark(r,compareColor);
                 notifyFrameReady();
@@ -87,6 +98,13 @@ class Quicksort extends Thread
                 a[l] = a[r];
                 a[r]=tmp;
                 elements[l].swap(elements[r], (byte)(Element.VALUES | Element.COLORS));
+                mark(pivotIndex,pivotColor);
+                markInSubset(subset);
+                elements[l].setSwapping(true);
+                elements[r].setSwapping(true);
+                mark(l,compareColor);
+                mark(r,compareColor);
+                notifyFrameReady();
                 l++;
                 r--;
             }
@@ -145,6 +163,12 @@ class Quicksort extends Thread
         return elements;
     }
 
+    // Get pivot height.
+    int getPivot()
+    {
+        return pivot;
+    }
+
     // Mark currently accessed elements with given color.
     void mark(int i, color c)
     {
@@ -153,12 +177,28 @@ class Quicksort extends Thread
         unmarkMe.add(elements[i]);
     }
 
+    /**
+     * Mark elements as being in a subset on which mergesort is currently operating.
+     * This also increases level of recursion by one.
+     */
+    void markInSubset(Element[] e)
+    {
+        for(Element el : e)
+        {
+            el.setInSubset(true);
+            //el.incrementRecursionLvl();
+            unmarkMe.add(el);
+        }
+    }
+
     // Clear markers from last frame.
     void clearMarkers()
     {
         for(Element e : unmarkMe)
         {
             e.unmark();
+            e.setInSubset(false);
+            e.setSwapping(false);
         }
         // remove all elements from list since a new frame will begin now.
         unmarkMe.clear();
