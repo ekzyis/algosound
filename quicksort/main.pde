@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 18 January 2018
+ * @date 22 January 2018
  */
 /**
  * Global variables.
@@ -50,7 +50,6 @@ void setup()
     sort.start();
 }
 
-
 void draw()
 {
     synchronized(sort)
@@ -81,10 +80,6 @@ void draw()
         sort.notify();
         //noLoop();
     }
-}
-void mousePressed()
-{
-    loop();
 }
 
 // Return a random integer array of size n.
