@@ -1,5 +1,6 @@
-// define synth
+// Parentheses to execute all important code at once
 (
+// Define synth
 SynthDef('mousePressed', {
 	arg pitch=200;
 	var sound = SinOsc.ar(pitch, mul:0.2).dup;
@@ -7,15 +8,15 @@ SynthDef('mousePressed', {
 	var env = EnvGen.kr(linen, doneAction:2);
 	Out.ar(0, sound * env);
 }).add;
-)
-// play synth
-Synth('mousePressed');
-// show network address
-NetAddr.localAddr
-// define listener
-(
+// Define listener
 OSCdef('mouseListener', {
 	arg msg;
 	Synth('mousePressed', [pitch:msg[1]+msg[2]]);
 }, "/mousePressed")
 )
+
+// Play synth
+Synth('mousePressed');
+
+// Show network address
+NetAddr.localAddr
