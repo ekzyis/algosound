@@ -1,7 +1,7 @@
 // Show frequency analyzer.
 FreqScope.new
 // Show stethoscope.
-Stethoscope.new
+Stethoscope.new(s)
 // Show local server's node tree.
 s.queryAllNodes
 
@@ -10,7 +10,7 @@ s.queryAllNodes
  * (Modified) Code sample from:
  * http://composerprogrammer.com/teaching/supercollider/sctutorial/2.5%20More%20Synthesis%20Examples.html
  */
-Chorus effect
+// Chorus effect
 x = {Mix(Saw.ar([440,443,437],mul:0.1))}.play;
 x.free
 (
@@ -43,7 +43,7 @@ SynthDef(\env_example, {
 	arg gate=1;
 	var env = Env(
 		[0.0,0.0,1.0,0.0],
-		[0.5,1.0,2.0],
+		[0.2,0.5,1.5],
 		// Loop from level index 2+1=3 (end index) to level index 0.
 		/*
 		 * This means, that the synth will loop from beginning to end
@@ -53,10 +53,23 @@ SynthDef(\env_example, {
 		 */
 		releaseNode:2,
 		loopNode:0);
-	var source = EnvGen.ar(env, gate, doneAction:2)*SinOsc.ar(550,mul:0.1).dup;
+	var source = SinOsc.ar(550,mul:0.1*EnvGen.ar(env, gate, doneAction:2)).dup;
 	Out.ar(0,source);
 }).add
 )
 x = Synth(\env_example)
 x.set(\gate, 0)
 
+/**
+ * Sound which should resemble something booting.
+ */
+(
+SynthDef(\boot, {
+	var ampEnv,freqEnv,src;
+	ampEnv = Env([0,0,1,1,0], [0.3,0.3,0.1,0.1]);
+	freqEnv = Env([0.01,0.01,1,1], [0.3,0.4,0.1],curve:\exp);
+	src = SinOsc.ar(EnvGen.ar(freqEnv,doneAction:2)*[1200,1197,1203], mul:0.1)*EnvGen.ar(ampEnv);
+	Out.ar(0, Pan2.ar(Mix(src),0));
+}).add
+)
+x = Synth(\boot);
