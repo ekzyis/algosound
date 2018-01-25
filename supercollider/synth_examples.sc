@@ -61,15 +61,15 @@ x = Synth(\env_example)
 x.set(\gate, 0)
 
 /**
- * Sound which should resemble something booting.
+ * Futuristic booting sound.
  */
 (
 SynthDef(\boot, {
 	var ampEnv,freqEnv,src;
-	ampEnv = Env([0,0,1,1,0], [0.3,0.3,0.1,0.1]);
-	freqEnv = Env([0.01,0.01,1,1], [0.3,0.4,0.1],curve:\exp);
-	src = SinOsc.ar(EnvGen.ar(freqEnv,doneAction:2)*[1200,1197,1203], mul:0.1)*EnvGen.ar(ampEnv);
+	ampEnv = EnvGen.ar(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
+	freqEnv = EnvGen.ar(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
+	src = SinOsc.ar(freqEnv*[2400,2300,2200,2100,2000], mul:0.1)*ampEnv;
 	Out.ar(0, Pan2.ar(Mix(src),0));
-}).add
+}).add;
 )
 x = Synth(\boot);
