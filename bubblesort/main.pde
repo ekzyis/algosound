@@ -13,10 +13,22 @@ import oscP5.*;
 import supercollider.*;
 /**
  * Members needed for sonification.
+ * --------------------------------
  */
+// Open sound control instance.
 private OscP5 osc;
+// Address of sc3-server.
 private NetAddress supercollider;
+// Status of connection.
 private boolean connected;
+/** Port on which sc3-server is listening for messages.
+ * This should match the output of NetAddr.localAddr in SuperCollider. */
+final private int SC_PORT = 57120;
+// Port on which OSC should listen for messages.
+final private int OSC_PORT = 12000;
+/*
+ * --------------------------------
+ **/
 /**
  * Global variables.
  * -----------------
@@ -71,10 +83,10 @@ void draw()
             {
             }
         }
-        // Draw status of IPC.
-        drawIPCStatus();
         // Draw elements.
         for(Element e : sort.getElements()) e.show();
+        // Draw status of IPC.
+        drawIPCStatus();
         // Notify bubblesort thread that frame has been drawn.
         sort.notifyFrameDraw();
         sort.notify();
@@ -104,22 +116,64 @@ void drawIPCStatus()
 // Initialise open sound control for communication with sc3-server.
 void initOSC()
 {
-    osc = new OscP5(this, 12000);
+    osc = new OscP5(this, OSC_PORT);
     // Initialize address to local sc server
-    // SC will listen for messages at port 57120
-    supercollider = new NetAddress("127.0.0.1", 57120);
-    // Check if server is running with a test message.
-    OscMessage msg = new OscMessage("/boot");
+    supercollider = new NetAddress("127.0.0.1", SC_PORT);
+    // Check if server is running with a status message.
     connected = false;
-    // send message
-    osc.send(msg,supercollider);
+    osc.send(new OscMessage("/status"),supercollider);
+    // Send boot message.
+    osc.send(new OscMessage("/boot"),supercollider);
+    // Start a thread which periodically checks if sc3-server is still running.
+    thread("checkSC3Status");
 }
 
 // Listen for messages.
 void oscEvent(OscMessage msg)
 {
-    println("OSC: message received.");
-    if(msg.addrPattern().equals("/helloFromSC")) connected = true;
+    // SC3 will send "/hello"-message if OSC did send "/status"-message.
+    if(msg.checkAddrPattern("/hello")) connected = true;
+}
+
+/**
+ * Periodically checks if sc3-server is still running.
+ * This method should only be executed in a separate thread.
+ */
+/**
+ * Boolean to stop thread when main-thread is exiting.
+ * Without this, a NullPointerException is thrown.
+ */
+boolean exiting = false;
+void checkSC3Status()
+{
+    while(!exiting)
+    {
+        /**
+         * TODO: This implementation depends on order of execution.
+         * If 1. connected gets set to false, 2. a frame gets drawn,
+         * the ICP status is marked as lost in the frame even though
+         * connection may not be lost.
+         * -> Find a way without setting connected to false before checking
+         * the sc3-server.
+         * (Another 'connected' variable could work, but would be messy?)
+         */
+        connected = false;
+        // Check if osc has been disposed. (Possible during exit of main-thread)
+        if(osc!=null)
+        {
+            osc.send(new OscMessage("/status"),supercollider);
+        }
+        delay(1000);
+    }
+}
+
+// This function is called during exit.
+void exit()
+{
+    // Exit thread which checks connection between OSC and sc3-server.
+    exiting = true;
+    // Close OSC after execution to prevent blocking of OSC_PORT.
+    osc.dispose();
 }
 
 // Return a random integer array of size n.
