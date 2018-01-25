@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 22 January 2018
+ * @date 25 January 2018
  */
 /**
  * Global variables.
@@ -46,6 +46,7 @@ void setup()
     assert(isSorted(test));
     // Set font for drawing later.
     font = createFont("Courier",12,true);
+    textFont(font);
     // Start quicksort thread.
     sort.start();
 }
