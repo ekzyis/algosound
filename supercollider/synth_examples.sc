@@ -74,7 +74,7 @@ SynthDef(\reverb_example, {
 	arg in, out=0;
 	var sig;
 	sig = In.ar(in, 2);
-	sig = Decay2.ar(sig);
+	sig = FreeVerb.ar(sig);
 	Out.ar(out, sig);
 }).add;
 )
