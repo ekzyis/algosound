@@ -5,6 +5,10 @@ Stethoscope.new(s)
 // Show local server's node tree.
 s.queryAllNodes
 
+// Groups for specific source and effect synths.
+~sourceGrp = Group.new;
+~fxGrp = Group.after(~sourceGrp);
+
 /*
  * Frequency and amplitude modulation example.
  * (Modified) Code sample from:
@@ -59,6 +63,37 @@ SynthDef(\env_example, {
 )
 x = Synth(\env_example)
 x.set(\gate, 0)
+
+/**
+ * Effect example with reverb.
+ * (https://www.youtube.com/watch?v=VGs_lMw2hQg&index=8&list=PLPYzvS8A_rTaNDweXe6PX4CXSGq4iEWYC)
+ */
+~reverbBus = Bus.audio(s, 1);
+(
+SynthDef(\reverb_example, {
+	arg in, out=0;
+	var sig;
+	sig = In.ar(in, 2);
+	sig = Decay2.ar(sig);
+	Out.ar(out, sig);
+}).add;
+)
+(
+SynthDef(\blip_example, {
+	arg out;
+	var freq, trig, sig;
+	freq = LFNoise0.kr(3).exprange(300,1200).round(300);
+	sig = SinOsc.ar(freq) * 0.25;
+	trig = Dust.kr(2);
+	sig = sig * EnvGen.kr(Env.perc(0.01, 0.2), trig);
+	sig = Pan2.ar(sig, LFNoise1.kr(10));
+	Out.ar(out, sig);
+}).add;
+)
+x = Synth.before(y,\blip_example, [\out, ~reverbBus], ~sourceGrp);
+x.free
+y = Synth(\reverb_example, [\in, ~reverbBus], ~fxGrp);
+y.free
 
 /**
  * Futuristic booting sound.
