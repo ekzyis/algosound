@@ -66,7 +66,7 @@ x.set(\gate, 0)
 
 /**
  * Effect example with reverb.
- * (https://www.youtube.com/watch?v=VGs_lMw2hQg&index=8&list=PLPYzvS8A_rTaNDweXe6PX4CXSGq4iEWYC)
+ * https://www.youtube.com/watch?v=VGs_lMw2hQg&index=8&list=PLPYzvS8A_rTaNDweXe6PX4CXSGq4iEWYC
  */
 ~reverbBus = Bus.audio(s, 1);
 (
@@ -94,3 +94,38 @@ x = Synth.before(y,\blip_example, [\out, ~reverbBus], ~sourceGrp);
 x.free
 y = Synth(\reverb_example, [\in, ~reverbBus], ~fxGrp);
 y.free
+
+
+/**
+ * Example of using patterns with Pdef.
+ * (Modified) Code sample from:
+ * https://www.youtube.com/watch?v=nB_bVJ1c1Rg&index=11&list=PLPYzvS8A_rTaNDweXe6PX4CXSGq4iEWYC
+ */
+(
+SynthDef(\sine, {
+	arg freq=440, atk=0.005, rel=0.3, amp=1, pan=0;
+	var sig, env;
+	sig = SinOsc.ar(freq);
+	env = EnvGen.kr(Env([0,1,0],[atk,rel]),doneAction:2);
+	sig = Pan2.ar(sig, pan, amp);
+	sig = sig * env;
+	Out.ar(0, sig);
+}).add;
+)
+(
+Pdef(
+	\sinepat,
+	Pbind(
+		\instrument, \sine,
+		// Time between synths. Linear distribution between 0.05 and 0.5.
+		\dur, Pwhite(0.05, 0.5, inf),
+		// Only works when pitch-argument is called freq in synth. See hierarchy in Pbind-documentation.
+		\midinote, Pseq([35],inf),
+		\harmonic, Pexprand(1, 80, inf).round,
+		\atk, Pwhite(0.01,1.0, inf),
+		\rel, Pwhite(1.0, 2.0, inf),
+		\amp, Pkey(\harmonic).reciprocal * 0.3,
+		\pan, Pwhite(-0.8, 0.8, inf),
+	);
+).play;
+)
