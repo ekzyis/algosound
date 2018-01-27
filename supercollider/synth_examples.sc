@@ -36,6 +36,7 @@ SynthDef(\AMFM_example, {
 }).add;
 )
 x = Synth(\AMFM_example)
+x.free
 
 /*
  * Looping envelope example.
@@ -63,6 +64,7 @@ SynthDef(\env_example, {
 )
 x = Synth(\env_example)
 x.set(\gate, 0)
+x.free
 
 /**
  * Effect example with reverb.
@@ -144,3 +146,4 @@ SynthDef("bubbles", { |out|
 }).add;
 )
 x = Synth(\bubbles)
+x.free
