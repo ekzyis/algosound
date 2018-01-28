@@ -138,7 +138,7 @@ Pdef(
  * http://doc.sccode.org/Classes/DiskOut.html
  */
 (
-SynthDef("bubbles", { |out|
+SynthDef(\bubbles, { |out|
     var f, zout;
     f = LFSaw.kr(0.4, 0, 24, LFSaw.kr([8,7.23], 0, 3, 80)).midicps; // glissando function
     zout = CombN.ar(SinOsc.ar(f, 0, 0.04), 0.2, 0.2, 4); // echoing sine wave
@@ -147,3 +147,37 @@ SynthDef("bubbles", { |out|
 )
 x = Synth(\bubbles)
 x.free
+
+/**
+ * Example of destructive interference and importance of Order of Execution.
+ * This only works, when both signals are in one synth
+ * thus processed at the same time, not in a order of execution.
+ */
+(
+SynthDef(\doublePhase, { |phase=0|
+	var sig;
+	sig = SinOsc.ar(440, [0,phase], 0.1);
+	Out.ar(0, Mix(sig));
+}).add;
+)
+x = Synth(\doublePhase);
+// Sounds stops.
+x.set(\phase, 1pi)
+// Sound "starts" again but more quiet than with no phase difference.
+x.set(\phase, 0.9pi)
+(
+SynthDef(\singlePhase, { |phase=0,freq=440|
+	var sig;
+	sig = SinOsc.ar(440, phase, 0.1);
+	Out.ar(0, sig);
+}).add;
+)
+x = Synth(\singlePhase);
+y = Synth(\singlePhase);
+/**
+ * Depending on the exact time the synths were created (= their initial phase offset),
+ * the interference of these two SinOsc will not be fully destructive when setting on oscilator's
+ * to 0.5pi (=only adding to the initial phase offset).
+ * When the initial phase offset was more close to pi (=half phase), the signal could even be amplified.
+ */
+s.queryAllNodes
