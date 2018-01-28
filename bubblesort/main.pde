@@ -16,11 +16,19 @@ import supercollider.*;
  * --------------------------------
  */
 // Open sound control instance.
-private OscP5 osc;
+private OscP5 OSC;
 // Address of sc3-server.
-private NetAddress supercollider;
+private NetAddress SUPERCOLLIDER;
 // Status of connection.
 private boolean connected;
+// Osc address of status listener.
+private final String OSC_STATUS = "/status";
+// SuperCollider status reply.
+private final String SC_REPLY = "/hello";
+// Osc address of boot listener.
+private final String OSC_BOOT = "/boot";
+// Osc address of swap listener.
+private final String OSC_SWAP = "/swap";
 /** Port on which sc3-server is listening for messages.
  * This should match the output of NetAddr.localAddr in SuperCollider. */
 final private int SC_PORT = 57120;
@@ -38,14 +46,15 @@ final int W=640,H=320;
  // Number of elements to be sorted.
 final int N=W/5;
  // Framerate of visualization.
-final int FR = 300;
+final int FR = 60;
 /*
  * -----------------
  **/
 
 // The bubblesort thread.
 private Bubblesort sort;
-
+// IPC-status-thread.
+private Thread status;
 public void settings()
 {
     size(W, H);
@@ -116,23 +125,47 @@ void drawIPCStatus()
 // Initialise open sound control for communication with sc3-server.
 void initOSC()
 {
-    osc = new OscP5(this, OSC_PORT);
+    OSC = new OscP5(this, OSC_PORT);
     // Initialize address to local sc server
-    supercollider = new NetAddress("127.0.0.1", SC_PORT);
+    SUPERCOLLIDER = new NetAddress("127.0.0.1", SC_PORT);
     // Check if server is running with a status message.
     connected = false;
-    osc.send(new OscMessage("/status"),supercollider);
+    OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
     // Send boot message.
-    osc.send(new OscMessage("/boot"),supercollider);
+    OSC.send(new OscMessage(OSC_BOOT),SUPERCOLLIDER);
     // Start a thread which periodically checks if sc3-server is still running.
-    thread("checkSC3Status");
+    status = new Thread()
+    {
+        @Override
+        public void run()
+        {
+            while(!exiting)
+            {
+                /**
+                 * TODO: This implementation depends on order of execution.
+                 * If 1. connected gets set to false, 2. a frame gets drawn,
+                 * the ICP status is marked as lost in the frame even though
+                 * connection may not be lost.
+                 * -> Find a way without setting connected to false before checking
+                 * the sc3-server.
+                 * (Another 'connected' variable could work, but would be messy?)
+                 */
+                connected = false;
+                OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
+                delay(1000);
+            }
+            println("--- checkSC3Status-thread has terminated.");
+        }
+    };
+    status.start();
+   // thread("checkSC3Status");
 }
 
 // Listen for messages.
 void oscEvent(OscMessage msg)
 {
-    // SC3 will send "/hello"-message if OSC did send "/status"-message.
-    if(msg.checkAddrPattern("/hello")) connected = true;
+    // SC3 will send SC_REPLY-message if OSC did send OSC_STATUS-message.
+    if(msg.checkAddrPattern(SC_REPLY)) connected = true;
 }
 
 /**
@@ -159,21 +192,31 @@ void checkSC3Status()
          */
         connected = false;
         // Check if osc has been disposed. (Possible during exit of main-thread)
-        if(osc!=null)
+        if(OSC!=null)
         {
-            osc.send(new OscMessage("/status"),supercollider);
+            OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
         }
         delay(1000);
     }
+    println("--- status-thread has terminated.");
 }
 
 // This function is called during exit.
 void exit()
 {
+    // Interrupt the sorting thread causing it to terminate properly.
+    sort.interrupt();
     // Exit thread which checks connection between OSC and sc3-server.
     exiting = true;
+    try
+    {
+        // Wait for threads to terminate.
+        sort.join();
+        status.join();
+    }
+    catch(Exception e) {}
     // Close OSC after execution to prevent blocking of OSC_PORT.
-    osc.dispose();
+    OSC.dispose();
 }
 
 // Return a random integer array of size n.

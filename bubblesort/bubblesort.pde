@@ -5,11 +5,11 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 18 January 2018
+ * @date 28 January 2018
  */
 class Bubblesort extends Thread
 {
-    // Array which should be sorted
+    // Array which should be sorted.
     private int[] a;
     // Elements which have to be swapped according to integers.
     private Element[] elements;
@@ -47,7 +47,7 @@ class Bubblesort extends Thread
             do
             {
                 swap = false;
-                for(int i=0; i<a.length-1; ++i)
+                for(int i=0; i<a.length-1 && !isInterrupted(); ++i)
                 {
                     // They are in false order. Swap them.
                     if(a[i]>a[i+1])
@@ -63,13 +63,31 @@ class Bubblesort extends Thread
                     mark(i);
                     mark(i+1);
                     notifyFrameReady();
+                    // Send osc message for sonification.
+                    int[] args = {a[i]};
+                    sendMessage(OSC_SWAP,args);
                 }
             }while(swap);
             /**
              * Bubblesort keeps iterating through the whole array
-             * until not a single time a swap has happened.
+             * until not a single time a swap has happened
+             * or the thread has been interrupted.
              */
         }
+        println("--- bubblesort-thread has terminated.");
+    }
+
+    /**
+     * Send a message to an osc listener with given path and arguments.
+     */
+    void sendMessage(String path, int[] args)
+    {
+        OscMessage msg = new OscMessage(path);
+        for(int n : args)
+        {
+            msg.add(n);
+        }
+        if(OSC!=null) OSC.send(msg,SUPERCOLLIDER);
     }
 
     boolean frameIsReady()
@@ -95,6 +113,10 @@ class Bubblesort extends Thread
             }
             catch(InterruptedException e)
             {
+                // Exception clears the interrupted flag. Reset it to check it later.
+                this.interrupt();
+                // Set frameDrawn to escape the while-loop.
+                frameDrawn = true;
             }
         }
         // Clean markers from last frame.
