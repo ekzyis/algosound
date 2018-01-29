@@ -191,6 +191,8 @@ void exit()
     catch(Exception e) {}
     // Close OSC after execution to prevent blocking of OSC_PORT.
     OSC.dispose();
+    // Call exit() of PApplet to properly exit this sketch.
+    super.exit();
 }
 
 // Return a random integer array of size n.
