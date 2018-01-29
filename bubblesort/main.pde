@@ -181,7 +181,7 @@ void drawIPCStatus()
     stroke(0);
 }
 
-// Initialise open sound control for communication with sc3-server.
+// Initialize open sound control for communication with sc3-server.
 void initOSC()
 {
     OSC = new OscP5(this, OSC_PORT);
