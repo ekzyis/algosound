@@ -62,7 +62,7 @@ public void settings()
 
 void setup()
 {
-    // Initialise open sound control for communication with sc3-server.
+    // Initialize open sound control for communication with sc3-server.
     thread("initOSC");
     // Define frame rate.
     frameRate(FR);
@@ -139,7 +139,7 @@ void initOSC()
         @Override
         public void run()
         {
-            while(!exiting)
+            while(!isInterrupted())
             {
                 /**
                  * TODO: This implementation depends on order of execution.
@@ -152,13 +152,20 @@ void initOSC()
                  */
                 connected = false;
                 OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
-                delay(1000);
+                try
+                {
+                    sleep(1000);
+                }
+                catch(InterruptedException e)
+                {
+                    // Exception clears the interrupted flag. Reset it.
+                    this.interrupt();
+                }
             }
             println("--- checkSC3Status-thread has terminated.");
         }
     };
     status.start();
-   // thread("checkSC3Status");
 }
 
 // Listen for messages.
@@ -168,46 +175,13 @@ void oscEvent(OscMessage msg)
     if(msg.checkAddrPattern(SC_REPLY)) connected = true;
 }
 
-/**
- * Periodically checks if sc3-server is still running.
- * This method should only be executed in a separate thread.
- */
-/**
- * Boolean to stop thread when main-thread is exiting.
- * Without this, a NullPointerException is thrown.
- */
-boolean exiting = false;
-void checkSC3Status()
-{
-    while(!exiting)
-    {
-        /**
-         * TODO: This implementation depends on order of execution.
-         * If 1. connected gets set to false, 2. a frame gets drawn,
-         * the ICP status is marked as lost in the frame even though
-         * connection may not be lost.
-         * -> Find a way without setting connected to false before checking
-         * the sc3-server.
-         * (Another 'connected' variable could work, but would be messy?)
-         */
-        connected = false;
-        // Check if osc has been disposed. (Possible during exit of main-thread)
-        if(OSC!=null)
-        {
-            OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
-        }
-        delay(1000);
-    }
-    println("--- status-thread has terminated.");
-}
-
 // This function is called during exit.
 void exit()
 {
     // Interrupt the sorting thread causing it to terminate properly.
     sort.interrupt();
-    // Exit thread which checks connection between OSC and sc3-server.
-    exiting = true;
+    // Interrupt thread which checks connection between OSC and sc3-server.
+    status.interrupt();
     try
     {
         // Wait for threads to terminate.
