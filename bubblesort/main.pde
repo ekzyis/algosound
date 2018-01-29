@@ -11,6 +11,7 @@
 import netP5.*;
 import oscP5.*;
 import supercollider.*;
+import controlP5.*;
 /**
  * Members needed for sonification.
  * --------------------------------
@@ -50,14 +51,18 @@ final int FR = 60;
 /*
  * -----------------
  **/
-
+// GUI
+private ControlP5 cp5;
+// Width of GUI
+final int GUI_W=70;
 // The bubblesort thread.
 private Bubblesort sort;
 // IPC-status-thread.
 private Thread status;
+
 public void settings()
 {
-    size(W, H);
+    size(W+GUI_W, H);
 }
 
 void setup()
@@ -66,14 +71,60 @@ void setup()
     thread("initOSC");
     // Define frame rate.
     frameRate(FR);
+    // Initialize the graphical user interface.
+    cp5 = new ControlP5(this);
+    initGUI();
     // Initialize bubblesort thread.
     sort = new Bubblesort(N);
     // Assert that implementation is sorting correctly.
     int[] test = getRndArr(N);
     sort.sort(test);
     assert(isSorted(test));
-    // Start bubblesort thread.
-    sort.start();
+}
+
+/**
+ * User interface consists of buttons at the right side.
+ */
+void initGUI()
+{
+    Button.autoWidth = 50;
+    cp5.addButton("start/pause").setPosition(W+10,10).setLabel("Start");
+}
+
+/**
+ * Eventhandling of user interface.
+ */
+void controlEvent(ControlEvent event)
+{
+    Controller c = event.getController();
+    if(c.getName().equals("start/pause"))
+    {
+        String currentLabel = c.getLabel();
+        // Do action corresponding to current label.
+        if(currentLabel.equals("Start"))
+        {
+            /**
+             * Did thread already start? If not, start it.
+             * (Execution never reaches this statement when it would be false since
+             * the label will never be again "Start" so it's actually unnecessary.)
+             */
+            if(!sort.isAlive())
+            {
+                sort.start();
+            }
+            c.setLabel("Pause");
+        }
+        else if(currentLabel.equals("Pause"))
+        {
+            sort.pause();
+            c.setLabel("Resume");
+        }
+        else if(currentLabel.equals("Resume"))
+        {
+            sort.unpause();
+            c.setLabel("Pause");
+        }
+    }
 }
 
 void draw()
@@ -81,24 +132,32 @@ void draw()
     synchronized(sort)
     {
         background(25);
-        // Wait until new frame is ready.
-        while(!sort.frameIsReady())
+        // Has sorting thread started and is not paused nor exiting? If not, no need for waiting.
+        if(sort.isAlive() && !sort.isPaused() && !sort.isExiting())
         {
-            try
+            // Wait until new frame is ready.
+            while(!sort.frameIsReady())
             {
-                sort.wait();
-            }
-            catch(InterruptedException e)
-            {
+                try
+                {
+                    sort.wait();
+                }
+                catch(InterruptedException e) {}
             }
         }
         // Draw elements.
         for(Element e : sort.getElements()) e.show();
         // Draw status of IPC.
         drawIPCStatus();
-        // Notify bubblesort thread that frame has been drawn.
-        sort.notifyFrameDraw();
-        sort.notify();
+        /**
+         * Notify bubblesort thread that frame has been drawn.
+         * (notify() will just do nothing if thread did not start yet.)
+         */
+        if(sort.isAlive() && !sort.isPaused())
+        {
+            sort.notifyFrameDraw();
+            sort.notify();
+        }
     }
 }
 
@@ -178,9 +237,18 @@ void oscEvent(OscMessage msg)
 // This function is called during exit.
 void exit()
 {
-    // Interrupt the sorting thread causing it to terminate properly.
-    sort.interrupt();
-    // Interrupt thread which checks connection between OSC and sc3-server.
+    // Exit the sorting thread using its own implemented exit-method.
+    sort.exit();
+    /**
+     * Interrupt status-thread which checks connection between OSC and sc3-server.
+     * This will terminate the status-thread in a clean way.
+     * TODO: Set status-thread as daemon thread so JVM will exit even when status is still running.
+     * UPDATE: If thread should be terminated by JVM when no other none-daemon-threads are running,
+     * a NullPointer because of the OSC-instance is thrown. This leads to a decision between
+     * using daemon thread convenience but needing a if-statement (osc!=null) in status-thread
+     * or interrupting and waiting for termination.
+     * STATUS: not decided yet.
+     */
     status.interrupt();
     try
     {
@@ -191,6 +259,8 @@ void exit()
     catch(Exception e) {}
     // Close OSC after execution to prevent blocking of OSC_PORT.
     OSC.dispose();
+    // Is this call necessary to prevent memory leaks or something? Better call it when in doubt.
+    cp5.dispose();
     // Call exit() of PApplet to properly exit this sketch.
     super.exit();
 }
