@@ -64,7 +64,7 @@ class Bubblesort extends Thread
                     mark(i+1);
                     notifyFrameReady();
                     // Send osc message for sonification.
-                    int[] args = {a[i],a[i+1]};
+                    int[] args = {map(a[i],0,H,FREQ_MIN,FREQ_MAX),map(a[i+1],0,H,FREQ_MIN,FREQ_MAX),FREQ_MIN,FREQ_MAX};
                     sendMessage(OSC_SWAP,args);
                 }
             }while(swap);
@@ -81,16 +81,12 @@ class Bubblesort extends Thread
      * Send a message to an osc listener with given path and arguments.
      */
     final int FREQ_MIN = 200;
-    final int FREQ_MAX = 2000;
+    final int FREQ_MAX = 1640;
     void sendMessage(String path, int[] args)
     {
         OscMessage msg = new OscMessage(path);
         for(int n : args)
         {
-            println("value="+n);
-            float x = map(n,0,H,FREQ_MIN,FREQ_MAX);
-            println("mapped n="+x);
-            n = (int)(x);
             msg.add(n);
         }
         if(OSC!=null) OSC.send(msg,SUPERCOLLIDER);
@@ -101,15 +97,11 @@ class Bubblesort extends Thread
     {
         // Available amount of target numbers
         int targets = e2-s2;
-        println("targets="+targets);
         // Amount of input numbers
         int n = e1-s1;
-        println("n="+n);
         // Space between mapped input numbers.
         int dFreq = targets/n;
-        println("dFreq="+dFreq);
         int res = s2 + value*dFreq;
-        println("result="+res);
         return res;
     }
 

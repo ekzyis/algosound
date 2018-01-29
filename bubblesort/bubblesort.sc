@@ -22,13 +22,52 @@ OSCdef(\bootListener, {
 /**
  * This Synth is a placeholder for the actual swap synth(s).
  */
-SynthDef(\placeholder, { |freq1=440,freq2=880|
-	var sig = SinOsc.ar([freq1,freq2])*EnvGen.kr(Env.perc(0.01,0.1,0.1),doneAction:2);
+SynthDef(\placeholder, { |freq1=440,freq2=440|
+	var sig = SinOsc.ar([freq1,freq2])*EnvGen.kr(Env.perc(0.01,0.2,0.05),doneAction:2);
 	Out.ar(0, Pan2.ar(Mix(sig)));
 }).add;
+~old1 = 880;
+~old2 = 880;
 OSCdef(\swapListener, {
 	arg msg;
-	Synth(\placeholder, [\freq1, msg[1], \freq2, msg[2]]);
+	var freq1=~old1, freq2=~old2;
+	// Increment or decrement frequencies.
+	if(msg[1]>~old1,
+		{
+			freq1 = freq1+10;
+		},
+		{
+			freq1 = freq1-10;
+		}
+	);
+	if(msg[2]>~old2,
+		{
+			freq2 = freq2+10;
+		},
+		{
+			freq2 = freq2-10;
+		}
+	);
+	// But don't exceed given limits.
+	if((freq1<msg[3])||(freq1>msg[4]),
+		{
+			freq1 = ~old1;
+		},
+		{}
+	);
+	if((freq2<msg[3])||(freq2>msg[4]),
+		{
+			freq2 = ~old1;
+		},
+		{}
+	);
+	"-".postln;
+	freq1.postln;
+	freq2.postln;
+	"-".postln;
+	Synth(\placeholder, [\freq1, msg[1], \freq2, msg[2]] );
+	~old1 = freq1;
+	~old2 = freq2;
 }, "/swap");
 
 // Create address to send messages to Processing client
@@ -39,5 +78,3 @@ OSCdef(\statuslistener, {
 }, "/status");
 
 )//--Parentheses end
-FreqScope.new
-
