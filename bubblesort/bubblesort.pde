@@ -23,6 +23,9 @@ class Bubblesort extends Thread
     private boolean paused;
     // Should this thread exit?
     private boolean exiting;
+    // Needed for sonification.
+    final int FREQ_MIN = 200;
+    final int FREQ_MAX = 1640;
 
     Bubblesort(int N)
     {
@@ -75,7 +78,7 @@ class Bubblesort extends Thread
                     notifyFrameReady();
                     // Send osc message for sonification.
                     int[] args = {map(a[i],0,H,FREQ_MIN,FREQ_MAX),map(a[i+1],0,H,FREQ_MIN,FREQ_MAX),FREQ_MIN,FREQ_MAX};
-                    sendMessage(OSC_SWAP,args);
+                    sendMessage(OSC_MODAUDIO,args);
                 }
             }while(swap);
             /**
@@ -87,20 +90,8 @@ class Bubblesort extends Thread
         println("--- bubblesort-thread has terminated.");
     }
 
-    /**
-     * Send a message to an osc listener with given path and arguments.
-     */
-    final int FREQ_MIN = 200;
-    final int FREQ_MAX = 1640;
-    void sendMessage(String path, int[] args)
-    {
-        OscMessage msg = new OscMessage(path);
-        for(int n : args)
-        {
-            msg.add(n);
-        }
-        if(OSC!=null) OSC.send(msg,SUPERCOLLIDER);
-    }
+
+
 
     // Overriding map function since old function didn't give expected results.
     int map(int value, int s1, int e1, int s2, int e2)

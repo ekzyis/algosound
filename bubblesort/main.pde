@@ -28,8 +28,12 @@ private final String OSC_STATUS = "/status";
 private final String SC_REPLY = "/hello";
 // Osc address of boot listener.
 private final String OSC_BOOT = "/boot";
-// Osc address of swap listener.
-private final String OSC_SWAP = "/swap";
+// Osc address of audio listeners
+private final String OSC_STARTAUDIO = "/wave_start";
+private final String OSC_PAUSEAUDIO = "/wave_pause";
+private final String OSC_RESUMEAUDIO = "/wave_resume";
+private final String OSC_MODAUDIO = "/wave_set";
+private final String OSC_FREEAUDIO = "/wave_free";
 /** Port on which sc3-server is listening for messages.
  * This should match the output of NetAddr.localAddr in SuperCollider. */
 final private int SC_PORT = 57120;
@@ -110,17 +114,23 @@ void controlEvent(ControlEvent event)
              */
             if(!sort.isAlive())
             {
+                println("---starting audio");
+                OSC.send(new OscMessage(OSC_STARTAUDIO),SUPERCOLLIDER);
                 sort.start();
             }
             c.setLabel("Pause");
         }
         else if(currentLabel.equals("Pause"))
         {
+            println("---pause audio");
+            OSC.send(new OscMessage(OSC_PAUSEAUDIO),SUPERCOLLIDER);
             sort.pause();
             c.setLabel("Resume");
         }
         else if(currentLabel.equals("Resume"))
         {
+            println("---resume audio");
+            OSC.send(new OscMessage(OSC_RESUMEAUDIO),SUPERCOLLIDER);
             sort.unpause();
             c.setLabel("Pause");
         }
@@ -234,6 +244,19 @@ void oscEvent(OscMessage msg)
     if(msg.checkAddrPattern(SC_REPLY)) connected = true;
 }
 
+/**
+ * Send a message to an osc listener with given path and arguments.
+ */
+void sendMessage(String path, int[] args)
+{
+    OscMessage msg = new OscMessage(path);
+    for(int n : args)
+    {
+        msg.add(n);
+    }
+    if(OSC!=null) OSC.send(msg,SUPERCOLLIDER);
+}
+
 // This function is called during exit.
 void exit()
 {
@@ -257,6 +280,8 @@ void exit()
         status.join();
     }
     catch(Exception e) {}
+    // Free synth on sc3-server.
+    OSC.send(new OscMessage(OSC_FREEAUDIO),SUPERCOLLIDER);
     // Close OSC after execution to prevent blocking of OSC_PORT.
     OSC.dispose();
     // Is this call necessary to prevent memory leaks or something? Better call it when in doubt.
