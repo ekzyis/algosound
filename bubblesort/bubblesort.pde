@@ -90,9 +90,6 @@ class Bubblesort extends Thread
         println("--- bubblesort-thread has terminated.");
     }
 
-
-
-
     // Overriding map function since old function didn't give expected results.
     int map(int value, int s1, int e1, int s2, int e2)
     {
