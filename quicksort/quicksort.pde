@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 20 January 2018
+ * @date 31 January 2018
  */
 class Quicksort extends Thread
 {
@@ -23,6 +23,13 @@ class Quicksort extends Thread
     private color pivotColor = color(255,0,0);
     // Color of elements which are getting compared.
     private color compareColor = color(0,255,0);
+    // Is this thread marked as paused by the user?
+    private boolean paused;
+    // Should this thread exit?
+    private boolean exiting;
+    // Needed for sonification.
+    final int FREQ_MIN = 200;
+    final int FREQ_MAX = 1640;
 
     Quicksort(int N)
     {
@@ -46,6 +53,7 @@ class Quicksort extends Thread
             int lower = 0;
             int upper = a.length-1;
             quicksortVisual(a, lower, upper);
+            println("--- quicksort-thread has terminated.");
         }
     }
 
@@ -134,7 +142,12 @@ class Quicksort extends Thread
     {
         frameReady = true;
         this.notify();
-        while(!frameIsDrawn())
+        /**
+         * Boolean expressions make sure that thread will only wait in this loop
+         * if it is actually waiting for a new frame. If thread is paused,
+         * it will wait in the next loop. If it's exiting, it will not wait but exit.
+         */
+        while(!frameIsDrawn() && !isPaused() && !isExiting())
         {
             try
             {
@@ -142,11 +155,74 @@ class Quicksort extends Thread
             }
             catch(InterruptedException e)
             {
+                // Exception clears the interrupted flag. Reset it to check it later.
+                this.interrupt();
+            }
+        }
+        /**
+         * Check if this frame the user did press the pause button. If yes and thread is not exiting,
+         * the thread will pause until the user wants to resume.
+         */
+        while(isPaused() && !isExiting())
+        {
+            try
+            {
+                this.wait();
+            }
+            catch(InterruptedException e)
+            {
+                // Exception clears the interrupted flag. Reset it to check it later.
+                this.interrupt();
             }
         }
         // Clean markers from last frame.
         clearMarkers();
         frameDrawn = false;
+
+        /**
+         * If thread is exiting, the interrupt-flag will be still set at this point.
+         * This causes to escape from the for-loop, set swap to false, and then leave the do-while-loop
+         * and finally terminate this thread.
+         * If thread was paused or waiting for a new frame and then a InterruptedException happens,
+         * the flag will be reset but the thread will continue to wait for a resume or a new frame since the
+         * wait()-statement is in a while-loop. This following wait() unsets the interrupted-flag
+         * so the thread will not exit when interrupted while pausing or waiting for a new frame.
+         */
+    }
+
+    boolean isPaused()
+    {
+        return paused;
+    }
+    void pause()
+    {
+        this.paused = true;
+        // Notify thread so it will always wait in the correct expected loop.
+        synchronized(this)
+        {
+            this.notify();
+        }
+    }
+    void unpause()
+    {
+        this.paused = false;
+        // Notify thread since it should no longer be paused.
+        synchronized(this)
+        {
+            this.notify();
+        }
+    }
+
+    boolean isExiting()
+    {
+        return exiting;
+    }
+    // Set the exit-flag and interrupt the thread; waking it up from eventual waiting.
+    void exit()
+    {
+        this.exiting = true;
+        // This wakes thread up from waiting, making it able to exit.
+        this.interrupt();
     }
 
     // Notify this thread that new frame has been drawn.
