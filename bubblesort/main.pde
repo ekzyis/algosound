@@ -87,12 +87,32 @@ void setup()
  */
 void initGUI()
 {
+    // Create the y-coordinates for the buttons and save them in an array.
     Button.autoWidth = 50;
-    cp5.addButton("start/pause").setPosition(W+10,10).setLabel("Start");
+    Button.autoHeight = 20;
+    int yInset = 10;
+    int len = (int)(H/(yInset+Button.autoHeight));
+    int[] yPos = new int[len];
+    int y0 = yInset+Button.autoHeight;
+    for(int i=0;i<len;++i)
+    {
+        yPos[i] = (i+1)*y0 - Button.autoHeight;
+    }
+    cp5.addButton("start/pause").setPosition(W+10,yPos[0]).setLabel("Start");
+    /**
+     * Naming the button like the exit()-function triggers the function when pressing
+     * thus no need of defining a if-Statement for this button in controlEvent().
+     */
+    cp5.addButton("exit").setPosition(W+10,yPos[len-1]).setLabel("Exit");
 }
 
 /**
  * Eventhandling of user interface.
+ * TODO:
+ * 1. Bugfix:   Sometimes audio keeps running when pressing pause.
+ *              Happens most of the times when pressing too fast after resuming. (?)
+ * 2. Bugfix:   When immediately pressing a button after opening the sketch,
+ *              a InvocationTargetException is thrown but sketch keeps running fine after that.
  */
 void controlEvent(ControlEvent event)
 {
@@ -110,7 +130,7 @@ void controlEvent(ControlEvent event)
              */
             if(!sort.isAlive())
             {
-                println("---starting audio");
+                //println("---starting audio");
                 OSC.send(new OscMessage(OSC_STARTAUDIO),SUPERCOLLIDER);
                 sort.start();
             }
@@ -118,14 +138,14 @@ void controlEvent(ControlEvent event)
         }
         else if(currentLabel.equals("Pause"))
         {
-            println("---pause audio");
+            //println("---pause audio");
             OSC.send(new OscMessage(OSC_PAUSEAUDIO),SUPERCOLLIDER);
             sort.pause();
             c.setLabel("Resume");
         }
         else if(currentLabel.equals("Resume"))
         {
-            println("---resume audio");
+            //println("---resume audio");
             OSC.send(new OscMessage(OSC_RESUMEAUDIO),SUPERCOLLIDER);
             sort.unpause();
             c.setLabel("Pause");
@@ -280,8 +300,6 @@ void exit()
     OSC.send(new OscMessage(OSC_FREEAUDIO),SUPERCOLLIDER);
     // Close OSC after execution to prevent blocking of OSC_PORT.
     OSC.dispose();
-    // Is this call necessary to prevent memory leaks or something? Better call it when in doubt.
-    cp5.dispose();
     // Call exit() of PApplet to properly exit this sketch.
     super.exit();
 }
