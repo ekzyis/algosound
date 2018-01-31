@@ -34,28 +34,24 @@ private final String OSC_PAUSEAUDIO = "/wave_pause";
 private final String OSC_RESUMEAUDIO = "/wave_resume";
 private final String OSC_MODAUDIO = "/wave_set";
 private final String OSC_FREEAUDIO = "/wave_free";
-/** Port on which sc3-server is listening for messages.
- * This should match the output of NetAddr.localAddr in SuperCollider. */
+/**
+ * Port on which sc3-server is listening for messages.
+ * This should match the output of NetAddr.localAddr in SuperCollider.
+ */
 final private int SC_PORT = 57120;
 // Port on which OSC should listen for messages.
 final private int OSC_PORT = 12000;
 /*
  * --------------------------------
  **/
-/**
- * Global variables.
- * -----------------
- */
- // Width and height of canvas.
+// Width and height of canvas.
 final int W=640,H=320;
- // Number of elements to be sorted.
+// Number of elements to be sorted.
 final int N=W/5;
- // Framerate of visualization.
+// Framerate of visualization.
 final int FR = 60;
-/*
- * -----------------
- **/
-// GUI
+
+// 'GUI-instance'
 private ControlP5 cp5;
 // Width of GUI
 final int GUI_W=70;
@@ -87,7 +83,7 @@ void setup()
 }
 
 /**
- * User interface consists of buttons at the right side.
+ * Initialize user interface which consists of buttons at the right side.
  */
 void initGUI()
 {
