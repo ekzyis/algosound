@@ -42,6 +42,8 @@ class Bubblesort extends Thread
     @Override
     public void run()
     {
+        println("---bubblesort-thread starting.");
+        sendMessage(OSC_STARTAUDIO);
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -87,6 +89,7 @@ class Bubblesort extends Thread
              * or the thread has been interrupted.
              */
         }
+        sendMessage(OSC_FREEAUDIO);
         println("--- bubblesort-thread has terminated.");
     }
 
@@ -141,6 +144,8 @@ class Bubblesort extends Thread
          */
         while(isPaused() && !isExiting())
         {
+            println("---bubblesort-thread pausing.");
+            sendMessage(OSC_PAUSEAUDIO);
             try
             {
                 this.wait();
@@ -150,7 +155,10 @@ class Bubblesort extends Thread
                 // Exception clears the interrupted flag. Reset it to check it later.
                 this.interrupt();
             }
+            sendMessage(OSC_RESUMEAUDIO);
+            println("---bubblesort-thread resuming.");
         }
+
         // Clean markers from last frame.
         clearMarkers();
         frameDrawn = false;

@@ -38,9 +38,9 @@ private final String OSC_FREEAUDIO = "/wave_free";
  * Port on which sc3-server is listening for messages.
  * This should match the output of NetAddr.localAddr in SuperCollider.
  */
-final private int SC_PORT = 57120;
+private final int SC_PORT = 57120;
 // Port on which OSC should listen for messages.
-final private int OSC_PORT = 12000;
+private final int OSC_PORT = 12000;
 /*
  * --------------------------------
  **/
@@ -55,6 +55,9 @@ final int FR = 60;
 private ControlP5 cp5;
 // Width of GUI
 final int GUI_W=70;
+// Buttons.
+private Button start;
+private Button exit;
 // The bubblesort thread.
 private Bubblesort sort;
 // IPC-status-thread.
@@ -85,6 +88,7 @@ void setup()
 /**
  * Initialize user interface which consists of buttons at the right side.
  */
+
 void initGUI()
 {
     // Create the y-coordinates for the buttons and save them in an array.
@@ -94,16 +98,17 @@ void initGUI()
     int len = (int)(H/(yInset+Button.autoHeight));
     int[] yPos = new int[len];
     int y0 = yInset+Button.autoHeight;
+    int x0 = W+10;
     for(int i=0;i<len;++i)
     {
         yPos[i] = (i+1)*y0 - Button.autoHeight;
     }
-    cp5.addButton("start/pause").setPosition(W+10,yPos[0]).setLabel("Start");
+    start = cp5.addButton("start/pause").setPosition(x0,yPos[0]).setLabel("Start");
     /**
      * Naming the button like the exit()-function triggers the function when pressing
      * thus no need of defining a if-Statement for this button in controlEvent().
      */
-    cp5.addButton("exit").setPosition(W+10,yPos[len-1]).setLabel("Exit");
+    exit = cp5.addButton("exit").setPosition(x0,yPos[len-1]).setLabel("Exit");
 }
 
 /**
@@ -117,7 +122,7 @@ void initGUI()
 void controlEvent(ControlEvent event)
 {
     Controller c = event.getController();
-    if(c.getName().equals("start/pause"))
+    if(c==start)
     {
         String currentLabel = c.getLabel();
         // Do action corresponding to current label.
@@ -131,7 +136,7 @@ void controlEvent(ControlEvent event)
             if(!sort.isAlive())
             {
                 //println("---starting audio");
-                OSC.send(new OscMessage(OSC_STARTAUDIO),SUPERCOLLIDER);
+
                 sort.start();
             }
             c.setLabel("Pause");
@@ -139,14 +144,14 @@ void controlEvent(ControlEvent event)
         else if(currentLabel.equals("Pause"))
         {
             //println("---pause audio");
-            OSC.send(new OscMessage(OSC_PAUSEAUDIO),SUPERCOLLIDER);
+
             sort.pause();
             c.setLabel("Resume");
         }
         else if(currentLabel.equals("Resume"))
         {
             //println("---resume audio");
-            OSC.send(new OscMessage(OSC_RESUMEAUDIO),SUPERCOLLIDER);
+
             sort.unpause();
             c.setLabel("Pause");
         }
@@ -158,7 +163,10 @@ void draw()
     synchronized(sort)
     {
         background(25);
-        // Has sorting thread started and is not paused nor exiting? If not, no need for waiting.
+        /**
+         * Has sorting thread started and is not paused nor exiting? If not, no need for waiting.
+         * Without this, the animation thread will wait forever, when sorting thread hasn't started.
+         */
         if(sort.isAlive() && !sort.isPaused() && !sort.isExiting())
         {
             // Wait until new frame is ready.
@@ -177,7 +185,6 @@ void draw()
         drawIPCStatus();
         /**
          * Notify bubblesort thread that frame has been drawn.
-         * (notify() will just do nothing if thread did not start yet.)
          */
         if(sort.isAlive() && !sort.isPaused())
         {
@@ -215,9 +222,12 @@ void initOSC()
     SUPERCOLLIDER = new NetAddress("127.0.0.1", SC_PORT);
     // Check if server is running with a status message.
     connected = false;
-    OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
+    sendMessage(OSC_STATUS);
     // Send boot message.
-    OSC.send(new OscMessage(OSC_BOOT),SUPERCOLLIDER);
+    sendMessage(OSC_BOOT);
+    // Start the synth but pause it (=setting amplitude to 0).
+    sendMessage(OSC_STARTAUDIO);
+    sendMessage(OSC_PAUSEAUDIO);
     // Start a thread which periodically checks if sc3-server is still running.
     status = new Thread()
     {
@@ -236,7 +246,7 @@ void initOSC()
                  * (Another 'connected' variable could work, but would be messy?)
                  */
                 connected = false;
-                OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
+                sendMessage(OSC_STATUS);
                 try
                 {
                     sleep(1000);
@@ -256,6 +266,7 @@ void initOSC()
 // Listen for messages.
 void oscEvent(OscMessage msg)
 {
+    println("---osc receiving message: "+msg.addrPattern());
     // SC3 will send SC_REPLY-message if OSC did send OSC_STATUS-message.
     if(msg.checkAddrPattern(SC_REPLY)) connected = true;
 }
@@ -265,12 +276,21 @@ void oscEvent(OscMessage msg)
  */
 void sendMessage(String path, int[] args)
 {
-    OscMessage msg = new OscMessage(path);
-    for(int n : args)
+    if(OSC!=null)
     {
-        msg.add(n);
+        OscMessage msg = new OscMessage(path);
+        for(int n : args)
+        {
+            msg.add(n);
+        }
+        println("---osc sending message: "+path);
+        OSC.send(msg,SUPERCOLLIDER);
     }
-    if(OSC!=null) OSC.send(msg,SUPERCOLLIDER);
+}
+// Convenience method.
+void sendMessage(String path)
+{
+    sendMessage(path, new int[0]);
 }
 
 // This function is called during exit.
@@ -297,7 +317,7 @@ void exit()
     }
     catch(Exception e) {}
     // Free synth on sc3-server.
-    OSC.send(new OscMessage(OSC_FREEAUDIO),SUPERCOLLIDER);
+    sendMessage(OSC_FREEAUDIO);
     // Close OSC after execution to prevent blocking of OSC_PORT.
     OSC.dispose();
     // Call exit() of PApplet to properly exit this sketch.
