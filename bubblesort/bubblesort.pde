@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 28 January 2018
+ * @date 31 January 2018
  */
 class Bubblesort extends Thread
 {
