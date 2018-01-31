@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
  * For more information see comments in this file.
  *
  * @author ekzyis
- * @date 18 January 2018
+ * @date 31 January 2018
  */
 
 class Mergesort extends Thread
@@ -29,6 +29,13 @@ class Mergesort extends Thread
     private ArrayList<Element> unmarkMe;
     // Keep track of stack of the cut indizes while sorting for proper visualization.
     private Stack<Integer> cutStack;
+    // Is this thread marked as paused by the user?
+    private boolean paused;
+    // Should this thread exit?
+    private boolean exiting;
+    // Needed for sonification.
+    final int FREQ_MIN = 200;
+    final int FREQ_MAX = 1640;
 
     Mergesort(int N)
     {
@@ -41,6 +48,8 @@ class Mergesort extends Thread
         this.cutStack = new Stack<Integer>();
         // Needed for proper cut index and subset visualization.
         this.cutStack.push(0);
+        paused = false;
+        exiting = false;
     }
 
     @Override
@@ -53,6 +62,7 @@ class Mergesort extends Thread
             notifyFrameReady();
             // Start sorting.
             a = mergesort(a,Mergesort.THREAD);
+            println("--- mergesort-thread has terminated.");
         }
     }
 
@@ -411,9 +421,13 @@ class Mergesort extends Thread
     void notifyFrameReady()
     {
         frameReady = true;
-        // Notify since new frame is ready.
         this.notify();
-        while(!frameIsDrawn())
+        /**
+         * Boolean expressions make sure that thread will only wait in this loop
+         * if it is actually waiting for a new frame. If thread is paused,
+         * it will wait in the next loop. If it's exiting, it will not wait but exit.
+         */
+        while(!frameIsDrawn() && !isPaused() && !isExiting())
         {
             try
             {
@@ -421,11 +435,82 @@ class Mergesort extends Thread
             }
             catch(InterruptedException e)
             {
+                // Exception clears the interrupted flag. Reset it to check it later.
+                this.interrupt();
             }
         }
-        // Clear markers from last frame.
+        /**
+         * Check if this frame the user did press the pause button. If yes and thread is not exiting,
+         * the thread will pause until the user wants to resume.
+         */
+        while(isPaused() && !isExiting())
+        {
+            try
+            {
+                this.wait();
+            }
+            catch(InterruptedException e)
+            {
+                // Exception clears the interrupted flag. Reset it to check it later.
+                this.interrupt();
+            }
+        }
+        // Clean markers from last frame.
         clearMarkers();
         frameDrawn = false;
+
+        /**
+         * If thread is exiting, the interrupt-flag will be still set at this point.
+         * This causes to escape from the for-loop, set swap to false, and then leave the do-while-loop
+         * and finally terminate this thread.
+         * If thread was paused or waiting for a new frame and then a InterruptedException happens,
+         * the flag will be reset but the thread will continue to wait for a resume or a new frame since the
+         * wait()-statement is in a while-loop. This following wait() unsets the interrupted-flag
+         * so the thread will not exit when interrupted while pausing or waiting for a new frame.
+         */
+    }
+
+    boolean isPaused()
+    {
+        return paused;
+    }
+    void pause()
+    {
+        this.paused = true;
+        // Notify thread so it will always wait in the correct expected loop.
+        synchronized(this)
+        {
+            this.notify();
+        }
+    }
+    void unpause()
+    {
+        this.paused = false;
+        // Notify thread since it should no longer be paused.
+        synchronized(this)
+        {
+            this.notify();
+        }
+    }
+
+    boolean isExiting()
+    {
+        return exiting;
+    }
+    // Set the exit-flag and interrupt the thread; waking it up from eventual waiting.
+    /**
+     * NOTE:
+     * Mergesort is a recursive algorithm. There is no check during sorting if mergesort should exit.
+     * In the iterative algorithms, the check can easily be implemented.
+     * But for some unknown reason this works anyway without checking. Mergesort does exit as expected.
+     * (CHECK: Does it run so fast without visualizing (the notify() function do have a check for exit)
+     * that it seems to exit immediately? This could very well be but not sure yet.)
+     */
+    void exit()
+    {
+        this.exiting = true;
+        // This wakes thread up from waiting, making it able to exit.
+        this.interrupt();
     }
 
     // Notify thread that new frame has been drawn.
