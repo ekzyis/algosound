@@ -55,6 +55,9 @@ final int FR = 60;
 private ControlP5 cp5;
 // Width of GUI
 final int GUI_W=70;
+// Buttons.
+private Button start;
+private Button exit;
 // The bubblesort thread.
 private Selectionsort sort;
 // IPC-status-thread.
@@ -98,26 +101,25 @@ void initGUI()
     {
         yPos[i] = (i+1)*y0 - Button.autoHeight;
     }
-    cp5.addButton("start/pause").setPosition(W+10,yPos[0]).setLabel("Start");
+    start = cp5.addButton("start/pause").setPosition(W+10,yPos[0]).setLabel("Start");
     /**
      * Naming the button like the exit()-function triggers the function when pressing
      * thus no need of defining a if-Statement for this button in controlEvent().
      */
-    cp5.addButton("exit").setPosition(W+10,yPos[len-1]).setLabel("Exit");
+    exit = cp5.addButton("exit").setPosition(W+10,yPos[len-1]).setLabel("Exit");
 }
 
 /**
  * Eventhandling of user interface.
  * TODO:
- * 1. Bugfix:   Sometimes audio keeps running when pressing pause.
- *              Happens most of the times when pressing too fast after resuming. (?)
- * 2. Bugfix:   When immediately pressing a button after opening the sketch,
- *              a InvocationTargetException is thrown but sketch keeps running fine after that.
+ * ---Bugfix#2
+ *      When immediately pressing a button after opening the sketch,
+ *      a InvocationTargetException is thrown but sketch keeps running fine after that.
  */
 void controlEvent(ControlEvent event)
 {
     Controller c = event.getController();
-    if(c.getName().equals("start/pause"))
+    if(c==start)
     {
         String currentLabel = c.getLabel();
         // Do action corresponding to current label.
@@ -131,7 +133,6 @@ void controlEvent(ControlEvent event)
             if(!sort.isAlive())
             {
                 //println("---starting audio");
-                OSC.send(new OscMessage(OSC_STARTAUDIO),SUPERCOLLIDER);
                 sort.start();
             }
             c.setLabel("Pause");
@@ -139,14 +140,12 @@ void controlEvent(ControlEvent event)
         else if(currentLabel.equals("Pause"))
         {
             //println("---pause audio");
-            OSC.send(new OscMessage(OSC_PAUSEAUDIO),SUPERCOLLIDER);
             sort.pause();
             c.setLabel("Resume");
         }
         else if(currentLabel.equals("Resume"))
         {
             //println("---resume audio");
-            OSC.send(new OscMessage(OSC_RESUMEAUDIO),SUPERCOLLIDER);
             sort.unpause();
             c.setLabel("Pause");
         }
@@ -215,9 +214,12 @@ void initOSC()
     SUPERCOLLIDER = new NetAddress("127.0.0.1", SC_PORT);
     // Check if server is running with a status message.
     connected = false;
-    OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
+    sendMessage(OSC_STATUS);
     // Send boot message.
-    OSC.send(new OscMessage(OSC_BOOT),SUPERCOLLIDER);
+    sendMessage(OSC_BOOT);
+    // Start the synth but pause it (=setting amplitude to 0).
+    sendMessage(OSC_STARTAUDIO);
+    sendMessage(OSC_PAUSEAUDIO);
     // Start a thread which periodically checks if sc3-server is still running.
     status = new Thread()
     {
@@ -236,7 +238,7 @@ void initOSC()
                  * (Another 'connected' variable could work, but would be messy?)
                  */
                 connected = false;
-                OSC.send(new OscMessage(OSC_STATUS),SUPERCOLLIDER);
+                sendMessage(OSC_STATUS);
                 try
                 {
                     sleep(1000);
@@ -271,6 +273,11 @@ void sendMessage(String path, int[] args)
         msg.add(n);
     }
     if(OSC!=null) OSC.send(msg,SUPERCOLLIDER);
+}
+// Convenience method.
+void sendMessage(String path)
+{
+    sendMessage(path, new int[0]);
 }
 
 // This function is called during exit.
