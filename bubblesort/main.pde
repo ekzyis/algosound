@@ -114,10 +114,9 @@ void initGUI()
 /**
  * Eventhandling of user interface.
  * TODO:
- * 1. Bugfix:   Sometimes audio keeps running when pressing pause.
- *              Happens most of the times when pressing too fast after resuming. (?)
- * 2. Bugfix:   When immediately pressing a button after opening the sketch,
- *              a InvocationTargetException is thrown but sketch keeps running fine after that.
+ * ---Bugfix#2
+ *      When immediately pressing a button after opening the sketch,
+ *      a InvocationTargetException is thrown but sketch keeps running fine after that.
  */
 void controlEvent(ControlEvent event)
 {
@@ -136,7 +135,6 @@ void controlEvent(ControlEvent event)
             if(!sort.isAlive())
             {
                 //println("---starting audio");
-
                 sort.start();
             }
             c.setLabel("Pause");
@@ -144,14 +142,12 @@ void controlEvent(ControlEvent event)
         else if(currentLabel.equals("Pause"))
         {
             //println("---pause audio");
-
             sort.pause();
             c.setLabel("Resume");
         }
         else if(currentLabel.equals("Resume"))
         {
             //println("---resume audio");
-
             sort.unpause();
             c.setLabel("Pause");
         }
