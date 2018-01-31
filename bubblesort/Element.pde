@@ -5,7 +5,7 @@
  * see getting sorted on the canvas.
  *
  * @author ekzyis
- * @date 18 January 2017
+ * @date 18 January 2018
  */
 class Element
 {
@@ -140,7 +140,7 @@ class Element
 }
 
 /**
- * Return elements with random value and given color(s).
+ * Return elements with random value.
  */
 Element[] createElements(int n)
 {
