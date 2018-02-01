@@ -25,7 +25,7 @@ class Insertionsort extends Thread
     private boolean exiting;
     // Needed for sonification.
     final int FREQ_MIN = 200;
-    final int FREQ_MAX = 1640;
+    final int FREQ_MAX = 4000;
 
     Insertionsort(int N)
     {
@@ -42,6 +42,8 @@ class Insertionsort extends Thread
     @Override
     public void run()
     {
+        println("---insertionsort-thread starting.");
+        sendMessage(OSC_STARTAUDIO);
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -94,6 +96,10 @@ class Insertionsort extends Thread
                     // Notify since new frame is ready.
                     notifyFrameReady();
                     // TODO: Send osc message for sonification!
+                    println("values to map: "+a[j]+", "+value);
+                    int[] args = { expmap(a[j],0,H,FREQ_MIN,FREQ_MAX), expmap(value,0,H,FREQ_MIN,FREQ_MAX)};
+                    println("mapped values: "+args[0]+", "+args[1]);
+                    sendMessage(OSC_MODAUDIO, args);
                 }
                 // Place to insert has been found!
                 a[j] = value;
@@ -104,7 +110,23 @@ class Insertionsort extends Thread
                 // TODO: Send osc message for sonification!
             }
         }
+        sendMessage(OSC_FREEAUDIO);
+        println("--- insertionsort-thread has terminated.");
+    }
 
+    /**
+     * Exponential map function: f(x) = a*e^(b*x)
+     * This function must satisfy following two equations:
+     * f(x1) = y1, f(x2) = y2
+     * Rearrangment of equations leads to following solution ==>
+     * b = ln(y2/y1)/(x2-x1)
+     * a = y2/( e^(b*x2) ) = y1/( e^(b*x1) )
+     */
+    int expmap(int value, int x1, int x2, int y1, int y2)
+    {
+        float b = log(y2/y1)/(x2-x1);
+        float a = y2/(exp(b*x2));
+        return (int)(a*exp(value*b));
     }
 
     boolean frameIsReady()
@@ -145,6 +167,8 @@ class Insertionsort extends Thread
          */
         while(isPaused() && !isExiting())
         {
+            println("---insertionsort-thread pausing.");
+            sendMessage(OSC_PAUSEAUDIO);
             try
             {
                 this.wait();
@@ -154,6 +178,8 @@ class Insertionsort extends Thread
                 // Exception clears the interrupted flag. Reset it to check it later.
                 this.interrupt();
             }
+            sendMessage(OSC_RESUMEAUDIO);
+            println("---insertionsort-thread resuming.");
         }
         // Clean markers from last frame.
         clearMarkers();

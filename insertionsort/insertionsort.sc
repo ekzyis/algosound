@@ -26,16 +26,25 @@ SynthDef(\boot, {
  * Swapwave which will be modified by individual swaps happening while sorting.
  */
 SynthDef(\swapwave, {
-	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
-	var sig, ampmod;
+	arg freq=440, freq2=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
+	var sig, sig2, ampmod, ampmod2, env;
 	// Make higher pitches less loud.
 	freq = [freq*0.6, freq*0.8, freq, freq*1.2];
 	ampmod = freq.expexp(200,4000,amp,0.02);
+	ampmod2 = freq2.expexp(200,4000,amp,0.02);
+	env = EnvGate(1,gate,amplag,doneAction:2);
 	sig = SinOsc.ar(
 		Lag.kr(freq,freqlag),
 		mul:Lag.kr(ampmod, amplag)*Lag.kr(amptotal,amplag));
-	sig = sig * EnvGate(1,gate,amplag,doneAction:2);
-	Out.ar(0, Mix(sig)!2);
+	sig = sig * env;
+	// Why is sig2 so loud even though the amplitude should not exceed amp=0.2?
+	// Multiplied with 0.25 to compensate for this weird loudness.
+	sig2 = SinOsc.ar(
+		Lag.kr(
+			freq2,freqlag),
+		mul:Lag.kr(ampmod2, amplag)*Lag.kr(amptotal, amplag))*0.25;
+	sig2 = sig2 * env;
+	Out.ar(0, Mix([sig,sig2])!2);
 }).add;
 
 // Define listener for boot sound.
@@ -67,7 +76,7 @@ OSCdef(\resumeListener, {
 OSCdef(\modListener, {
 	arg msg;
 	~swapwave.set(\amptotal, 1);
-	~swapwave.set(\freq, msg[1]);
+	~swapwave.set(\freq, msg[1], \freq2, msg[2]);
 }, "/wave_set");
 
 /**
