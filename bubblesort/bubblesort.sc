@@ -1,14 +1,16 @@
+FreqScope.new
+Stethoscope.new
+
 // Test synths after creating
 x = Synth(\boot);
 y = Synth(\swapwave)
 y.set(\gate, 0)
 y.set(\freq1, 600); y.set(\freq2, 400);
 y.set(\freqlag, 1)
-~sinewave.set(\freqlag, 0.1)
 y.free
 
 (//--Parentheses begin
-
+~sinewave = nil;
 /**
  * Futuristic booting sound.
  */
@@ -57,9 +59,34 @@ OSCdef(\modListener, {
 	~sinewave.set(\freq1, msg[1], \freq2, msg[2]);
 }, "/wave_set");
 
-// Define listener for freeing of synth.
+/**
+ * Define listener for freeing of synth.
+ */
 OSCdef(\freeListener, {
-	~sinewave.set(\gate, 0);
+	if(~sinewave.isNil, {
+		// Synth does not exist. Do nothing.
+	}, {
+		// Synth does exist. Free it using gate.
+		~sinewave.set(\gate, 0);
+		// Wait until the synth is freed, then set it to nil.
+		Routine
+		{
+			1.2.wait;
+			/**
+			 * When this is uncommented, it can happen that a synth gets created
+			 * while this routine is waiting. This leads to a non-freed synth
+			 * set to nil. After this, the synth can no longer be accessed and can not be freed.
+			 * Due to this, it is better ro risk some "FAILURE IN SERVER /n_set Node XXXX not found"
+			 * messages than the user having to free all synths manually to free the orphan synth.
+			 * ---Steps to reproduce bug#1:
+			 * Send a /wave_free-message and within 1.2 seconds a /wave_start-message.
+			 * ---Steps t reproduce bug#2:
+			 * Repeatedly send /wave_free-messages before the synth would actually be nil.
+			 */
+			//~sinewave = nil;
+		}.play;
+
+	});
 }, "/wave_free");
 
 // Create address to send messages to Processing client

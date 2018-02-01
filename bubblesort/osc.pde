@@ -19,9 +19,6 @@ void initOSC()
     sendMessage(OSC_STATUS);
     // Send boot message.
     sendMessage(OSC_BOOT);
-    // Start the synth but pause it (=setting amplitude to 0).
-    sendMessage(OSC_STARTAUDIO);
-    sendMessage(OSC_PAUSEAUDIO);
     // Start a thread which periodically checks if sc3-server is still running.
     status = new Thread()
     {

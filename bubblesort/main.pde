@@ -58,6 +58,7 @@ final int GUI_W=70;
 // Buttons.
 private Button start;
 private Button exit;
+private Button reset;
 // The bubblesort thread.
 private Bubblesort sort;
 // IPC-status-thread.
@@ -109,6 +110,7 @@ void initGUI()
      * thus no need of defining a if-Statement for this button in controlEvent().
      */
     exit = cp5.addButton("exit").setPosition(x0,yPos[len-1]).setLabel("Exit");
+    reset = cp5.addButton("reset").setPosition(x0,yPos[1]).setLabel("Reset");
 }
 
 /**
@@ -151,6 +153,12 @@ void controlEvent(ControlEvent event)
             sort.unpause();
             c.setLabel("Pause");
         }
+    }
+    else if(c==reset)
+    {
+        start.setLabel("Start");
+        sendMessage(OSC_FREEAUDIO);
+        sort = new Bubblesort(N);
     }
 }
 
