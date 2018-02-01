@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 31 January 2018
+ * @date 01 February 2018
  */
 import netP5.*;
 import oscP5.*;
@@ -58,6 +58,7 @@ final int GUI_W=70;
 // Buttons.
 private Button start;
 private Button exit;
+private Button reset;
 // The mergesort thread.
 private Mergesort sort;
 // IPC-status-thread.
@@ -97,16 +98,18 @@ void initGUI()
     int len = (int)(H/(yInset+Button.autoHeight));
     int[] yPos = new int[len];
     int y0 = yInset+Button.autoHeight;
+    int x0 = W+10;
     for(int i=0;i<len;++i)
     {
         yPos[i] = (i+1)*y0 - Button.autoHeight;
     }
-    start = cp5.addButton("start/pause").setPosition(W+10,yPos[0]).setLabel("Start");
+    start = cp5.addButton("start/pause").setPosition(x0,yPos[0]).setLabel("Start");
     /**
      * Naming the button like the exit()-function triggers the function when pressing
      * thus no need of defining a if-Statement for this button in controlEvent().
      */
-    exit = cp5.addButton("exit").setPosition(W+10,yPos[len-1]).setLabel("Exit");
+    exit = cp5.addButton("exit").setPosition(x0,yPos[len-1]).setLabel("Exit");
+    reset = cp5.addButton("reset").setPosition(x0,yPos[1]).setLabel("Reset");
 }
 
 /**
@@ -149,6 +152,12 @@ void controlEvent(ControlEvent event)
             sort.unpause();
             c.setLabel("Pause");
         }
+    }
+    else if(c==reset)
+    {
+        start.setLabel("Start");
+        sendMessage(OSC_FREEAUDIO);
+        sort = new Mergesort(N);
     }
 }
 
