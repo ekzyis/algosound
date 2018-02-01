@@ -81,7 +81,7 @@ class Bubblesort extends Thread
                     // Send osc message for sonification.
                     int value  = a[i];
                     println("value to map: "+value);
-                    int[] args = {map(value,0,H,FREQ_MIN,FREQ_MAX)};
+                    int[] args = { expmap(value,0,H,FREQ_MIN,FREQ_MAX) };
                     println("mapped values: "+args[0]);
                     sendMessage(OSC_MODAUDIO,args);
                 }
@@ -96,17 +96,19 @@ class Bubblesort extends Thread
         println("--- bubblesort-thread has terminated.");
     }
 
-    // Overriding map function since old function didn't give expected results.
-    int map(int value, int s1, int e1, int s2, int e2)
+    /**
+     * Exponential map function: f(x) = a*e^(b*x)
+     * This function must satisfy following two equations:
+     * f(x1) = y1, f(x2) = y2
+     * Rearrangment of equations leads to following solution ==>
+     * b = ln(y2/y1)/(x2-x1)
+     * a = y2/( e^(b*x2) ) = y1/( e^(b*x1) )
+     */
+    int expmap(int value, int x1, int x2, int y1, int y2)
     {
-        // Available amount of target numbers
-        int targets = e2-s2;
-        // Amount of input numbers
-        int n = e1-s1;
-        // Space between mapped input numbers.
-        int dFreq = targets/n;
-        int res = s2 + value*dFreq;
-        return res;
+        float b = log(y2/y1)/(x2-x1);
+        float a = y2/(exp(b*x2));
+        return (int)(a*exp(value*b));
     }
 
     boolean frameIsReady()
