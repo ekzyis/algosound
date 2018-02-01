@@ -25,7 +25,7 @@ class Bubblesort extends Thread
     private boolean exiting;
     // Needed for sonification.
     final int FREQ_MIN = 200;
-    final int FREQ_MAX = 1640;
+    final int FREQ_MAX = 4000;
 
     Bubblesort(int N)
     {
@@ -79,7 +79,10 @@ class Bubblesort extends Thread
                     mark(i+1);
                     notifyFrameReady();
                     // Send osc message for sonification.
-                    int[] args = {map(a[i],0,H,FREQ_MIN,FREQ_MAX),map(a[i+1],0,H,FREQ_MIN,FREQ_MAX),FREQ_MIN,FREQ_MAX};
+                    int value  = a[i];
+                    println("value to map: "+value);
+                    int[] args = {map(value,0,H,FREQ_MIN,FREQ_MAX)};
+                    println("mapped values: "+args[0]);
                     sendMessage(OSC_MODAUDIO,args);
                 }
             }while(swap);

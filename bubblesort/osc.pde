@@ -66,6 +66,7 @@ void oscEvent(OscMessage msg)
  */
 void sendMessage(String path, int[] args)
 {
+    println("osc: sending message to: "+path);
     OscMessage msg = new OscMessage(path);
     for(int n : args)
     {
