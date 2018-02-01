@@ -11,7 +11,6 @@ y.set(\freqlag, 1)
 y.free
 
 (//--Parentheses begin
-~sinewave = nil;
 /**
  * Futuristic booting sound.
  */
@@ -27,20 +26,19 @@ SynthDef(\boot, {
  * Swapwave which will be modified by individual swaps happening while sorting.
  */
 SynthDef(\swapwave, {
-	arg freq=440, freqlag=0.01, amp=1, amplag=0.5, gate=1;
+	arg freq=440, freqlag=0.1, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
-	ampmod = freq.expexp(200,4000,0.2,0.02);
+	ampmod = [freq*0.6, freq*0.8, freq, freq*1.2].expexp(200,4000,amp,0.02);
 	sig = SinOsc.ar(
 		Lag.kr([freq*0.6, freq*0.8, freq, freq*1.2],freqlag),
-		mul:Lag.kr([amp, amp*0.9, amp*0.8, amp*0.7]*ampmod, amplag));
+		mul:Lag.kr(ampmod, amplag));
 	sig = sig * EnvGate(1,gate,amplag,doneAction:2);
 	Out.ar(0, Mix(sig)!2);
 }).add;
 
 // Define listener for boot sound.
 OSCdef(\bootListener, {
-	// Why is this not posted?
 	"playing boot sound.".postln;
 	// Play boot sound
 	Synth(\boot);
@@ -48,45 +46,38 @@ OSCdef(\bootListener, {
 
 // Define listener for start of sinewave.
 OSCdef(\sortListener, {
-	// Why is this not posted?
 	"creating swapwave".postln;
-	~sinewave = Synth(\swapwave);
+	~swapwave = Synth(\swapwave);
 }, "/wave_start");
 
 // Define listener for pausing of sinewave.
 OSCdef(\pauseListener, {
-	// Why is this not posted?
 	"pausing swapwave.".postln;
-	~sinewave.set(\amp, 0);
-}, "/wave_pause");
+	~swapwave.set(\amp, 0)
 
 // Define listener for resuming of sinewave.
 OSCdef(\resumeListener, {
-	// Why is this not posted?
 	"resuming swapwave.".postln;
-	~sinewave.set(\amp, 1);
+	~swapwave.set(\amp, 0.2);
 }, "/wave_resume");
 
 // Define listener for modifying.
 OSCdef(\modListener, {
 	arg msg;
-	// Why is this not posted?
-	"modulating swapwave.".postln;
-	~sinewave.set(\amp, 1);
-	~sinewave.set(\freq, msg[1]);
+	~swapwave.set(\amp, 0.2);
+	~swapwave.set(\freq, msg[1]);
 }, "/wave_set");
 
 /**
  * Define listener for freeing of synth.
  */
 OSCdef(\freeListener, {
-	if(~sinewave.isNil, {
+	if(~swapwave.isNil, {
 		// Synth does not exist. Do nothing.
 	}, {
-		// Why is this not posted?
 		"freeing swapwave.".postln;
 		// Synth does exist. Free it using gate.
-		~sinewave.set(\gate, 0);
+		~swapwave.set(\gate, 0);
 		// Wait until the synth is freed, then set it to nil.
 		Routine
 		{
