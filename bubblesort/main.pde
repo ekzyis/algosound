@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 31 January 2018
+ * @date 01 February 2018
  */
 import netP5.*;
 import oscP5.*;
@@ -241,8 +241,6 @@ void exit()
         status.join();
     }
     catch(Exception e) {}
-    // Free synth on sc3-server.
-    sendMessage(OSC_FREEAUDIO);
     // Close OSC after execution to prevent blocking of OSC_PORT.
     OSC.dispose();
     // Call exit() of PApplet to properly exit this sketch.

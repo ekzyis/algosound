@@ -247,8 +247,6 @@ void exit()
         status.join();
     }
     catch(Exception e) {}
-    // Free synth on sc3-server.
-    sendMessage(OSC_FREEAUDIO);
     // Close OSC after execution to prevent blocking of OSC_PORT.
     OSC.dispose();
     // Call exit() of PApplet to properly exit this sketch.
