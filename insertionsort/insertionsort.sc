@@ -4,7 +4,7 @@ s.queryAllNodes
 
 // Test synths after creating
 x = Synth(\boot);
-y = Synth(\swapwave)
+y = Synth(\algowave)
 y.set(\gate, 0)
 y.set(\freq, 500);
 y.set(\freqlag, 1)
@@ -31,9 +31,9 @@ SynthDef(\boot, {
 }).add;
 
 /**
- * Swapwave which will be modified by individual swaps happening while sorting.
+ * Algowave which will be modified by individual element accesses while sorting.
  */
-SynthDef(\swapwave, {
+SynthDef(\algowave, {
 	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod, env;
 	// Make higher pitches less loud.
@@ -67,34 +67,34 @@ OSCdef(\bootListener, {
 	Synth(\boot);
 }, "/boot");
 
-// Define listener for start of swapwave and insert synth.
+// Define listener for start of algowave and insert synth.
 OSCdef(\sortListener, {
-	"creating swapwave".postln;
-	~swapwave = Synth(\swapwave);
+	"creating algowave".postln;
+	~algowave = Synth(\algowave);
 	"creating insert synth".postln;
-	~insert = Synth.after(~swapwave,\insert, [\amp, 0]);
+	~insert = Synth.after(~algowave,\insert, [\amp, 0]);
 }, "/wave_start");
 
 // Define listener for pausing of synths.
 OSCdef(\pauseListener, {
-	"pausing swapwave.".postln;
-	~swapwave.set(\amptotal, 0);
+	"pausing algowave.".postln;
+	~algowave.set(\amptotal, 0);
 	~insert.set(\amp, 0);
 }, "/wave_pause");
 
 // Define listener for resuming of synths.
 OSCdef(\resumeListener, {
-	"resuming swapwave.".postln;
-	~swapwave.set(\amptotal, 1);
+	"resuming algowave.".postln;
+	~algowave.set(\amptotal, 1);
 	~insert.set(\amp, 0.2);
 }, "/wave_resume");
 
 // Define listener for modifying.
 OSCdef(\modListener, {
 	arg msg;
-	~swapwave.set(\amptotal, 1);
+	~algowave.set(\amptotal, 1);
 	~insert.set(\amp, 0.2);
-	~swapwave.set(\freq, msg[1]);
+	~algowave.set(\freq, msg[1]);
 	~insert.set(\freq, msg[2]);
 }, "/wave_set");
 
@@ -110,9 +110,9 @@ OSCdef(\modListener, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\freeListener, {
-	"freeing swapwave.".postln;
+	"freeing ~lgowave.".postln;
 	// Free it using gate.
-	~swapwave.set(\gate, 0);
+	~algowave.set(\gate, 0);
 	"freeing insert synth.".postln;
 	~insert.set(\gate, 0);
 }, "/wave_free");
