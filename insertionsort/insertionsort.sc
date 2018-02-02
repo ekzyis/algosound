@@ -6,9 +6,17 @@ s.queryAllNodes
 x = Synth(\boot);
 y = Synth(\swapwave)
 y.set(\gate, 0)
-y.set(\freq, 700);
+y.set(\freq, 500);
 y.set(\freqlag, 1)
 y.free
+z = Synth(\insert);
+z.set(\freq, 440);
+z.set(\pulsefreq, 5);
+z.set(\att, 0.1);
+z.set(\amp, 0.2);
+z.set(\decay, 0.3);
+z.set(\gate, 0);
+z.free
 
 (//--Parentheses begin
 /**
@@ -26,25 +34,30 @@ SynthDef(\boot, {
  * Swapwave which will be modified by individual swaps happening while sorting.
  */
 SynthDef(\swapwave, {
-	arg freq=440, freq2=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
-	var sig, sig2, ampmod, ampmod2, env;
+	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
+	var sig, ampmod, env;
 	// Make higher pitches less loud.
 	freq = [freq*0.6, freq*0.8, freq, freq*1.2];
 	ampmod = freq.expexp(200,4000,amp,0.02);
-	ampmod2 = freq2.expexp(200,4000,amp,0.02);
 	env = EnvGate(1,gate,amplag,doneAction:2);
 	sig = SinOsc.ar(
 		Lag.kr(freq,freqlag),
 		mul:Lag.kr(ampmod, amplag)*Lag.kr(amptotal,amplag));
 	sig = sig * env;
-	// Why is sig2 so loud even though the amplitude should not exceed amp=0.2?
-	// Multiplied with 0.25 to compensate for this weird loudness.
-	sig2 = SinOsc.ar(
-		Lag.kr(
-			freq2,freqlag),
-		mul:Lag.kr(ampmod2, amplag)*Lag.kr(amptotal, amplag))*0.25;
-	sig2 = sig2 * env;
-	Out.ar(0, Mix([sig,sig2])!2);
+	Out.ar(0, Mix(sig)!2);
+}).add;
+
+SynthDef(\insert, {
+	arg freq=440, pulsefreq=10, amp=0.2, att=0.1, decay=0.5, amplag=0.5, gate=1;
+	var sig, env;
+	sig = Mix(
+		Decay2.ar(
+			Impulse.ar(pulsefreq, [0.5,0.45], amp), att, decay, Saw.ar(freq)
+	));
+	env = EnvGate(1,gate,amplag, doneAction:2);
+	sig = sig * env;
+	sig = Pan2.ar(sig, 0, amp);
+	Out.ar(0, sig);
 }).add;
 
 // Define listener for boot sound.
@@ -54,29 +67,35 @@ OSCdef(\bootListener, {
 	Synth(\boot);
 }, "/boot");
 
-// Define listener for start of sinewave.
+// Define listener for start of swapwave and insert synth.
 OSCdef(\sortListener, {
 	"creating swapwave".postln;
 	~swapwave = Synth(\swapwave);
+	"creating insert synth".postln;
+	~insert = Synth.after(~swapwave,\insert, [\amp, 0]);
 }, "/wave_start");
 
-// Define listener for pausing of sinewave.
+// Define listener for pausing of synths.
 OSCdef(\pauseListener, {
 	"pausing swapwave.".postln;
 	~swapwave.set(\amptotal, 0);
+	~insert.set(\amp, 0);
 }, "/wave_pause");
 
-// Define listener for resuming of sinewave.
+// Define listener for resuming of synths.
 OSCdef(\resumeListener, {
 	"resuming swapwave.".postln;
 	~swapwave.set(\amptotal, 1);
+	~insert.set(\amp, 0.2);
 }, "/wave_resume");
 
 // Define listener for modifying.
 OSCdef(\modListener, {
 	arg msg;
 	~swapwave.set(\amptotal, 1);
-	~swapwave.set(\freq, msg[1], \freq2, msg[2]);
+	~insert.set(\amp, 0.2);
+	~swapwave.set(\freq, msg[1]);
+	~insert.set(\freq, msg[2]);
 }, "/wave_set");
 
 /**
@@ -94,6 +113,8 @@ OSCdef(\freeListener, {
 	"freeing swapwave.".postln;
 	// Free it using gate.
 	~swapwave.set(\gate, 0);
+	"freeing insert synth.".postln;
+	~insert.set(\gate, 0);
 }, "/wave_free");
 
 // Create address to send messages to Processing client
@@ -103,5 +124,4 @@ OSCdef(\freeListener, {
 OSCdef(\statuslistener, {
 	~address.sendMsg("/hello");
 }, "/status");
-
 )//--Parentheses end
