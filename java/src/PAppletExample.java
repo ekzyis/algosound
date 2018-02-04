@@ -1,6 +1,6 @@
 import processing.core.*;
 
-public class Algosound extends PApplet
+public class PAppletExample extends PApplet
 {
     public void settings()
     {
@@ -15,7 +15,7 @@ public class Algosound extends PApplet
 
     public static void main(String[] passedArgs)
     {
-        String[] appletArgs = new String[] { "Algosound" };
+        String[] appletArgs = new String[] { "PAppletExample" };
         if (passedArgs != null)
         {
             PApplet.main(concat(appletArgs, passedArgs));
