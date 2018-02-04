@@ -47,6 +47,9 @@ SynthDef(\algowave, {
 	Out.ar(0, Mix(sig)!2);
 }).add;
 
+/**
+ * Synth which represents the value of the element to insert.
+ */
 SynthDef(\insert, {
 	arg freq=440, pulsefreq=10, amp=0.2, att=0.1, decay=0.5, amplag=0.5, gate=1;
 	var sig, env;
