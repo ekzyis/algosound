@@ -54,3 +54,24 @@ SynthDef(\insert, {
 )
 x = Synth(\insert);
 x.free
+
+/**
+ * This synth reminds me a lot about loose connection. Maybe I can need this later for something?
+ */
+(
+SynthDef(\looseconnection, {
+	arg freq=880, density=20, att=0.1, decay=0.2, amp=0.1;
+	var sig;
+	sig = FreeVerb.ar(
+		Decay2.ar(
+			Dust.ar(density), att, decay, mul:SinOsc.ar(freq, mul:amp)
+	));
+	Out.ar(0, Mix(sig));
+}).add;
+)
+x = Synth(\looseconnection)
+x.set(\freq, 440)
+x.set(\density, 20)
+x.set(\decay, 0.2)
+x.set(\amp, 0.75)
+x.free
