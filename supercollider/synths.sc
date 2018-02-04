@@ -60,7 +60,7 @@ x.free
  */
 (
 SynthDef(\looseconnection, {
-	arg freq=880, density=20, att=0.1, decay=0.2, amp=0.1;
+	arg freq=880, density=10, att=0.1, decay=0.5, amp=0.1;
 	var sig;
 	sig = FreeVerb.ar(
 		Decay2.ar(
@@ -73,5 +73,18 @@ x = Synth(\looseconnection)
 x.set(\freq, 440)
 x.set(\density, 20)
 x.set(\decay, 0.2)
-x.set(\amp, 0.75)
+x.free
+
+/**
+ * Starting of something.
+ */
+(
+SynthDef(\engine, {
+	var sig,env;
+	env = EnvGen.ar(Env([1,1,0.6],[3,2]));
+	sig = Mix(Decay2.ar(Impulse.ar(XLine.ar(1,50,5)), 0.1, 0.2, mul:Resonz.ar(WhiteNoise.ar, [440*env,660*env,880*env], bwr:0.1)));
+	Out.ar(0,Mix(sig));
+}).add;
+)
+x = Synth(\engine)
 x.free
