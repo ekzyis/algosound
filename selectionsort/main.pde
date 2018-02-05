@@ -34,6 +34,7 @@ private final String OSC_PAUSEAUDIO = "/wave_pause";
 private final String OSC_RESUMEAUDIO = "/wave_resume";
 private final String OSC_MODAUDIO = "/wave_set";
 private final String OSC_FREEAUDIO = "/wave_free";
+private final String OSC_MODAUDIO2 = "/min_set";
 /**
  * Port on which sc3-server is listening for messages.
  * This should match the output of NetAddr.localAddr in SuperCollider.

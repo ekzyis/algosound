@@ -25,7 +25,7 @@ class Selectionsort extends Thread
     private boolean exiting;
     // Needed for sonification.
     final int FREQ_MIN = 200;
-    final int FREQ_MAX = 1640;
+    final int FREQ_MAX = 4000;
 
     Selectionsort(int N)
     {
@@ -42,6 +42,8 @@ class Selectionsort extends Thread
     @Override
     public void run()
     {
+        println("--- selectionsort-thread has started.");
+        sendMessage(OSC_STARTAUDIO);
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -56,15 +58,21 @@ class Selectionsort extends Thread
             do
             {
                 int minIndex = start;
-                for(int i=minIndex+1;i<a.length;++i)
+                for(int i=minIndex+1;i<a.length & !isInterrupted();++i)
                 {
+                    int arg1 = expmap(a[i]);
                     if(a[i]<a[minIndex])
                     {
                         minIndex = i;
+                        int arg2 = expmap(a[minIndex]);
+                        int[] args = {arg2};
+                        sendMessage(OSC_MODAUDIO2, args);
                     }
                     // Mark element which is getting compared with current smallest element.
                     mark(minIndex);
                     mark(i);
+                    int[] args = {arg1};
+                    sendMessage(OSC_MODAUDIO, args);
                     notifyFrameReady();
                 }
                 int tmp = a[minIndex];
@@ -74,8 +82,9 @@ class Selectionsort extends Thread
                 elements[start].setSorted();
                 notifyFrameReady();
                 start++;
-            }while(start<a.length);
+            }while(start<a.length & !isInterrupted());
         }
+        sendMessage(OSC_FREEAUDIO);
         println("--- selectionsort-thread has terminated.");
     }
 
@@ -117,6 +126,7 @@ class Selectionsort extends Thread
          */
         while(isPaused() && !isExiting())
         {
+            sendMessage(OSC_PAUSEAUDIO);
             try
             {
                 this.wait();
@@ -126,6 +136,7 @@ class Selectionsort extends Thread
                 // Exception clears the interrupted flag. Reset it to check it later.
                 this.interrupt();
             }
+            sendMessage(OSC_RESUMEAUDIO);
         }
         // Clean markers from last frame.
         clearMarkers();
@@ -140,6 +151,26 @@ class Selectionsort extends Thread
          * wait()-statement is in a while-loop. This following wait() unsets the interrupted-flag
          * so the thread will not exit when interrupted while pausing or waiting for a new frame.
          */
+    }
+
+    /**
+     * Exponential map function: f(x) = a*e^(b*x)
+     * This function must satisfy following two equations:
+     * f(x1) = y1, f(x2) = y2
+     * Rearrangment of equations leads to following solution ==>
+     * b = ln(y2/y1)/(x2-x1)
+     * a = y2/( e^(b*x2) ) = y1/( e^(b*x1) )
+     */
+    int expmap(int value, int x1, int x2, int y1, int y2)
+    {
+        float b = log(y2/y1)/(x2-x1);
+        float a = y2/(exp(b*x2));
+        return (int)(a*exp(value*b));
+    }
+    // Convenience method
+    int expmap(int value)
+    {
+        return expmap(value,0,H,FREQ_MIN,FREQ_MAX);
     }
 
     boolean isPaused()

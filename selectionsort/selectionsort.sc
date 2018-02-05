@@ -9,7 +9,8 @@ y.set(\gate, 0)
 y.set(\freq, 700);
 y.set(\freqlag, 1)
 y.free
-
+z = Synth(\minimum);
+~algowave.set(\freqlag, 0.1)
 (//--Parentheses begin
 /**
  * Futuristic booting sound.
@@ -26,7 +27,7 @@ SynthDef(\boot, {
  * Algowave which will be modified by individual element accesses while sorting.
  */
 SynthDef(\algowave, {
-	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
+	arg freq=440, freqlag=0.1, amptotal=0.3, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
 	freq = [freq*0.6, freq*0.8, freq, freq*1.2];
@@ -36,6 +37,22 @@ SynthDef(\algowave, {
 		mul:Lag.kr(ampmod, amplag)*Lag.kr(amptotal,amplag));
 	sig = sig * EnvGate(1,gate,amplag,doneAction:2);
 	Out.ar(0, Mix(sig)!2);
+}).add;
+
+/**
+ * This synth represents the current smallest found element.
+ */
+SynthDef(\minimum, {
+	arg freq=440, pulsefreq=0, amp=0.3, att=0.01, decay=1;
+	var sig,env;
+	env = EnvGen.ar(Env([1,1],[2]),doneAction:2);
+	sig = Mix(
+		FreeVerb.ar(
+			Decay2.ar(
+				Impulse.ar(pulsefreq), att, decay, mul:SinOsc.ar(freq, mul:amp)
+	),0.4,0.7));
+	sig = sig * env;
+	Out.ar(0, sig!2);
 }).add;
 
 // Define listener for boot sound.
@@ -53,22 +70,27 @@ OSCdef(\sortListener, {
 
 // Define listener for pausing of sinewave.
 OSCdef(\pauseListener, {
-	"pausing algowave.".postln;
+	"pausing sound.".postln;
 	~algowave.set(\amptotal, 0);
 }, "/wave_pause");
 
 // Define listener for resuming of sinewave.
 OSCdef(\resumeListener, {
-	"resuming algowave.".postln;
-	~algowave.set(\amptotal, 1);
+	"resuming sound.".postln;
+	~algowave.set(\amptotal, 0.3);
 }, "/wave_resume");
 
 // Define listener for modifying.
 OSCdef(\modListener, {
 	arg msg;
-	~algowave.set(\amptotal, 1);
+	~algowave.set(\amptotal, 0.3);
 	~algowave.set(\freq, msg[1]);
 }, "/wave_set");
+
+OSCdef(\modListener2, {
+	arg msg;
+	Synth(\minimum, [\freq, msg[1]]);
+}, "/min_set");
 
 /**
  * Define listener for freeing of synth.
@@ -85,6 +107,7 @@ OSCdef(\freeListener, {
 	"freeing algowave.".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
+	~minimum.free;
 }, "/wave_free");
 
 // Create address to send messages to Processing client
