@@ -10,7 +10,7 @@ y.set(\freq, 700);
 y.set(\freqlag, 1)
 y.free
 z = Synth(\minimum);
-~algowave.set(\freqlag, 0.1)
+
 (//--Parentheses begin
 /**
  * Futuristic booting sound.
@@ -64,7 +64,7 @@ OSCdef(\bootListener, {
 
 // Define listener for start of sinewave.
 OSCdef(\sortListener, {
-	"creating algowave".postln;
+	"creating synths.".postln;
 	~algowave = Synth(\algowave);
 }, "/wave_start");
 
@@ -104,10 +104,9 @@ OSCdef(\modListener2, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\freeListener, {
-	"freeing algowave.".postln;
+	"freeing synths.".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
-	~minimum.free;
 }, "/wave_free");
 
 // Create address to send messages to Processing client
