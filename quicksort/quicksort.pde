@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 31 January 2018
+ * @date 06 February 2018
  */
 class Quicksort extends Thread
 {
@@ -45,6 +45,8 @@ class Quicksort extends Thread
     @Override
     public void run()
     {
+        println("--- quicksort-thread has started.");
+        sendMessage(OSC_STARTAUDIO);
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -53,8 +55,9 @@ class Quicksort extends Thread
             int lower = 0;
             int upper = a.length-1;
             quicksortVisual(a, lower, upper);
-            println("--- quicksort-thread has terminated.");
         }
+        sendMessage(OSC_FREEAUDIO);
+        println("--- quicksort-thread has terminated.");
     }
 
     // Class member to be able to return the pivot height for visualization.
@@ -79,6 +82,18 @@ class Quicksort extends Thread
         // Mark iterator indizes.
         mark(l,compareColor);
         mark(r,compareColor);
+
+        // Sonification.
+        int arg1 = expmap(a[l]);
+        int arg2 = expmap(a[pivotIndex]);
+        int arg3 = expmap(a[r]);
+        int[] args = { arg1 };
+        sendMessage(OSC_MODAUDIO1, args);
+        args[0] = arg2;
+        sendMessage(OSC_MODAUDIO2, args);
+        args[0] = arg3;
+        sendMessage(OSC_MODAUDIO3, args);
+
         notifyFrameReady();
         do
         {
@@ -89,6 +104,11 @@ class Quicksort extends Thread
                 markInSubset(subset);
                 mark(l,compareColor);
                 mark(r,compareColor);
+
+                arg1 = expmap(a[l]);
+                args[0] = arg1;
+                sendMessage(OSC_MODAUDIO1, args);
+
                 notifyFrameReady();
             }
             while (a[r]>pivot)
@@ -98,6 +118,11 @@ class Quicksort extends Thread
                 markInSubset(subset);
                 mark(l,compareColor);
                 mark(r,compareColor);
+
+                arg3 = expmap(a[r]);
+                args[0] = arg3;
+                sendMessage(OSC_MODAUDIO3, args);
+
                 notifyFrameReady();
             }
             if (l<=r)
@@ -112,6 +137,15 @@ class Quicksort extends Thread
                 elements[r].setSwapping(true);
                 mark(l,compareColor);
                 mark(r,compareColor);
+
+                // Probably no change in sonification after sending of messages.
+                arg1 = expmap(a[l]);
+                args[0] = arg1;
+                sendMessage(OSC_MODAUDIO1, args);
+                arg3 = expmap(a[r]);
+                args[0] = arg3;
+                sendMessage(OSC_MODAUDIO3, args);
+
                 notifyFrameReady();
                 l++;
                 r--;
@@ -125,6 +159,26 @@ class Quicksort extends Thread
         {
             quicksortVisual(a, l, upper);
         }
+    }
+
+    /**
+     * Exponential map function: f(x) = a*e^(b*x)
+     * This function must satisfy following two equations:
+     * f(x1) = y1, f(x2) = y2
+     * Rearrangment of equations leads to following solution ==>
+     * b = ln(y2/y1)/(x2-x1)
+     * a = y2/( e^(b*x2) ) = y1/( e^(b*x1) )
+     */
+    int expmap(int value, int x1, int x2, int y1, int y2)
+    {
+        float b = log(y2/y1)/(x2-x1);
+        float a = y2/(exp(b*x2));
+        return (int)(a*exp(value*b));
+    }
+    // Convenience method
+    int expmap(int value)
+    {
+        return expmap(value,0,H,FREQ_MIN,FREQ_MAX);
     }
 
     boolean frameIsReady()
@@ -165,6 +219,7 @@ class Quicksort extends Thread
          */
         while(isPaused() && !isExiting())
         {
+            sendMessage(OSC_PAUSEAUDIO);
             try
             {
                 this.wait();
@@ -174,6 +229,7 @@ class Quicksort extends Thread
                 // Exception clears the interrupted flag. Reset it to check it later.
                 this.interrupt();
             }
+            sendMessage(OSC_RESUMEAUDIO);
         }
         // Clean markers from last frame.
         clearMarkers();

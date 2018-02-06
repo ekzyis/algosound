@@ -45,33 +45,45 @@ OSCdef(\bootListener, {
 	Synth(\boot);
 }, "/boot");
 
-// Define listener for start of sinewave.
+// Define listener for start of synths.
 OSCdef(\sortListener, {
-	"creating algowave".postln;
-	~algowave = Synth(\algowave);
+	"creating multiple algowaves".postln;
+	~algowave1 = Synth(\algowave);
+	~algowave2 = Synth(\algowave);
+	~algowave3 = Synth(\algowave);
 }, "/wave_start");
 
-// Define listener for pausing of sinewave.
+// Define listener for pausing of synths.
 OSCdef(\pauseListener, {
-	"pausing algowave.".postln;
-	~algowave.set(\amptotal, 0);
+	"pausing synths.".postln;
+	~algowave1.set(\amptotal, 0);
+	~algowave2.set(\amptotal, 0);
+	~algowave3.set(\amptotal, 0);
 }, "/wave_pause");
 
-// Define listener for resuming of sinewave.
+// Define listener for resuming of synths.
 OSCdef(\resumeListener, {
-	"resuming algowave.".postln;
-	~algowave.set(\amptotal, 1);
+	"resuming synths.".postln;
+	~algowave1.set(\amptotal, 1);
+	~algowave2.set(\amptotal, 1);
+	~algowave3.set(\amptotal, 1);
 }, "/wave_resume");
 
-// Define listener for modifying.
-OSCdef(\modListener, {
+// Define listeners for modifying.
+OSCdef(\modListener1, {
 	arg msg;
-	~algowave.set(\amptotal, 1);
-	~algowave.set(\freq, msg[1]);
-}, "/wave_set");
-
+	~algowave1.set(\freq, msg[1]);
+}, "/wave_set1");
+OSCdef(\modListener2, {
+	arg msg;
+	~algowave2.set(\freq, msg[1]);
+}, "/wave_set2");
+OSCdef(\modListener3, {
+	arg msg;
+	~algowave3.set(\freq, msg[1]);
+}, "/wave_set3");
 /**
- * Define listener for freeing of synth.
+ * Define listener for freeing of synths.
  * KNOWN ISSUES: After freeing, another free-attempt will
  * cause a
  *  FAILURE IN SERVER /n_free Node XXXX not found
@@ -82,9 +94,11 @@ OSCdef(\modListener, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\freeListener, {
-	"freeing algowave.".postln;
+	"freeing synths.".postln;
 	// Free it using gate.
-	~algowave.set(\gate, 0);
+	~algowave1.set(\gate, 0);
+	~algowave2.set(\gate, 0);
+	~algowave3.set(\gate, 0);
 }, "/wave_free");
 
 // Create address to send messages to Processing client

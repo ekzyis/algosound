@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 01 February 2018
+ * @date 06 February 2018
  */
 import netP5.*;
 import oscP5.*;
@@ -32,7 +32,9 @@ private final String OSC_BOOT = "/boot";
 private final String OSC_STARTAUDIO = "/wave_start";
 private final String OSC_PAUSEAUDIO = "/wave_pause";
 private final String OSC_RESUMEAUDIO = "/wave_resume";
-private final String OSC_MODAUDIO = "/wave_set";
+private final String OSC_MODAUDIO1 = "/wave_set1";
+private final String OSC_MODAUDIO2 = "/wave_set2";
+private final String OSC_MODAUDIO3 = "/wave_set3";
 private final String OSC_FREEAUDIO = "/wave_free";
 /**
  * Port on which sc3-server is listening for messages.
