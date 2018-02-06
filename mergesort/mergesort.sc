@@ -4,7 +4,7 @@ s.queryAllNodes
 
 // Test synths after creating
 x = Synth(\boot);
-y = Synth(\swapwave)
+y = Synth(\algowave);
 y.set(\gate, 0)
 y.set(\freq, 700);
 y.set(\freqlag, 1)
@@ -23,9 +23,9 @@ SynthDef(\boot, {
 }).add;
 
 /**
- * Swapwave which will be modified by individual swaps happening while sorting.
+ * Algowave which will be modified by individual swaps happening while sorting.
  */
-SynthDef(\swapwave, {
+SynthDef(\algowave, {
 	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
@@ -47,27 +47,27 @@ OSCdef(\bootListener, {
 
 // Define listener for start of sinewave.
 OSCdef(\sortListener, {
-	"creating swapwave".postln;
-	~swapwave = Synth(\swapwave);
+	"creating algowave.".postln;
+	~algowave = Synth(\algowave);
 }, "/wave_start");
 
 // Define listener for pausing of sinewave.
 OSCdef(\pauseListener, {
-	"pausing swapwave.".postln;
-	~swapwave.set(\amptotal, 0);
+	"pausing algowave.".postln;
+	~algowave.set(\amptotal, 0);
 }, "/wave_pause");
 
 // Define listener for resuming of sinewave.
 OSCdef(\resumeListener, {
-	"resuming swapwave.".postln;
-	~swapwave.set(\amptotal, 1);
+	"resuming algowave.".postln;
+	~algowave.set(\amptotal, 1);
 }, "/wave_resume");
 
 // Define listener for modifying.
 OSCdef(\modListener, {
 	arg msg;
-	~swapwave.set(\amptotal, 1);
-	~swapwave.set(\freq, msg[1]);
+	~algowave.set(\amptotal, 1);
+	~algowave.set(\freq, msg[1]);
 }, "/wave_set");
 
 /**
@@ -82,9 +82,9 @@ OSCdef(\modListener, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\freeListener, {
-	"freeing swapwave.".postln;
+	"freeing algowave.".postln;
 	// Free it using gate.
-	~swapwave.set(\gate, 0);
+	~algowave.set(\gate, 0);
 }, "/wave_free");
 
 // Create address to send messages to Processing client
