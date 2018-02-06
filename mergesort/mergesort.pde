@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
  * For more information see comments in this file.
  *
  * @author ekzyis
- * @date 31 January 2018
+ * @date 06 February 2018
  */
 
 class Mergesort extends Thread
