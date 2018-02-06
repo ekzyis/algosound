@@ -65,7 +65,7 @@ class Mergesort extends Thread
             // Start sorting.
             a = mergesort(a,Mergesort.THREAD);
         }
-        sendMessage(OSC_PAUSEAUDIO);
+        sendMessage(OSC_FREEAUDIO);
         println("--- mergesort-thread has terminated.");
 
     }
