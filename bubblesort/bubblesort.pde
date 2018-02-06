@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 31 January 2018
+ * @date 06 February 2018
  */
 class Bubblesort extends Thread
 {
@@ -81,7 +81,7 @@ class Bubblesort extends Thread
                     // Send osc message for sonification.
                     int value  = a[i];
                     println("value to map: "+value);
-                    int[] args = { expmap(value,0,H,FREQ_MIN,FREQ_MAX) };
+                    int[] args = { expmap(value) };
                     println("mapped values: "+args[0]);
                     sendMessage(OSC_MODAUDIO,args);
                 }
@@ -109,6 +109,11 @@ class Bubblesort extends Thread
         float b = log(y2/y1)/(x2-x1);
         float a = y2/(exp(b*x2));
         return (int)(a*exp(value*b));
+    }
+    // Convenience method
+    int expmap(int value)
+    {
+        return expmap(value,0,H,FREQ_MIN,FREQ_MAX);
     }
 
     boolean frameIsReady()
