@@ -23,7 +23,7 @@ SynthDef(\boot, {
 }).add;
 
 /**
- * Algowave which will be modified by individual element accesses while sorting.
+ * Synth which will be modified by individual element accesses while sorting.
  */
 SynthDef(\algowave, {
 	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
@@ -41,23 +41,22 @@ SynthDef(\algowave, {
 // Define listener for boot sound.
 OSCdef(\bootListener, {
 	"playing boot sound.".postln;
-	// Play boot sound
 	Synth(\boot);
 }, "/boot");
 
-// Define listener for start of sinewave.
+// Define listener for start of algowave-synth.
 OSCdef(\sortListener, {
 	"creating algowave".postln;
 	~algowave = Synth(\algowave);
 }, "/wave_start");
 
-// Define listener for pausing of sinewave.
+// Define listener for pausing of algowave-synth.
 OSCdef(\pauseListener, {
 	"pausing algowave.".postln;
 	~algowave.set(\amptotal, 0);
 }, "/wave_pause");
 
-// Define listener for resuming of sinewave.
+// Define listener for resuming of algowave-synth.
 OSCdef(\resumeListener, {
 	"resuming algowave.".postln;
 	~algowave.set(\amptotal, 1);
