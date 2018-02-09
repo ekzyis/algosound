@@ -21,3 +21,10 @@ After some first builds, research about the topic of parsing and trying the soni
   
  At this point, all sorting algorithms have been implemented and visualized + a basic sonification of bubblesort.
  
+#### Update 09.02.18
+All sorting algorithms have been sonificated now.
+Sonification consists mainly of a sinewave which is modulated while sorting. The heights of the current accessed elements is mapped to a frequency range. This mapped value is then sent to SuperCollider through OSC, setting the frequency for the sinewave. To prevent sound artifacts due to sudden change of a parameter / to smooth the signal, a Lag UGen is used for the amplitude and frequency. The sinewave is called 'algowave' since the algorithm modulates the (sine)wave. This is the "Generation 1 Sonification". Due to the unharmonic nature of this implementation (which was expected), work on the Gen 2 Sonification has begun. To achieve a more harmonic sound, scales and midi-notes will be used.
+
+This Gen 2 Sonification has been already implemented in bubblesort.
+
+Implementation of the graph algorithms has not started yet because I want to focus more on synths and sonification before starting to implement two algorithms from scratch, including a whole new visualization.
