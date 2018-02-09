@@ -203,7 +203,7 @@ x.free
  * Modified default-synth ("fade edition").
  */
 (
-SynthDef(\defaultGate, {
+SynthDef(\default_fade, {
 	arg freq=440, amp=0.1, pan=0, att=0.01, sustain=0.7, releaseTime=0.3;
 	var z;
 	z = LPF.ar(
@@ -213,3 +213,4 @@ SynthDef(\defaultGate, {
 	Out.ar(0, Pan2.ar(z, pan, amp));
 }).add;
 )
+Synth(\default_fade)
