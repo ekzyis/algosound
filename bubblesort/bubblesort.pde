@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 06 February 2018
+ * @date 09 February 2018
  */
 class Bubblesort extends Thread
 {
@@ -43,7 +43,16 @@ class Bubblesort extends Thread
     public void run()
     {
         println("---bubblesort-thread starting.");
-        sendMessage(OSC_STARTAUDIO);
+        if(s==Sonification.WAVE)
+        {
+            sendMessage(OSC_STARTAUDIO);
+        }
+        // Scale variant needs arguments for setup.
+        else if(s==Sonification.SCALE)
+        {
+            int[] args = {FREQ_MIN, FREQ_MAX};
+            sendMessage(OSC_STARTAUDIO, args);
+        }
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -84,6 +93,11 @@ class Bubblesort extends Thread
                     int[] args = { expmap(value) };
                     println("mapped values: "+args[0]);
                     sendMessage(OSC_MODAUDIO,args);
+                    /**
+                     * TODO for sonification variant SCALE:
+                     *  Change scale to minor when swap is set to true.
+                     *  => Needs an additional OSCdef with logic in 'bubblesort_scale.sc'
+                     */
                 }
             }while(swap);
             /**

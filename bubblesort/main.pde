@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 01 February 2018
+ * @date 09 February 2018
  */
 import netP5.*;
 import oscP5.*;
@@ -16,6 +16,8 @@ import controlP5.*;
  * Members needed for sonification.
  * --------------------------------
  */
+// Choose sonification variant.
+private final Sonification s = Sonification.SCALE;
 // Open sound control instance.
 private OscP5 OSC;
 // Address of sc3-server.
@@ -29,11 +31,11 @@ private final String SC_REPLY = "/hello";
 // Osc address of boot listener.
 private final String OSC_BOOT = "/boot";
 // Osc address of audio listeners
-private final String OSC_STARTAUDIO = "/wave_start";
-private final String OSC_PAUSEAUDIO = "/wave_pause";
-private final String OSC_RESUMEAUDIO = "/wave_resume";
-private final String OSC_MODAUDIO = "/wave_set";
-private final String OSC_FREEAUDIO = "/wave_free";
+private final String OSC_STARTAUDIO = s.STARTPATH;
+private final String OSC_PAUSEAUDIO = s.PAUSEPATH;
+private final String OSC_RESUMEAUDIO = s.RESUMEPATH;
+private final String OSC_MODAUDIO = s.MODPATH;
+private final String OSC_FREEAUDIO = s.FREEPATH;
 /**
  * Port on which sc3-server is listening for messages.
  * This should match the output of NetAddr.localAddr in SuperCollider.
