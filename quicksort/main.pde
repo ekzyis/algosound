@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 06 February 2018
+ * @date 10 February 2018
  */
 import netP5.*;
 import oscP5.*;
@@ -16,6 +16,8 @@ import controlP5.*;
  * Members needed for sonification.
  * --------------------------------
  */
+// Choose sonification variant.
+private final Sonification s = Sonification.SCALE;
 // Open sound control instance.
 private OscP5 OSC;
 // Address of sc3-server.
@@ -23,19 +25,19 @@ private NetAddress SUPERCOLLIDER;
 // Status of connection.
 private boolean connected;
 // Osc address of status listener.
-private final String OSC_STATUS = "/status";
+private final String OSC_STATUS = s.STATUSPATH;
 // SuperCollider status reply.
 private final String SC_REPLY = "/hello";
 // Osc address of boot listener.
 private final String OSC_BOOT = "/boot";
 // Osc address of audio listeners
-private final String OSC_STARTAUDIO = "/wave_start";
-private final String OSC_PAUSEAUDIO = "/wave_pause";
-private final String OSC_RESUMEAUDIO = "/wave_resume";
-private final String OSC_MODAUDIO1 = "/wave_set1";
-private final String OSC_MODAUDIO2 = "/wave_set2";
-private final String OSC_MODAUDIO3 = "/wave_set3";
-private final String OSC_FREEAUDIO = "/wave_free";
+private final String OSC_STARTAUDIO = s.STARTPATH;
+private final String OSC_PAUSEAUDIO = s.PAUSEPATH;
+private final String OSC_RESUMEAUDIO = s.RESUMEPATH;
+private final String OSC_MODAUDIO1 = s.MODPATH[0];
+private final String OSC_MODAUDIO2 = s.MODPATH[1];
+private final String OSC_MODAUDIO3 = s.MODPATH[2];
+private final String OSC_FREEAUDIO = s.FREEPATH;
 /**
  * Port on which sc3-server is listening for messages.
  * This should match the output of NetAddr.localAddr in SuperCollider.

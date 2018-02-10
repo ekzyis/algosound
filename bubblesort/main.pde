@@ -17,7 +17,7 @@ import controlP5.*;
  * --------------------------------
  */
 // Choose sonification variant.
-private final Sonification s = Sonification.SCALE;
+private final Sonification s = Sonification.WAVE;
 // Open sound control instance.
 private OscP5 OSC;
 // Address of sc3-server.
@@ -25,7 +25,7 @@ private NetAddress SUPERCOLLIDER;
 // Status of connection.
 private boolean connected;
 // Osc address of status listener.
-private final String OSC_STATUS = "/status";
+private final String OSC_STATUS = s.STATUSPATH;
 // SuperCollider status reply.
 private final String SC_REPLY = "/hello";
 // Osc address of boot listener.

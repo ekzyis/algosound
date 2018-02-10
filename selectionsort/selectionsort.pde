@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 31 January 2018
+ * @date 10 February 2018
  */
 class Selectionsort extends Thread
 {
@@ -43,7 +43,15 @@ class Selectionsort extends Thread
     public void run()
     {
         println("--- selectionsort-thread has started.");
-        sendMessage(OSC_STARTAUDIO);
+        if( s == Sonification.WAVE)
+        {
+            sendMessage(OSC_STARTAUDIO);
+        }
+        else if( s == Sonification.SCALE)
+        {
+            int[] args = {FREQ_MIN,FREQ_MAX};
+            sendMessage(OSC_STARTAUDIO,args);
+        }
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -72,7 +80,7 @@ class Selectionsort extends Thread
                     mark(minIndex);
                     mark(i);
                     int[] args = {arg1};
-                    sendMessage(OSC_MODAUDIO, args);
+                    sendMessage(OSC_MODAUDIO1, args);
                     notifyFrameReady();
                 }
                 int tmp = a[minIndex];

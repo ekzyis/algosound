@@ -64,11 +64,11 @@ void oscEvent(OscMessage msg)
 /**
  * Send a message to an osc listener with given path and arguments.
  */
-void sendMessage(String path, int[] args)
+void sendMessage(String path, float[] args)
 {
     println("osc: sending message to: "+path);
     OscMessage msg = new OscMessage(path);
-    for(int n : args)
+    for(float n : args)
     {
         msg.add(n);
     }
@@ -77,5 +77,5 @@ void sendMessage(String path, int[] args)
 // Convenience method.
 void sendMessage(String path)
 {
-    sendMessage(path, new int[0]);
+    sendMessage(path, new float[0]);
 }

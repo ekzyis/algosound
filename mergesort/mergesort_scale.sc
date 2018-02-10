@@ -20,24 +20,24 @@ SynthDef(\boot, {
 
 // Sinewave osc playing midi-notes.
 SynthDef(\midisine, {
-	arg midi=69, amp=0.1, atk=0.005, rel=0.3;
+	arg midi=69, amp=0.1, atk=0.005, rel=0.30, pan=0;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
 	amp = amp * midi.clip(50,120).linexp(50,120,3,0.01);
-	sig = SinOsc.ar(midi.midicps) * amp;
+	sig = SinOsc.ar(midi.midicps);
 	sig = sig * env;
-	Out.ar(0, Mix(sig)!2);
+	Out.ar(0, Pan2.ar(sig, pan, amp));
 }).add;
 
 // Modified default-synth ("fade+midi edition").
 SynthDef(\default_midifade, {
-	arg midi=69, amp=0.5, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
+	arg midi=69, amp=0.5, pan=0, att=0.005, sustain=0.2, releaseTime=0.1, panlag=0.01;
 	var z;
 	z = LPF.ar(
 			Mix.new(VarSaw.ar(midi.midicps + [0, Rand(-0.4,0.0), Rand(0.0,0.4)], 0, 0.3, 0.3)),
 			XLine.kr(Rand(4000,5000), Rand(2500,3200), 1)
 	) * Linen.kr(Line.kr(1,-0.01, att+sustain+releaseTime), att, sustain, releaseTime, 2);
-	Out.ar(0, Pan2.ar(z, pan, amp));
+	Out.ar(0, Pan2.ar(z, Lag.kr(pan,panlag), amp));
 }).add;
 
 // Define listener for boot sound.
@@ -91,7 +91,8 @@ OSCdef(\midiListener, {
 		{ midi = ~scales.at(i); },
 	);
 	"playing midi-note ".post;midi.postln;
-	Synth(\midisine, [\midi, midi, \rel, ~durations.choose]);
+	"pan=".post;msg[2].postln;
+	Synth(\midisine, [\midi, midi, \rel, ~durations.choose, \pan, msg[2]]);
 }, "/scale_play");
 
 // Create address to send messages to Processing client

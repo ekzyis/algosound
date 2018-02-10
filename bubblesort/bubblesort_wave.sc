@@ -92,6 +92,6 @@ OSCdef(\freeListener, {
 // Define listener for checking if sc3-server is running.
 OSCdef(\statuslistener, {
 	~address.sendMsg("/hello");
-}, "/status");
+}, "/hellowave");
 
 )//--Parentheses end

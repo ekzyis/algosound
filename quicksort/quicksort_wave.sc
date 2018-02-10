@@ -26,7 +26,7 @@ SynthDef(\boot, {
  * Synth which will be modified by individual element accesses while sorting.
  */
 SynthDef(\algowave, {
-	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
+	arg freq=440, freqlag=0.1, amptotal=0.6, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
 	freq = [freq*0.6, freq*0.8, freq, freq*1.2];
@@ -63,9 +63,9 @@ OSCdef(\pauseListener, {
 // Define listener for resuming of synths.
 OSCdef(\resumeListener, {
 	"resuming synths.".postln;
-	~algowave1.set(\amptotal, 1);
-	~algowave2.set(\amptotal, 1);
-	~algowave3.set(\amptotal, 1);
+	~algowave1.set(\amptotal, 0.6);
+	~algowave2.set(\amptotal, 0.6);
+	~algowave3.set(\amptotal, 0.6);
 }, "/wave_resume");
 
 // Define listeners for modifying.
@@ -106,6 +106,6 @@ OSCdef(\freeListener, {
 // Define listener for checking if sc3-server is running.
 OSCdef(\statuslistener, {
 	~address.sendMsg("/hello");
-}, "/status");
+}, "/hellowave");
 
 )//--Parentheses end

@@ -23,7 +23,7 @@ SynthDef(\midisine, {
 	arg midi=69, amp=0.1, atk=0.005, rel=0.3;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
-	amp = amp * midi.clip(50,120).linexp(50,120,3,0.01);
+	amp = amp * midi.clip(50,120).linexp(50,120,0.5,0.01);
 	sig = SinOsc.ar(midi.midicps) * amp;
 	sig = sig * env;
 	Out.ar(0, Mix(sig)!2);
@@ -31,7 +31,7 @@ SynthDef(\midisine, {
 
 // Modified default-synth ("fade+midi edition").
 SynthDef(\default_midifade, {
-	arg midi=69, amp=0.5, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
+	arg midi=69, amp=0.3, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
 	var z;
 	z = LPF.ar(
 			Mix.new(VarSaw.ar(midi.midicps + [0, Rand(-0.4,0.0), Rand(0.0,0.4)], 0, 0.3, 0.3)),

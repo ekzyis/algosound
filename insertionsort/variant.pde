@@ -8,7 +8,7 @@
  * event.
  *
  * @author ekzyis
- * @date 09 February 2018
+ * @date 10 February 2018
  */
 public enum Sonification
 {

@@ -8,14 +8,15 @@
  * event.
  *
  * @author ekzyis
- * @date 09 February 2018
+ * @date 10 February 2018
  */
 public enum Sonification
 {
-    WAVE("/wave_start", "/wave_pause", "/wave_resume", "/wave_set", "/wave_free", "/hellowave"),
-    SCALE("/scale_start", "", "", "/scale_play", "", "/helloscale");
-    public final String STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH;
-    Sonification(String start, String pause, String resume, String mod, String free, String status)
+    WAVE("/wave_start", "/wave_pause", "/wave_resume", new String[]{"/wave_set1", "/wave_set2", "/wave_set3"}, "/wave_free", "/hellowave"),
+    SCALE("/scale_start", "", "", new String[]{ "/scale_play", "/scale_play", "/scale_play" }, "" , "/helloscale");
+    public final String STARTPATH, PAUSEPATH, RESUMEPATH, FREEPATH, STATUSPATH;
+    public final String[] MODPATH;
+    Sonification(String start, String pause, String resume, String[] mod, String free, String status)
     {
         this.STARTPATH = start;
         this.PAUSEPATH = pause;

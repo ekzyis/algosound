@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 06 February 2018
+ * @date 10 February 2018
  */
 class Quicksort extends Thread
 {
@@ -29,7 +29,7 @@ class Quicksort extends Thread
     private boolean exiting;
     // Needed for sonification.
     final int FREQ_MIN = 200;
-    final int FREQ_MAX = 1640;
+    final int FREQ_MAX = 4000;
 
     Quicksort(int N)
     {
@@ -46,7 +46,15 @@ class Quicksort extends Thread
     public void run()
     {
         println("--- quicksort-thread has started.");
-        sendMessage(OSC_STARTAUDIO);
+        if(s == Sonification.WAVE)
+        {
+            sendMessage(OSC_STARTAUDIO);
+        }
+        else if(s == Sonification.SCALE)
+        {
+            int[] args = {FREQ_MIN, FREQ_MAX};
+            sendMessage(OSC_STARTAUDIO, args);
+        }
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -150,12 +158,12 @@ class Quicksort extends Thread
                 l++;
                 r--;
             }
-        }while(l<=r);
-        if (lower<r)
+        }while(l<=r & !isExiting());
+        if (lower<r & !isExiting())
         {
             quicksortVisual(a,lower, r);
         }
-        if (l<upper)
+        if (l<upper & !isExiting())
         {
             quicksortVisual(a, l, upper);
         }

@@ -91,6 +91,7 @@ OSCdef(\midiListener, {
 		{ midi = ~scales.at(i); },
 	);
 	"playing midi-note ".post;midi.postln;
+	"pan=".post;msg[2].postln;
 	Synth(\midisine, [\midi, midi, \rel, ~durations.choose]);
 }, "/scale_play");
 

@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
  * For more information see comments in this file.
  *
  * @author ekzyis
- * @date 06 February 2018
+ * @date 10 February 2018
  */
 
 class Mergesort extends Thread
@@ -56,7 +56,15 @@ class Mergesort extends Thread
     public void run()
     {
         println("--- mergesort-thread has started.");
-        sendMessage(OSC_STARTAUDIO);
+        if(s == Sonification.WAVE)
+        {
+            sendMessage(OSC_STARTAUDIO);
+        }
+        else if(s == Sonification.SCALE)
+        {
+            float[] args = {FREQ_MIN, FREQ_MAX};
+            sendMessage(OSC_STARTAUDIO, args);
+        }
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {
@@ -150,6 +158,7 @@ class Mergesort extends Thread
      * any problems when sorting array is not equal to the array consisting
      * of the values of the elements.
      */
+    private float pan = 0;
     int[] mergesort(int[] a, byte MODE)
     {
         if(a.length>1)
@@ -158,7 +167,10 @@ class Mergesort extends Thread
             // Real cut index of current set. Will be initialized later.
             int realCut = -1;
             int[] left = subset(a,0,cut);
-            if(MODE==THREAD)
+            // Arguments for sonification (times two to compensate for height limit.)
+            int arg1 = expmap(a[cut]*2);
+            float[] args = { arg1, 0};
+            if(MODE==THREAD & !isExiting())
             {
                 /**
                  * First (logical) frame:
@@ -166,13 +178,10 @@ class Mergesort extends Thread
                  */
                 realCut = cutStack.peek() + cut;
                 mark(realCut);
-                // times two to compensate for height limit.
-                int arg1 = expmap(a[cut]*2);
-                int[] args = { arg1 };
                 sendMessage(OSC_MODAUDIO,args);
                 notifyFrameReady();
             }
-            if(MODE==THREAD)
+            if(MODE==THREAD & !isExiting())
             {
                 /**
                  * Second (logical) frame:
@@ -184,12 +193,14 @@ class Mergesort extends Thread
                 int len = floor(a.length/2.0);
                 Element[] subset = (Element[])(subset(elements,l,len));
                 markInSubset(subset);
-                // TODO: Sonificate subset.
+                // Pan sound to the left.
+                args[1] = -1;
+                sendMessage(OSC_MODAUDIO,args);
                 notifyFrameReady();
             }
             left = mergesort(left,MODE);
             int[] right = subset(a,cut);
-            if(MODE==THREAD)
+            if(MODE==THREAD & !isExiting())
             {
                 /**
                  * Third (logical) frame:
@@ -208,19 +219,20 @@ class Mergesort extends Thread
                 int len = ceil(a.length/2.0);
                 Element[] subset = (Element[])(subset(elements,r,len));
                 markInSubset(subset);
-                // TODO: Sonificate subset.
+                // Pan sound to the right.
+                args[1] = 1;
+                sendMessage(OSC_MODAUDIO,args);
                 notifyFrameReady();
             }
             right = mergesort(right,MODE);
-            if(MODE==THREAD)
+            if(MODE==THREAD & !isExiting())
             {
                 /**
                  * Third (logical) frame:
                  * Mark cut index.
                  */
                 mark(realCut);
-                int arg1 = expmap(a[cut]*2);
-                int[] args = { arg1 };
+                args[1] = 0;
                 sendMessage(OSC_MODAUDIO,args);
                 notifyFrameReady();
             }
@@ -261,7 +273,7 @@ class Mergesort extends Thread
         int leftStart = 0, rightStart = 0;
         // Length of resulting set.
         int len = left.length + right.length;
-        if(MODE==THREAD)
+        if(MODE==THREAD & !isExiting())
         {
             // Real startindex of right subset is last pushed real cut index.
             rightStart = cutStack.pop();
@@ -329,7 +341,7 @@ class Mergesort extends Thread
             {
                 // Next element in sorted order is in the right subset.
                 newlist[i] = right[k];
-                if(MODE==THREAD)
+                if(MODE==THREAD & !isExiting())
                 {
                     Element e = rightSub[k].copy();
                     // Assing correct x-position for correct visualization of sorting.
@@ -344,7 +356,7 @@ class Mergesort extends Thread
             {
                 // Next element in sorted order is in the left subset.
                 newlist[i] = left[j];
-                if(MODE==THREAD)
+                if(MODE==THREAD & !isExiting())
                 {
                     Element e = leftSub[j].copy();
                     e.setX(posXqueue.poll());
@@ -353,12 +365,12 @@ class Mergesort extends Thread
                 }
                 j++;
             }
-            if(MODE==THREAD)
+            if(MODE==THREAD & !isExiting())
             {
                 // Every swap is one frame.
                 updateElements(merged,leftStart,len);
                 int arg1 = expmap(newlist[i]*2);
-                int[] args = { arg1 };
+                float[] args = { arg1 };
                 sendMessage(OSC_MODAUDIO, args);
                 notifyFrameReady();
             }
@@ -370,7 +382,7 @@ class Mergesort extends Thread
             for(;j<left.length;++j)
             {
                 newlist[i] = left[j];
-                if(MODE==THREAD)
+                if(MODE==THREAD & !isExiting())
                 {
                     Element e = leftSub[j].copy();
                     e.setX(posXqueue.poll());
@@ -378,7 +390,7 @@ class Mergesort extends Thread
                     merged[i] = e;
                     updateElements(merged,leftStart,len);
                     int arg1 = expmap(newlist[i]*2);
-                    int[] args = { arg1 };
+                    float[] args = { arg1 };
                     sendMessage(OSC_MODAUDIO, args);
                     notifyFrameReady();
                 }
@@ -390,7 +402,7 @@ class Mergesort extends Thread
             for(;k<right.length;++k)
             {
                 newlist[i] = right[k];
-                if(MODE==THREAD)
+                if(MODE==THREAD & !isExiting())
                 {
                     Element e = rightSub[k].copy();
                     e.setX(posXqueue.poll());
@@ -398,7 +410,7 @@ class Mergesort extends Thread
                     merged[i] = e;
                     updateElements(merged,leftStart,len);
                     int arg1 = expmap(newlist[i]*2);
-                    int[] args = { arg1 };
+                    float[] args = { arg1 };
                     sendMessage(OSC_MODAUDIO, args);
                     notifyFrameReady();
                 }
@@ -410,7 +422,7 @@ class Mergesort extends Thread
             // This should never be reached.
             assert(false);
         }
-        if(MODE==THREAD)
+        if(MODE==THREAD & !isExiting())
         {
             /**
              * Merging complete. Now unmark merge markers from elements next frame

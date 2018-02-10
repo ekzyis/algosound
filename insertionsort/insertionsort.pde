@@ -5,7 +5,7 @@
  * and notifying to draw new frames.
  *
  * @author ekzyis
- * @date 06 February 2018
+ * @date 10 February 2018
  */
 class Insertionsort extends Thread
 {
@@ -43,7 +43,15 @@ class Insertionsort extends Thread
     public void run()
     {
         println("---insertionsort-thread starting.");
-        sendMessage(OSC_STARTAUDIO);
+        if(s == Sonification.WAVE)
+        {
+            sendMessage(OSC_STARTAUDIO);
+        }
+        else if(s == Sonification.SCALE)
+        {
+            int[] args = {FREQ_MIN, FREQ_MAX};
+            sendMessage(OSC_STARTAUDIO, args);
+        }
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
         {

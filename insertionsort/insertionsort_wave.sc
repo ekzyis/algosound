@@ -6,10 +6,17 @@ s.queryAllNodes
 x = Synth(\boot);
 y = Synth(\algowave)
 y.set(\gate, 0)
-y.set(\freq, 700);
+y.set(\freq, 500);
 y.set(\freqlag, 1)
 y.free
-z = Synth(\minimum);
+z = Synth(\insert);
+z.set(\freq, 440);
+z.set(\pulsefreq, 5);
+z.set(\att, 0.1);
+z.set(\amp, 0.2);
+z.set(\decay, 0.3);
+z.set(\gate, 0);
+z.free
 
 (//--Parentheses begin
 /**
@@ -27,32 +34,33 @@ SynthDef(\boot, {
  * Synth which will be modified by individual element accesses while sorting.
  */
 SynthDef(\algowave, {
-	arg freq=440, freqlag=0.1, amptotal=0.3, amp=0.2, amplag=0.5, gate=1;
-	var sig, ampmod;
+	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
+	var sig, ampmod, env;
 	// Make higher pitches less loud.
 	freq = [freq*0.6, freq*0.8, freq, freq*1.2];
 	ampmod = freq.expexp(200,4000,amp,0.02);
+	env = EnvGate(1,gate,amplag,doneAction:2);
 	sig = SinOsc.ar(
 		Lag.kr(freq,freqlag),
 		mul:Lag.kr(ampmod, amplag)*Lag.kr(amptotal,amplag));
-	sig = sig * EnvGate(1,gate,amplag,doneAction:2);
+	sig = sig * env;
 	Out.ar(0, Mix(sig)!2);
 }).add;
 
 /**
- * This synth represents the current smallest found element.
+ * Synth which represents the value of the element to insert.
  */
-SynthDef(\minimum, {
-	arg freq=440, pulsefreq=0, amp=0.3, att=0.01, decay=1;
-	var sig,env;
-	env = EnvGen.ar(Env([1,1],[2]),doneAction:2);
+SynthDef(\insert, {
+	arg freq=440, pulsefreq=10, amp=0.2, att=0.1, decay=0.5, amplag=0.5, gate=1;
+	var sig, env;
 	sig = Mix(
-		FreeVerb.ar(
-			Decay2.ar(
-				Impulse.ar(pulsefreq), att, decay, mul:SinOsc.ar(freq, mul:amp)
-	),0.4,0.7));
+		Decay2.ar(
+			Impulse.ar(pulsefreq, [0.5,0.45], amp), att, decay, Saw.ar(freq)
+	));
+	env = EnvGate(1,gate,amplag, doneAction:2);
 	sig = sig * env;
-	Out.ar(0, sig!2);
+	sig = Pan2.ar(sig, 0, amp);
+	Out.ar(0, sig);
 }).add;
 
 // Define listener for boot sound.
@@ -61,35 +69,36 @@ OSCdef(\bootListener, {
 	Synth(\boot);
 }, "/boot");
 
-// Define listener for start of algowave-synth.
+// Define listener for start of algowave- and insert-synth.
 OSCdef(\sortListener, {
-	"creating synths.".postln;
+	"creating algowave".postln;
 	~algowave = Synth(\algowave);
+	"creating insert synth".postln;
+	~insert = Synth.after(~algowave,\insert, [\amp, 0]);
 }, "/wave_start");
 
-// Define listener for pausing of algowave-synth.
+// Define listener for pausing of synths.
 OSCdef(\pauseListener, {
-	"pausing sound.".postln;
+	"pausing algowave.".postln;
 	~algowave.set(\amptotal, 0);
+	~insert.set(\amp, 0);
 }, "/wave_pause");
 
-// Define listener for resuming of algowave-synth.
+// Define listener for resuming of synths.
 OSCdef(\resumeListener, {
-	"resuming sound.".postln;
-	~algowave.set(\amptotal, 0.3);
+	"resuming algowave.".postln;
+	~algowave.set(\amptotal, 1);
+	~insert.set(\amp, 0.2);
 }, "/wave_resume");
 
 // Define listener for modifying.
 OSCdef(\modListener, {
 	arg msg;
-	~algowave.set(\amptotal, 0.3);
+	~algowave.set(\amptotal, 1);
+	~insert.set(\amp, 0.2);
 	~algowave.set(\freq, msg[1]);
+	~insert.set(\freq, msg[2]);
 }, "/wave_set");
-
-OSCdef(\modListener2, {
-	arg msg;
-	Synth(\minimum, [\freq, msg[1]]);
-}, "/min_set");
 
 /**
  * Define listener for freeing of synth.
@@ -103,9 +112,11 @@ OSCdef(\modListener2, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\freeListener, {
-	"freeing synths.".postln;
+	"freeing ~lgowave.".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
+	"freeing insert synth.".postln;
+	~insert.set(\gate, 0);
 }, "/wave_free");
 
 // Create address to send messages to Processing client
@@ -114,6 +125,5 @@ OSCdef(\freeListener, {
 // Define listener for checking if sc3-server is running.
 OSCdef(\statuslistener, {
 	~address.sendMsg("/hello");
-}, "/status");
-
+}, "/hellowave");
 )//--Parentheses end
