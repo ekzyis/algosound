@@ -17,7 +17,7 @@ import controlP5.*;
  * --------------------------------
  */
 // Choose sonification variant.
-private final Sonification s = Sonification.WAVE;
+private final Sonification s = Sonification.SCALE;
 // Open sound control instance.
 private OscP5 OSC;
 // Address of sc3-server.
