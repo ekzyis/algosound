@@ -75,10 +75,10 @@ OSCdef(\startListener, {
 	 * There is a lot potential in this being very useful when
 	 * accessible during runtime through UI.
 	 */
-	~durations = Array.fill(12,{
+	/*~durations = Array.fill(12,{
 		Array.fill(6,{ arg i; (i*0.25) + 0.25;}).choose
 	}); // Array.fill inception
-	"durations=".post;~durations.postln;
+	"durations=".post;~durations.postln;*/
 }, "/scale_start");
 
 // Define listener for playing a midi note.
@@ -91,7 +91,7 @@ OSCdef(\midiListener, {
 		{ midi = ~scales.at(i); },
 	);
 	"playing midi-note ".post;midi.postln;
-	Synth(\midisine, [\midi, midi, \rel, ~durations.choose]);
+	Synth(\midisine, [\midi, midi, \rel, rrand(0.1,1.75)]);
 }, "/scale_play");
 
 // Create address to send messages to Processing client
