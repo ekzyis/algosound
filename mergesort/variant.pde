@@ -12,11 +12,12 @@
  */
 public enum Sonification
 {
-    WAVE("/wave_start", "/wave_pause", "/wave_resume", "/wave_set", "/wave_free", "/hellowave"),
-    SCALE("/scale_start", "", "", "/scale_play", "", "/helloscale");
-    public final String STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH;
-    Sonification(String start, String pause, String resume, String mod, String free, String status)
+    WAVE("WAVE", "wave_start", "/wave_pause", "/wave_resume", "/wave_set", "/wave_free", "/hellowave"),
+    SCALE("SCALE", "/scale_start", "", "", "/scale_play", "", "/helloscale");
+    public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH;
+    Sonification(String name, String start, String pause, String resume, String mod, String free, String status)
     {
+        this.NAME = name;
         this.STARTPATH = start;
         this.PAUSEPATH = pause;
         this.RESUMEPATH = resume;

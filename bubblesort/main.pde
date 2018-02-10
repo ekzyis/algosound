@@ -17,7 +17,9 @@ import controlP5.*;
  * --------------------------------
  */
 // Choose sonification variant.
-private final Sonification s = Sonification.SCALE;
+private final Sonification[] sList = {Sonification.SCALE, Sonification.WAVE};
+private int listIndex = 0;
+private Sonification s = sList[listIndex];
 // Open sound control instance.
 private OscP5 OSC;
 // Address of sc3-server.
@@ -25,17 +27,17 @@ private NetAddress SUPERCOLLIDER;
 // Status of connection.
 private boolean connected;
 // Osc address of status listener.
-private final String OSC_STATUS = s.STATUSPATH;
+private String OSC_STATUS = s.STATUSPATH;
 // SuperCollider status reply.
 private final String SC_REPLY = "/hello";
 // Osc address of boot listener.
 private final String OSC_BOOT = "/boot";
 // Osc address of audio listeners
-private final String OSC_STARTAUDIO = s.STARTPATH;
-private final String OSC_PAUSEAUDIO = s.PAUSEPATH;
-private final String OSC_RESUMEAUDIO = s.RESUMEPATH;
-private final String OSC_MODAUDIO = s.MODPATH;
-private final String OSC_FREEAUDIO = s.FREEPATH;
+private String OSC_STARTAUDIO = s.STARTPATH;
+private String OSC_PAUSEAUDIO = s.PAUSEPATH;
+private String OSC_RESUMEAUDIO = s.RESUMEPATH;
+private String OSC_MODAUDIO = s.MODPATH;
+private String OSC_FREEAUDIO = s.FREEPATH;
 /**
  * Port on which sc3-server is listening for messages.
  * This should match the output of NetAddr.localAddr in SuperCollider.
@@ -61,6 +63,7 @@ final int GUI_W=70;
 private Button start;
 private Button exit;
 private Button reset;
+private Button change;
 // The bubblesort thread.
 private Bubblesort sort;
 // IPC-status-thread.
@@ -86,82 +89,6 @@ void setup()
     int[] test = getRndArr(N);
     sort.sort(test);
     assert(isSorted(test));
-}
-
-/**
- * Initialize user interface which consists of buttons at the right side.
- */
-
-void initGUI()
-{
-    // Create the y-coordinates for the buttons and save them in an array.
-    Button.autoWidth = 50;
-    Button.autoHeight = 20;
-    int yInset = 10;
-    int len = (int)(H/(yInset+Button.autoHeight));
-    int[] yPos = new int[len];
-    int y0 = yInset+Button.autoHeight;
-    int x0 = W+10;
-    for(int i=0;i<len;++i)
-    {
-        yPos[i] = (i+1)*y0 - Button.autoHeight;
-    }
-    start = cp5.addButton("start/pause").setPosition(x0,yPos[0]).setLabel("Start");
-    /**
-     * Naming the button like the exit()-function triggers the function when pressing
-     * thus no need of defining a if-Statement for this button in controlEvent().
-     */
-    exit = cp5.addButton("exit").setPosition(x0,yPos[len-1]).setLabel("Exit");
-    reset = cp5.addButton("reset").setPosition(x0,yPos[1]).setLabel("Reset");
-}
-
-/**
- * Eventhandling of user interface.
- * TODO:
- * ---Bugfix#2
- *      When immediately pressing a button after opening the sketch,
- *      a InvocationTargetException is thrown but sketch keeps running fine after that.
- */
-void controlEvent(ControlEvent event)
-{
-    Controller c = event.getController();
-    if(c==start)
-    {
-        String currentLabel = c.getLabel();
-        // Do action corresponding to current label.
-        if(currentLabel.equals("Start"))
-        {
-            /**
-             * Did thread already start? If not, start it.
-             * (Execution never reaches this statement when it would be false since
-             * the label will never be again "Start" so it's actually unnecessary.)
-             */
-            if(!sort.isAlive())
-            {
-                //println("---starting audio");
-                sort.start();
-            }
-            c.setLabel("Pause");
-        }
-        else if(currentLabel.equals("Pause"))
-        {
-            //println("---pause audio");
-            sort.pause();
-            c.setLabel("Resume");
-        }
-        else if(currentLabel.equals("Resume"))
-        {
-            //println("---resume audio");
-            sort.unpause();
-            c.setLabel("Pause");
-        }
-    }
-    else if(c==reset)
-    {
-        start.setLabel("Start");
-        sendMessage(OSC_FREEAUDIO);
-        sort = new Bubblesort(N);
-    }
 }
 
 void draw()
