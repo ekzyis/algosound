@@ -1,4 +1,5 @@
 # algosound
+![showcase](images/algosound_showcase.png) <br />
 Project for a computermusic seminar about SuperCollider and SonicPi.
 
 This projects goal is to create visualization and sonification of algorithms using Processing and SuperCollider.
