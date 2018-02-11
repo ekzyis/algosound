@@ -97,8 +97,13 @@ OSCdef(\midiplay_scale_OSC_INSERTIONSORT, {
 // Create address to send messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
+x = 0;
 // Define listener for checking if sc3-server is running.
 OSCdef(\status_scale_OSC_INSERTIONSORT, {
+	if(x==0,
+		{ Synth(\boot_scale_INSERTIONSORT); x = 1; },
+		{}
+	);
 	~address.sendMsg("/hello");
 }, "/helloscale_INSERTIONSORT");
 
