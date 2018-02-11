@@ -3,8 +3,8 @@
 Project for a computermusic seminar about SuperCollider and SonicPi.
 
 ## Index
-[How to use](https://github.com/ekzyis/algosound#how-to-use)
 [What is this project about?](https://github.com/ekzyis/algosound#what-is-this-project-about?) <br />
+[How to use](https://github.com/ekzyis/algosound#how-to-use) <br />
 [Update #1 - 29.01.18](https://github.com/ekzyis/algosound#update-#1-290118) <br />
 [Update #2 - 09.02.18](https://github.com/ekzyis/algosound#update-#2-090218) <br />
 
