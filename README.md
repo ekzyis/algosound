@@ -41,7 +41,7 @@ Run the sketch and you should see it after a few moments. Notice the red icon in
 Notice that you can only switch between sonification if the sorting hasn't started yet. You can always reset the algorithm by pressing "RESET". <br />
 Unfortunately due to Processing's build-process and me not thinking early enough about the "bigger picture", you have to run the other sketches in the other folders if you like to run a different algorithm. In the future, the sketches should be bundled inside a native Java application so choosing between the algorithms can be done without running multiple sketches.
 
-### Update #1 - 29.01.18
+### Update #1 "What have I gotten myself into?" - 29.01.18
 After some first builds, research about the topic of parsing and trying the sonification, I came to the conclusion that before parsing can be attempted, a deep understanding of SuperCollider, OSC and sonification of algorithms will be needed to produce results worth mentioning. Therefore, I will focus on implementing a sonification I am fine with. This means the following list of algorithms should be sonificated and visualized while being able to work on any given set:
   - Bubblesort
   - Selectionsort
@@ -53,7 +53,7 @@ After some first builds, research about the topic of parsing and trying the soni
   
  At this point, all sorting algorithms have been implemented and visualized + a basic sonification of bubblesort.
  
-### Update #2 - 09.02.18
+### Update #2 "Gen 1 sonification - check" - 09.02.18
 All sorting algorithms have been sonificated now.
 Sonification consists mainly of a sinewave which is modulated while sorting. The heights of the current accessed elements is mapped to a frequency range. This mapped value is then sent to SuperCollider through OSC, setting the frequency for the sinewave. To prevent sound artifacts due to sudden change of a parameter / to smooth the signal, a Lag UGen is used for the amplitude and frequency. The sinewave is called 'algowave' since the algorithm modulates the (sine)wave. This is the "Generation 1 Sonification". Due to the unharmonic nature of this implementation (which was expected), work on the Gen 2 Sonification has begun. To achieve a more harmonic sound, scales and midi-notes will be used.
 
