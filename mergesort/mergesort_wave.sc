@@ -3,8 +3,8 @@ Stethoscope.new
 s.queryAllNodes
 
 // Test synths after creating
-x = Synth(\boot);
-y = Synth(\algowave);
+x = Synth(\boot_wave_MERGESORT);
+y = Synth(\algowave_wave_MERGESORT);
 y.set(\gate, 0)
 y.set(\freq, 700);
 y.set(\freqlag, 1)
@@ -14,7 +14,7 @@ y.free
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot, {
+SynthDef(\boot_wave_MERGESORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -25,7 +25,7 @@ SynthDef(\boot, {
 /**
  * Synth which will be modified by individual swaps happening while sorting.
  */
-SynthDef(\algowave, {
+SynthDef(\algowave_wave_MERGESORT, {
 	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
@@ -39,35 +39,35 @@ SynthDef(\algowave, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\bootListener, {
+OSCdef(\boot_wave_OSC_MERGESORT, {
 	"playing boot sound.".postln;
-	Synth(\boot);
-}, "/boot");
+	Synth(\boot_wave_MERGESORT);
+}, "/boot_wave_MERGESORT");
 
 // Define listener for start of algowave-synth.
-OSCdef(\sortListener, {
+OSCdef(\start_wave_OSC_MERGESORT, {
 	"creating algowave.".postln;
-	~algowave = Synth(\algowave);
-}, "/wave_start");
+	~algowave = Synth(\algowave_wave_MERGESORT);
+}, "/wave_start_MERGESORT");
 
 // Define listener for pausing of algowave-synth.
-OSCdef(\pauseListener, {
+OSCdef(\pause_wave_OSC_MERGESORT, {
 	"pausing algowave.".postln;
 	~algowave.set(\amptotal, 0);
-}, "/wave_pause");
+}, "/wave_pause_MERGESORT");
 
 // Define listener for resuming of algowave-synth.
-OSCdef(\resumeListener, {
+OSCdef(\resume_wave_OSC_MERGESORT, {
 	"resuming algowave.".postln;
 	~algowave.set(\amptotal, 1);
-}, "/wave_resume");
+}, "/wave_resume_MERGESORT");
 
 // Define listener for modifying.
-OSCdef(\modListener, {
+OSCdef(\mod_wave_OSC_MERGESORT, {
 	arg msg;
 	~algowave.set(\amptotal, 1);
 	~algowave.set(\freq, msg[1]);
-}, "/wave_set");
+}, "/wave_set_MERGESORT");
 
 /**
  * Define listener for freeing of synth.
@@ -80,18 +80,18 @@ OSCdef(\modListener, {
  * Tried with SYNTH.isNil but this leads to other possible
  * more severe bugs like orphaned synths.
  */
-OSCdef(\freeListener, {
+OSCdef(\free_wave_OSC_MERGESORT, {
 	"freeing algowave.".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
-}, "/wave_free");
+}, "/wave_free_MERGESORT");
 
 // Create address to send messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 // Define listener for checking if sc3-server is running.
-OSCdef(\statuslistener, {
+OSCdef(\status_wave_OSC_MERGESORT, {
 	~address.sendMsg("/hello");
-}, "/hellowave");
+}, "/hellowave_MERGESORT");
 
 )//--Parentheses end

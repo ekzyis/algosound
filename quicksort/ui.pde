@@ -58,7 +58,6 @@ void controlEvent(ControlEvent event)
             {
                 //println("---starting audio");
                 sort.start();
-                change.lock();
             }
             c.setLabel("Pause");
         }
@@ -79,8 +78,7 @@ void controlEvent(ControlEvent event)
     {
         start.setLabel("Start");
         sendMessage(OSC_FREEAUDIO);
-        sort = new Mergesort(N);
-        change.unlock();
+        sort = new Quicksort(N);
     }
     else if(c==change && !sort.isAlive())
     {
@@ -97,7 +95,9 @@ void updatePaths()
     OSC_STARTAUDIO = s.STARTPATH;
     OSC_PAUSEAUDIO = s.PAUSEPATH;
     OSC_RESUMEAUDIO = s.RESUMEPATH;
-    OSC_MODAUDIO = s.MODPATH;
+    OSC_MODAUDIO1 = s.MODPATH[0];
+    OSC_MODAUDIO2 = s.MODPATH[1];
+    OSC_MODAUDIO3 = s.MODPATH[2];
     OSC_FREEAUDIO = s.FREEPATH;
     OSC_STATUS = s.STATUSPATH;
     OSC_BOOT = s.BOOTPATH;

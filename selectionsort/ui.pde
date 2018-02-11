@@ -79,7 +79,7 @@ void controlEvent(ControlEvent event)
     {
         start.setLabel("Start");
         sendMessage(OSC_FREEAUDIO);
-        sort = new Mergesort(N);
+        sort = new Selectionsort(N);
         change.unlock();
     }
     else if(c==change && !sort.isAlive())
@@ -97,7 +97,8 @@ void updatePaths()
     OSC_STARTAUDIO = s.STARTPATH;
     OSC_PAUSEAUDIO = s.PAUSEPATH;
     OSC_RESUMEAUDIO = s.RESUMEPATH;
-    OSC_MODAUDIO = s.MODPATH;
+    OSC_MODAUDIO1 = s.MODPATH[0];
+    OSC_MODAUDIO2 = s.MODPATH[1];
     OSC_FREEAUDIO = s.FREEPATH;
     OSC_STATUS = s.STATUSPATH;
     OSC_BOOT = s.BOOTPATH;

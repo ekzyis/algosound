@@ -3,19 +3,19 @@ Stethoscope.new
 s.queryAllNodes
 
 // Test synths after creating
-x = Synth(\boot);
-y = Synth(\algowave)
+x = Synth(\boot_wave_SELECTIONSORT);
+y = Synth(\algowave_wave_SELECTIONSORT)
 y.set(\gate, 0)
 y.set(\freq, 700);
 y.set(\freqlag, 1)
 y.free
-z = Synth(\minimum);
+z = Synth(\minimum_wave_SELECTIONSORT);
 
 (//--Parentheses begin
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot, {
+SynthDef(\boot_wave_SELECTIONSORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -26,7 +26,7 @@ SynthDef(\boot, {
 /**
  * Synth which will be modified by individual element accesses while sorting.
  */
-SynthDef(\algowave, {
+SynthDef(\algowave_wave_SELECTIONSORT, {
 	arg freq=440, freqlag=0.1, amptotal=0.3, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
@@ -42,7 +42,7 @@ SynthDef(\algowave, {
 /**
  * This synth represents the current smallest found element.
  */
-SynthDef(\minimum, {
+SynthDef(\minimum_wave_SELECTIONSORT, {
 	arg freq=440, pulsefreq=0, amp=0.3, att=0.01, decay=1;
 	var sig,env;
 	env = EnvGen.ar(Env([1,1],[2]),doneAction:2);
@@ -56,40 +56,40 @@ SynthDef(\minimum, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\bootListener, {
+OSCdef(\boot_wave_OSC_SELECTIONSORT, {
 	"playing boot sound.".postln;
 	Synth(\boot);
-}, "/boot");
+}, "/boot_wave_SELECTIONSORT");
 
 // Define listener for start of algowave-synth.
-OSCdef(\sortListener, {
+OSCdef(\start_wave_OSC_SELECTIONSORT, {
 	"creating synths.".postln;
-	~algowave = Synth(\algowave);
-}, "/wave_start");
+	~algowave = Synth(\algowave_wave_SELECTIONSORT);
+}, "/wave_start_SELECTIONSORT");
 
 // Define listener for pausing of algowave-synth.
-OSCdef(\pauseListener, {
+OSCdef(\pause_wave_OSC_SELECTIONSORT, {
 	"pausing sound.".postln;
 	~algowave.set(\amptotal, 0);
-}, "/wave_pause");
+}, "/wave_pause_SELECTIONSORT");
 
 // Define listener for resuming of algowave-synth.
-OSCdef(\resumeListener, {
+OSCdef(\resume_wave_OSC_SELECTIONSORT, {
 	"resuming sound.".postln;
 	~algowave.set(\amptotal, 0.3);
-}, "/wave_resume");
+}, "/wave_resume_SELECTIONSORT");
 
 // Define listener for modifying.
-OSCdef(\modListener, {
+OSCdef(\mod_wave1_OSC_SELECTIONSORT, {
 	arg msg;
 	~algowave.set(\amptotal, 0.3);
 	~algowave.set(\freq, msg[1]);
-}, "/wave_set");
+}, "/wave_set_SELECTIONSORT");
 
-OSCdef(\modListener2, {
+OSCdef(\mod_wave2_OSC_SELECTIONSORT, {
 	arg msg;
-	Synth(\minimum, [\freq, msg[1]]);
-}, "/min_set");
+	Synth(\minimum_wave_SELECTIONSORT, [\freq, msg[1]]);
+}, "/min_set_SELECTIONSORT");
 
 /**
  * Define listener for freeing of synth.
@@ -102,18 +102,18 @@ OSCdef(\modListener2, {
  * Tried with SYNTH.isNil but this leads to other possible
  * more severe bugs like orphaned synths.
  */
-OSCdef(\freeListener, {
+OSCdef(\free_wave_OSC_SELECTIONSORT, {
 	"freeing synths.".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
-}, "/wave_free");
+}, "/wave_free_SELECTIONSORT");
 
 // Create address to send messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 // Define listener for checking if sc3-server is running.
-OSCdef(\statuslistener, {
+OSCdef(\status_wave_OSC_SELECTIONSORT, {
 	~address.sendMsg("/hello");
-}, "/hellowave");
+}, "/hellowave_SELECTIONSORT");
 
 )//--Parentheses end

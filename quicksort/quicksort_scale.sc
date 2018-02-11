@@ -2,15 +2,15 @@ FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
-Synth(\midisine);
-Synth(\default_midifade);
+Synth(\midisine_scale_QUICKSORT);
+Synth(\default_midifade_scale_QUICKSORT);
 
 (//--Parentheses begin
 
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot, {
+SynthDef(\boot_scale_QUICKSORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -19,7 +19,7 @@ SynthDef(\boot, {
 }).add;
 
 // Sinewave osc playing midi-notes.
-SynthDef(\midisine, {
+SynthDef(\midisine_scale_QUICKSORT, {
 	arg midi=69, amp=0.1, atk=0.005, rel=0.3;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
@@ -30,7 +30,7 @@ SynthDef(\midisine, {
 }).add;
 
 // Modified default-synth ("fade+midi edition").
-SynthDef(\default_midifade, {
+SynthDef(\default_midifade_scale_QUICKSORT, {
 	arg midi=69, amp=0.3, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
 	var z;
 	z = LPF.ar(
@@ -41,17 +41,17 @@ SynthDef(\default_midifade, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\bootListener, {
+OSCdef(\boot_scale_OSC_QUICKSORT, {
 	"playing boot sound.".postln;
 	// Play boot sound
-	Synth(\boot);
-}, "/boot");
+	Synth(\boot_scale_QUICKSORT);
+}, "/boot_scale_QUICKSORT");
 
 /**
  * Define listener for setting up of scale.
  * Setup depends on given minimal frequency and max frequency.
  */
-OSCdef(\startListener, {
+OSCdef(\start_scale_OSC_QUICKSORT, {
 	arg msg;
 	var min_freq, max_freq, min_midi, max_midi;
 
@@ -79,10 +79,10 @@ OSCdef(\startListener, {
 		Array.fill(6,{ arg i; (i*0.25) + 0.25;}).choose
 	}); // Array.fill inception
 	"durations=".post;~durations.postln;*/
-}, "/scale_start");
+}, "/scale_start_QUICKSORT");
 
 // Define listener for playing a midi note.
-OSCdef(\midiListener, {
+OSCdef(\midiplay_scale_OSC_QUICKSORT, {
 	arg msg;
 	var midi;
 	i = ~scales.find([msg[1].cpsmidi.round]);
@@ -91,15 +91,15 @@ OSCdef(\midiListener, {
 		{ midi = ~scales.at(i); },
 	);
 	"playing midi-note ".post;midi.postln;
-	Synth(\midisine, [\midi, midi, \rel, rrand(0.1,1.75)]);
-}, "/scale_play");
+	Synth(\midisine_scale_QUICKSORT, [\midi, midi, \rel, rrand(0.1,1.75)]);
+}, "/scale_play_QUICKSORT");
 
 // Create address to send messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 // Define listener for checking if sc3-server is running.
-OSCdef(\statuslistener, {
+OSCdef(\status_scale_OSC_QUICKSORT, {
 	~address.sendMsg("/hello");
-}, "/helloscale");
+}, "/helloscale_QUICKSORT");
 
 )//--Parentheses end

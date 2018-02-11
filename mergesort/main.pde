@@ -6,7 +6,7 @@
  * the draw function when a new frame has been calculated.
  *
  * @author ekzyis
- * @date 10 February 2018
+ * @date 11 February 2018
  */
 import netP5.*;
 import oscP5.*;
@@ -31,7 +31,7 @@ private String OSC_STATUS = s.STATUSPATH;
 // SuperCollider status reply.
 private final String SC_REPLY = "/hello";
 // Osc address of boot listener.
-private final String OSC_BOOT = "/boot";
+private String OSC_BOOT = s.BOOTPATH;
 // Osc address of audio listeners
 private String OSC_STARTAUDIO = s.STARTPATH;
 private String OSC_PAUSEAUDIO = s.PAUSEPATH;

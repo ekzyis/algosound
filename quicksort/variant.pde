@@ -8,21 +8,23 @@
  * event.
  *
  * @author ekzyis
- * @date 10 February 2018
+ * @date 11 February 2018
  */
 public enum Sonification
 {
-    WAVE("/wave_start", "/wave_pause", "/wave_resume", new String[]{"/wave_set1", "/wave_set2", "/wave_set3"}, "/wave_free", "/hellowave"),
-    SCALE("/scale_start", "", "", new String[]{ "/scale_play", "/scale_play", "/scale_play" }, "" , "/helloscale");
-    public final String STARTPATH, PAUSEPATH, RESUMEPATH, FREEPATH, STATUSPATH;
+    WAVE("WAVE","/wave_start_QUICKSORT", "/wave_pause_QUICKSORT", "/wave_resume_QUICKSORT", new String[]{"/wave_set1_QUICKSORT", "/wave_set2_QUICKSORT", "/wave_set3_QUICKSORT"}, "/wave_free_QUICKSORT", "/hellowave_QUICKSORT", "/boot_wave_QUICKSORT"),
+    SCALE("SCALE","/scale_start_QUICKSORT", "", "", new String[]{ "/scale_play_QUICKSORT", "/scale_play_QUICKSORT", "/scale_play_QUICKSORT" }, "" , "/helloscale_QUICKSORT", "/boot_scale_QUICKSORT");
+    public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, FREEPATH, STATUSPATH, BOOTPATH;
     public final String[] MODPATH;
-    Sonification(String start, String pause, String resume, String[] mod, String free, String status)
+    Sonification(String name, String start, String pause, String resume, String[] mod, String free, String status, String boot)
     {
+        this.NAME = name;
         this.STARTPATH = start;
         this.PAUSEPATH = pause;
         this.RESUMEPATH = resume;
         this.MODPATH = mod;
         this.FREEPATH = free;
         this.STATUSPATH = status;
+        this.BOOTPATH = boot;
     }
 }

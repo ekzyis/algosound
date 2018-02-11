@@ -3,7 +3,7 @@
  * ===========================
  *
  * @author ekzyis
- * @date 10 February 2018
+ * @date 11 February 2018
  */
 
 /**
@@ -100,5 +100,6 @@ void updatePaths()
     OSC_MODAUDIO = s.MODPATH;
     OSC_FREEAUDIO = s.FREEPATH;
     OSC_STATUS = s.STATUSPATH;
+    OSC_BOOT = s.BOOTPATH;
 }
 
