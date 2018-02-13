@@ -4,7 +4,8 @@ Project for a computermusic seminar about SuperCollider and SonicPi.
 
 ## Index
 [What is this project about?](https://github.com/ekzyis/algosound#what-is-this-project-about) <br />
-[How to use](https://github.com/ekzyis/algosound#how-to-use) <br />
+[How to use - Running the application](https://github.com/ekzyis/algosound#how-to-use---running-the-application) <br />
+[How to use - Compiling](https://github.com/ekzyis/algosound#how-to-use---compiling) <br />
 [Update #1 - 29.01.18](https://github.com/ekzyis/algosound#update-1-what-have-i-gotten-myself-into---290118) <br />
 [Update #2 - 09.02.18](https://github.com/ekzyis/algosound#update-2-gen-1-sonification---check---090218) <br />
 
@@ -17,8 +18,15 @@ If possible, the sonification should be independent of the algorithm and visual 
 
 First, I am going to make some basic visualization of different algorithms and sonificate them with SuperCollider by using  the network protocol OSC. So to say, I will first do what in the end the "compiling" algorithm should do by itself.
 
-### How to use
-For this project, you will need to download Processing and SuperCollider. <br />
+### How to use - Running the application
+
+In each sketch folder (they are named after algorithms), you can find executables for Windows and Linux (32 and 64-bit). 
+
+For the sonification you will need to install SuperCollider and evaluate the code in the *.sc-files, also found in the root directory of the sketches.
+
+### How to use - Compiling
+
+You want to see the source code and maybe even compile it yourself? Read this tutorial and if you still have questions, don't hesitate to contact me =)
 
 **Processing with oscP5-, supercollider- and controlP5-library** </br >
 The simplest way to obtain Processing is via the official website (download [here](https://processing.org/download/)). <br />
