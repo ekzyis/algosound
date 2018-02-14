@@ -8,6 +8,7 @@ Project for a computermusic seminar about SuperCollider and SonicPi.
 [How to use - Compiling](https://github.com/ekzyis/algosound#how-to-use---compiling) <br />
 [Update #1 - 29.01.18](https://github.com/ekzyis/algosound#update-1-what-have-i-gotten-myself-into---290118) <br />
 [Update #2 - 09.02.18](https://github.com/ekzyis/algosound#update-2-gen-1-sonification---check---090218) <br />
+[Update #3 - 11.02.18](https://github.com/ekzkyis/algosound#update-3-finished-gen-2-sonification...-and-some-ui---11.02.18) <br />
 
 ### What is this project about?
 This project's goal is to create visualization and sonification of algorithms using Processing and SuperCollider.
@@ -68,3 +69,15 @@ Sonification consists mainly of a sinewave which is modulated while sorting. The
 This Gen 2 Sonification has been already implemented in bubblesort.
 
 Implementation of the graph algorithms has not started yet because I want to focus more on synths and sonification before starting to implement two algorithms from scratch, including a whole new visualization.
+
+### Update #3  "Finished gen 2 sonification... and some UI!" - 11.02.18
+An user interface has been implemented with the controlP5-library. The UI supports functionality for starting, pausing and resetting the sorting and a button to change between both currently implemented sonifications "WAVE" and "SCALE".
+
+This means of course that the gen 2 sonification has been added to all algorithms. The fundamental process of creating this was about producing harmonic notes - in contrast to the random nature of the previous sonification. Therefore, I created a scale in SuperCollider and mapped the values of the current accessed elements to this scale, producing a harmonic tone which represents the accessed element. The current scale (which should be G#-minor - but I'm not a music expert) is not interchangeable by user input. This should change in the future since it has a lot of potential to increase the overall spectrum of sound, amplified by the combination of other still-to-be-added user input.
+
+Furthermore, I have come to a point where I can no longer keep the sketches separated since this causes (and caused) a lot of unnecessary extra work. When fixing something in one sketch, most of the times the same fix needs to be done in the other sketches. This sounds as annoying as it is. I should have put more thought into the software engineering side of this project before writing a lot of code but what has been done can't be undone, I guess. <br />
+My solution to this problem will probably be a single Java application which imports the processing.core-package. In native java code, it will be a lot easier to sustain a good workflow. With abstract classes for the sorting thread implementations, static methods in different utility-classes (which can't be done in Processing code like in Java) and different packages, working on this project will be a lot more fun and less exhausting. The management of the different .sc-files for the sonification are also separated, even though there are mostly only minor differences among those files (a lot of copy-paste in there). Uniting them while maintaining the ability to make differences between the sonifications of the algorithms will be another goal for the next update to come.
+
+**Summary of goals for next update**: 
+ * Create more user input to enhance sonifications
+ * Fix the "copy-and-paste"-issue of the source files
