@@ -18,7 +18,7 @@ void initGUI()
     int len = (int)(H/(yInset+Button.autoHeight));
     int[] yPos = new int[len];
     int y0 = yInset+Button.autoHeight;
-    int x0 = W+10;
+    int x0 = W+10+elementwidth;
     for(int i=0;i<len;++i)
     {
         yPos[i] = (i+1)*y0 - Button.autoHeight;
