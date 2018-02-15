@@ -1,6 +1,6 @@
 # algosound
 ![showcase](images/algosound_showcase.png) <br />
-Project for a computermusic seminar about SuperCollider and SonicPi.
+Project for a computermusic seminar about SuperCollider with Processing and OSC protocol.
 
 ## Index
 [What is this project about?](https://github.com/ekzyis/algosound#what-is-this-project-about) <br />
