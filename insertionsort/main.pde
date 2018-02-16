@@ -1,12 +1,15 @@
+/*
+* @Author: ekzyis
+* @Date:   28-12-2017 02:37:58
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:00:59
+*/
 /**
  * Mainfile of insertionsort visualization.
  * =====================================
  * This sketch produces a visualization of insertionsort
  * by creating a "insertionsort-thread" which periodically notifies
  * the draw function when a new frame has been calculated.
- *
- * @author ekzyis
- * @date 11 February 2018
  */
 import netP5.*;
 import oscP5.*;

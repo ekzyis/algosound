@@ -1,3 +1,9 @@
+/*
+* @Author: ekzyis
+* @Date:   29-12-2017 02:19:42
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:02:08
+*/
 import java.util.Stack;
 import java.util.ArrayDeque;
 
@@ -7,9 +13,6 @@ import java.util.ArrayDeque;
  * This class handles the execution of mergesort
  * and notifying to draw new frames.
  * For more information see comments in this file.
- *
- * @author ekzyis
- * @date 10 February 2018
  */
 
 class Mergesort extends Thread

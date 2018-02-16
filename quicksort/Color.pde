@@ -1,8 +1,12 @@
+/*
+* @Author: ekzyis
+* @Date:   30-01-2018 00:28:20
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:04:15
+*/
 /**
  * Methods about color handling are defined here.
  * ==============================================
- * @author ekzyis
- * @date December 2017
  */
 
 // init colors

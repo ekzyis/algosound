@@ -1,11 +1,14 @@
+/*
+* @Author: ekzyis
+* @Date:   01-02-2018 01:03:28
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:04:04
+*/
 /**
  * Open sound control file.
  * ===============================================
  * All methods and logic about sending and receiving of
  * OSC messages is implemented here.
- *
- * @author ekzyis
- * @date 31 January 2018
  */
 
 // Initialize open sound control for communication with sc3-server.

@@ -1,11 +1,15 @@
+/*
+* @Author: ekzyis
+* @Date:   28-12-2017 20:11:17
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:05:21
+*/
 /**
  * Selectionsort implementation.
  * =============================
  * This class handles the execution of selectionsort
  * and notifying to draw new frames.
  *
- * @author ekzyis
- * @date 10 February 2018
  */
 class Selectionsort extends Thread
 {

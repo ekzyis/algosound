@@ -1,3 +1,9 @@
+/*
+* @Author: ekzyis
+* @Date:   08-02-2018 23:15:02
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 21:58:11
+*/
 /**
  * Variants of sonification.
  * =========================
@@ -6,9 +12,6 @@
  * A empty string for a path means, that the
  * sonification does not need a listener for this
  * event.
- *
- * @author ekzyis
- * @date 11 February 2018
  */
 public enum Sonification
 {

@@ -1,9 +1,12 @@
+/*
+* @Author: ekzyis
+* @Date:   10-02-2018 03:45:41
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:01:56
+*/
 /**
  * Handling of GUI and Events.
  * ===========================
- *
- * @author ekzyis
- * @date 11 February 2018
  */
 
 /**

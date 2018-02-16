@@ -1,11 +1,14 @@
+/*
+* @Author: ekzyis
+* @Date:   29-12-2017 02:19:42
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:02:16
+*/
 /**
  * This class saves the data for visualization.
  * ============================================
  * Instances of this class are the objects you can
  * see getting sorted on the canvas.
- *
- * @author ekzyis
- * @date 18 January 2018
  */
 class Element
 {

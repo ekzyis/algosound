@@ -1,3 +1,9 @@
+/*
+* @Author: ekzyis
+* @Date:   04-01-2018 22:54:23
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:06:24
+*/
 // Parentheses to execute all important code at once
 (
 // Define synth

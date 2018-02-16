@@ -1,12 +1,15 @@
+/*
+* @Author: ekzyis
+* @Date:   29-12-2017 02:19:42
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:02:13
+*/
 /**
  * Mainfile of mergesort visualization.
  * ====================================
  * This sketch produces a visualization of mergesort
  * by creating a "mergesort-thread" which periodically notifies
  * the draw function when a new frame has been calculated.
- *
- * @author ekzyis
- * @date 11 February 2018
  */
 import netP5.*;
 import oscP5.*;

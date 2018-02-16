@@ -1,11 +1,14 @@
+/*
+* @Author: ekzyis
+* @Date:   25-12-2017 15:33:20
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 21:56:18
+*/
 /**
  * Bubblesort implementation.
  * ==========================
  * This class handles the execution of bubblesort
  * and notifying to draw new frames.
- *
- * @author ekzyis
- * @date 09 February 2018
  */
 class Bubblesort extends Thread
 {

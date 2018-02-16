@@ -1,11 +1,14 @@
+/*
+* @Author: ekzyis
+* @Date:   28-12-2017 02:37:58
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:01:00
+*/
 /**
  * Insertionsort implementation.
  * =============================
  * This class handles the execution of insertionsort
  * and notifying to draw new frames.
- *
- * @author ekzyis
- * @date 10 February 2018
  */
 class Insertionsort extends Thread
 {

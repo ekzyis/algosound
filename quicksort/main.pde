@@ -1,12 +1,15 @@
+/*
+* @Author: ekzyis
+* @Date:   04-01-2018 21:55:37
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:03:54
+*/
 /**
  * Mainfile of quicksort visualization.
  * =====================================
  * This sketch produces a visualization of quicksort
  * by creating a "quicksort-thread" which periodically notifies
  * the draw function when a new frame has been calculated.
- *
- * @author ekzyis
- * @date 11 February 2018
  */
 import netP5.*;
 import oscP5.*;

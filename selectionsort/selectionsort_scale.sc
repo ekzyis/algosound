@@ -1,3 +1,9 @@
+/*
+* @Author: ekzyis
+* @Date:   10-02-2018 02:36:21
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:05:14
+*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes

@@ -1,12 +1,15 @@
+/*
+* @Author: ekzyis
+* @Date:   25-12-2017 15:33:20
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 21:57:31
+*/
 /**
  * Mainfile of bubblesort visualization.
  * =====================================
  * This sketch produces a visualization of bubblesort
  * by creating a "bubblesort-thread" which periodically notifies
  * the draw function when a new frame has been calculated.
- *
- * @author ekzyis
- * @date 11 February 2018
  */
 import netP5.*;
 import oscP5.*;

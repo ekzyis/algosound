@@ -1,12 +1,15 @@
+/*
+* @Author: ekzyis
+* @Date:   28-12-2017 20:11:17
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:05:34
+*/
 /**
  * Mainfile of selectionsort visualization.
  * =====================================
  * This sketch produces a visualization of selectionsort
  * by creating a "selectionsort-thread" which periodically notifies
  * the draw function when a new frame has been calculated.
- *
- * @author ekzyis
- * @date 11 February 2018
  */
 import netP5.*;
 import oscP5.*;

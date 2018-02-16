@@ -1,3 +1,9 @@
+/*
+* @Author: ekzyis
+* @Date:   30-01-2018 00:28:20
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:06:41
+*/
 // Show frequency analyzer.
 FreqScope.new
 // Show stethoscope.

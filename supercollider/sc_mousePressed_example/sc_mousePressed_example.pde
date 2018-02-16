@@ -1,3 +1,9 @@
+/*
+* @Author: ekzyis
+* @Date:   04-01-2018 22:54:23
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:06:34
+*/
 /**
  * This sketch is an example of using
  * SuperCollider in Processing by
@@ -5,9 +11,6 @@
  *
  * Thanks to:
  * https://www.funprogramming.org/138-Processing-talks-to-SuperCollider-via-OSC.html
- * 
- * @author ekzyis
- * @date January 2018
  */
 
 import netP5.*;
@@ -20,7 +23,7 @@ NetAddress supercollider;
 void setup()
 {
   size(128,128);
-  // initialize osc 
+  // initialize osc
   osc = new OscP5(this, 12000);
   // initialize address to local sc server
   // sc will listen for messages at port 57120

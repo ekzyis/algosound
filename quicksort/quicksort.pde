@@ -1,11 +1,15 @@
+/*
+* @Author: ekzyis
+* @Date:   04-01-2018 21:55:37
+* @Last Modified by:   ekzyis
+* @Last Modified time: 16-02-2018 22:03:34
+*/
 /**
  * Quicksort implementation.
  * =============================
  * This class handles the execution of quicksort
  * and notifying to draw new frames.
  *
- * @author ekzyis
- * @date 10 February 2018
  */
 class Quicksort extends Thread
 {
