@@ -23,7 +23,7 @@ First, I am going to make some basic visualization of different algorithms and s
 
 In each sketch folder (they are named after algorithms), you can find executables for Windows and Linux (32 and 64-bit). 
 
-For the sonification you will need to install SuperCollider and evaluate the code in the *.sc-files, also found in the root directory of the sketches.
+For the sonification you will need to install SuperCollider, evaluate the code in the *.sc-files, also found in the root directory of the sketches, and boot the SC3 server (Ctrl+B).
 
 ### How to use - Compiling
 
@@ -46,7 +46,7 @@ If for some reason you can't download the libraries via the IDE: <br />
 **Running the sketches** <br />
 After you have done all the steps from above, you are ready to go! <br />
 Clone the repository, go to a folder named after an algorithm (for example, "algosound/bubblesort/") and open any .pde-file. All the other .pde-files should also open up if you are using the IDE since Processing sees a whole folder as one sketch. Therefore, the **folder must be named after a sketch inside it** or Processing will not be able to build the sketch. This is already the case so I recommend to not change the folder-hierarchy of this repository. <br />
-Run the sketch and you should see it after a few moments. Notice the red icon in the top-left corner if you haven't evaluated the code in the parentheses in the .sc-files yet. This means that the sketch can not find the sc3-server with the correct synths for the currently selected sonification. The selected sonification can be checked by looking at the third button from the top at the UI-area on the right. The default sonification is called "SCALE" and thus you should be able to find a button named "SCALE" in the UI area after startup. I recommend to **evaluate all the .sc-files to be able to listen to all available sonifications** (currently (11.02.18) there are only two: "SCALE" and "WAVE".) After evaluating, a boot sound will play to notify you that the sonification is ready and the icon will become green. Choose your sonification and press "START" to start sorting! <br />
+Run the sketch and you should see it after a few moments. Notice the red icon in the top-left corner if you haven't evaluated the code in the parentheses in the .sc-files yet. This means that the sketch can not find the sc3-server with the correct synths for the currently selected sonification. The selected sonification can be checked by looking at the third button from the top at the UI-area on the right. The default sonification is called "SCALE" and thus you should be able to find a button named "SCALE" in the UI area after startup. I recommend to **evaluate all the .sc-files to be able to listen to all available sonifications** (currently (11.02.18) there are only two: "SCALE" and "WAVE".) After evaluating and booting the SC3 server, a boot sound will play to notify you that the sonification is ready and the icon will become green. Choose your sonification and press "START" to start sorting! <br />
 Notice that you can only switch between sonifications if the sorting hasn't started yet. You can always reset the algorithm by pressing "RESET". <br />
 Unfortunately due to Processing's build-process and me not thinking early enough about the "bigger picture", **you have to run the other sketches in the other folders if you like to run a different algorithm**. In the future, the sketches should be bundled inside a native Java application so choosing between the algorithms can be done without running multiple sketches.
 
