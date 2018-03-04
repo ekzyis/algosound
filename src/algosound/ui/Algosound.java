@@ -1,7 +1,5 @@
 package algosound.ui;
 
-import algosound.algorithms.Bubblesort;
-import algosound.algorithms.Insertionsort;
 import algosound.algorithms.SortingThread;
 import algosound.data.Element;
 import algosound.net.OSC;
@@ -12,9 +10,7 @@ import controlP5.ControlP5;
 import controlP5.Controller;
 import processing.core.PApplet;
 
-import static algosound.util.AlgosoundUtil.DEFAULT_SORT;
-import static algosound.util.AlgosoundUtil.INFO_H;
-import static algosound.util.AlgosoundUtil.N;
+import static algosound.util.AlgosoundUtil.*;
 
 /**
  * Mainfile of algosound project. This is a singleton class.
@@ -45,7 +41,7 @@ public class Algosound extends PApplet {
     public void setup() {
         frameRate(AlgosoundUtil.FRAMERATE);
         initGUI();
-        sort = DEFAULT_SORT;
+        sort = SELECTED_ALGORITHM.getInstance();
     }
 
     public void initGUI() {
@@ -109,7 +105,7 @@ public class Algosound extends PApplet {
         } else if (c == RESET) {
             START.setLabel("Start");
             System.out.println("--- sort: reset");
-            sort = new Insertionsort(N);
+            sort = SELECTED_ALGORITHM.getInstance();
             // Unlock selection of sonifications.
             SONI.unlock();
             // Unlock selection of algorithms.
@@ -119,7 +115,8 @@ public class Algosound extends PApplet {
             SONI.setLabel(OSC.getInstance().getSelectedSonification().NAME);
         }
         else if (c == ALGO && !sort.isAlive()) {
-            // TODO change selected algorithm
+            AlgosoundUtil.changeAlgorithm();
+            sort = SELECTED_ALGORITHM.getInstance();
         }
     }
 

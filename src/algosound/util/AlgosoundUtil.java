@@ -1,8 +1,6 @@
 package algosound.util;
 
-import algosound.algorithms.Bubblesort;
-import algosound.algorithms.Insertionsort;
-import algosound.algorithms.SortingThread;
+import algosound.algorithms.Algorithm;
 import algosound.data.Sonification;
 import processing.core.PApplet;
 
@@ -24,9 +22,11 @@ public class AlgosoundUtil {
     public static final int INFO_H = 35;
     // Framerate of visualization.
     public static final int FRAMERATE = 60;
-    // Default algorithm
-    public static SortingThread DEFAULT_SORT = new Insertionsort(N);
-
+    // List of available algorithms.
+    private static final Algorithm[] ALGORITHMS = { Algorithm.BUBBLESORT, Algorithm.INSERTIONSORT };
+    // Selected algorithm
+    public static Algorithm SELECTED_ALGORITHM = Algorithm.BUBBLESORT;
+    private static int algo_index = 0;
     /**
      * Exponential map function: f(x) = a*e^(b*x)
      * This function must satisfy following two equations: f(x1) = y1, f(x2) = y2
@@ -42,5 +42,12 @@ public class AlgosoundUtil {
     // Convenience method
     public static int expmap(int value) {
         return expmap(value, 0, H, Sonification.FREQ_MIN, Sonification.FREQ_MAX);
+    }
+
+    // Change algorithm
+    public static void changeAlgorithm() {
+        algo_index++;
+        algo_index = algo_index % ALGORITHMS.length;
+        SELECTED_ALGORITHM = ALGORITHMS[algo_index];
     }
 }

@@ -9,6 +9,7 @@ package algosound.data;
  * @author ekzyis
  * @date 17/02/2018
  */
+// TODO Define sonifications individually for algorithms
 public enum Sonification {
     WAVE("WAVE", "/wave_start_BUBBLESORT", "/wave_pause_BUBBLESORT", "/wave_resume_BUBBLESORT", "/wave_set_BUBBLESORT",
             "/wave_free_BUBBLESORT", "/hellowave_BUBBLESORT", "/boot_wave_BUBBLESORT"),

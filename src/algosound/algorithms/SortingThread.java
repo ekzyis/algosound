@@ -35,7 +35,7 @@ public abstract class SortingThread extends Thread {
 
     public SortingThread(int N) {
         name = "abstract";
-        elements = Element.createElements(AlgosoundUtil.N, Algosound.getInstance());
+        elements = Element.createElements(N, Algosound.getInstance());
         a = Element.getValues(elements);
         // First frame is ready before first iteration.
         frameReady = true;
