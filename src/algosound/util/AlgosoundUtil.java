@@ -19,6 +19,8 @@ public class AlgosoundUtil {
     public static final int N = W / 5;
     // Width of GUI area.
     public static final int GUI_W = 70;
+    // Height of Info area.
+    public static final int INFO_H = 35;
     // Framerate of visualization.
     public static final int FRAMERATE = 60;
     // Default algorithm

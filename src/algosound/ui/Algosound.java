@@ -12,6 +12,7 @@ import controlP5.Controller;
 import processing.core.PApplet;
 
 import static algosound.util.AlgosoundUtil.DEFAULT_SORT;
+import static algosound.util.AlgosoundUtil.INFO_H;
 
 /**
  * Mainfile of algosound project. This is a singleton class.
@@ -34,7 +35,7 @@ public class Algosound extends PApplet {
 
     @Override
     public void settings() {
-        size(AlgosoundUtil.W + AlgosoundUtil.GUI_W, AlgosoundUtil.H);
+        size(AlgosoundUtil.W + AlgosoundUtil.GUI_W, AlgosoundUtil.H+INFO_H);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class Algosound extends PApplet {
         Button.autoWidth = 50;
         Button.autoHeight = 20;
         int yInset = 10;
-        int len = (int) (AlgosoundUtil.H / (yInset + Button.autoHeight));
+        int len = (int) ( (AlgosoundUtil.H+INFO_H) / (yInset + Button.autoHeight));
         int[] yPos = new int[len];
         int y0 = yInset + Button.autoHeight;
         int x0 = AlgosoundUtil.W + 10;
@@ -122,9 +123,11 @@ public class Algosound extends PApplet {
                     }
                 }
             }
+            translate(0, INFO_H);
             for (Element e : sort.getElements()) {
                 e.show();
             }
+            translate(0, -INFO_H);
             drawIPCStatus();
             /**
              * Notify bubblesort thread that frame has been drawn.
