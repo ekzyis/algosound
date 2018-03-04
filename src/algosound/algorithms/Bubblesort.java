@@ -16,6 +16,7 @@ public class Bubblesort extends SortingThread {
 
     public Bubblesort(int N) {
         super(N);
+        name = "Bubblesort";
     }
 
     @Override

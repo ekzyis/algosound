@@ -16,6 +16,8 @@ import algosound.util.AlgosoundUtil;
  * @date 17/02/2018
  */
 public abstract class SortingThread extends Thread {
+    // Name of sorting algorithm to display in info area.
+    protected String name;
     // Array which should be sorted.
     protected int[] a;
     // Elements which have to be swapped according to integers.
@@ -32,6 +34,7 @@ public abstract class SortingThread extends Thread {
     private boolean exiting;
 
     public SortingThread(int N) {
+        name = "abstract";
         elements = Element.createElements(AlgosoundUtil.N, Algosound.getInstance());
         a = Element.getValues(elements);
         // First frame is ready before first iteration.
@@ -42,6 +45,10 @@ public abstract class SortingThread extends Thread {
         exiting = false;
         // Set as daemon thread.
         setDaemon(true);
+    }
+
+    public String getString() {
+        return name;
     }
 
     public boolean frameIsReady() {

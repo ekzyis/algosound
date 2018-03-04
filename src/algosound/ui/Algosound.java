@@ -31,7 +31,8 @@ public class Algosound extends PApplet {
     private Button START;
     private Button EXIT;
     private Button RESET;
-    private Button CHANGE;
+    private Button SONI;
+    private Button ALGO;
 
     @Override
     public void settings() {
@@ -66,7 +67,8 @@ public class Algosound extends PApplet {
          */
         EXIT = cp5.addButton("exit").setPosition(x0, yPos[len - 1]).setLabel("Exit");
         RESET = cp5.addButton("reset").setPosition(x0, yPos[1]).setLabel("Reset");
-        CHANGE = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel("SCALE");
+        SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel("SCALE");
+        ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
     }
 
     /**
@@ -87,7 +89,10 @@ public class Algosound extends PApplet {
                 if (!sort.isAlive()) {
                     // println("---starting audio");
                     sort.start();
-                    CHANGE.lock();
+                    // Lock selected sonification.
+                    SONI.lock();
+                    // Lock selected algorithm.
+                    ALGO.lock();
                 }
                 c.setLabel("Pause");
             } else if (currentLabel.equals("Pause")) {
@@ -103,10 +108,16 @@ public class Algosound extends PApplet {
             START.setLabel("Start");
             System.out.println("--- sort: reset");
             sort = new Bubblesort(AlgosoundUtil.N);
-            CHANGE.unlock();
-        } else if (c == CHANGE && !sort.isAlive()) {
+            // Unlock selection of sonifications.
+            SONI.unlock();
+            // Unlock selection of algorithms.
+            ALGO.unlock();
+        } else if (c == SONI && !sort.isAlive()) {
             OSC.getInstance().switchSonification();
-            CHANGE.setLabel(OSC.getInstance().getSelectedSonification().NAME);
+            SONI.setLabel(OSC.getInstance().getSelectedSonification().NAME);
+        }
+        else if (c == ALGO && !sort.isAlive()) {
+            // TODO change selected algorithm
         }
     }
 
@@ -128,7 +139,7 @@ public class Algosound extends PApplet {
                 e.show();
             }
             translate(0, -INFO_H);
-            drawIPCStatus();
+            drawInfo();
             /**
              * Notify bubblesort thread that frame has been drawn.
              */
@@ -137,6 +148,22 @@ public class Algosound extends PApplet {
                 sort.notify();
             }
         }
+    }
+
+    private void drawInfo() {
+        drawIPCStatus();
+        drawCurrentSortAlgoName();
+        drawNumberOfElements();
+    }
+
+    private void drawNumberOfElements() {
+        fill(255);
+        text("Number of elements: "+AlgosoundUtil.N, 240, 15);
+    }
+
+    private void drawCurrentSortAlgoName() {
+        fill(255);
+        text(sort.getString(), 120, 15);
     }
 
     // Draw status of IPC.
