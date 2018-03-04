@@ -155,4 +155,14 @@ public class Element extends Visual {
         }
         return values;
     }
+
+    public Color getColor() {
+        return c;
+    }
+
+    public void setColor(Color c) {
+        this.c = c;
+    }
+
+
 }

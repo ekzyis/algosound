@@ -1,6 +1,7 @@
 package algosound.ui;
 
 import algosound.algorithms.Bubblesort;
+import algosound.algorithms.Insertionsort;
 import algosound.algorithms.SortingThread;
 import algosound.data.Element;
 import algosound.net.OSC;
@@ -13,6 +14,7 @@ import processing.core.PApplet;
 
 import static algosound.util.AlgosoundUtil.DEFAULT_SORT;
 import static algosound.util.AlgosoundUtil.INFO_H;
+import static algosound.util.AlgosoundUtil.N;
 
 /**
  * Mainfile of algosound project. This is a singleton class.
@@ -107,7 +109,7 @@ public class Algosound extends PApplet {
         } else if (c == RESET) {
             START.setLabel("Start");
             System.out.println("--- sort: reset");
-            sort = new Bubblesort(AlgosoundUtil.N);
+            sort = new Insertionsort(N);
             // Unlock selection of sonifications.
             SONI.unlock();
             // Unlock selection of algorithms.

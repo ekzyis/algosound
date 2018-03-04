@@ -1,6 +1,7 @@
 package algosound.util;
 
 import algosound.algorithms.Bubblesort;
+import algosound.algorithms.Insertionsort;
 import algosound.algorithms.SortingThread;
 import algosound.data.Sonification;
 import processing.core.PApplet;
@@ -24,7 +25,7 @@ public class AlgosoundUtil {
     // Framerate of visualization.
     public static final int FRAMERATE = 60;
     // Default algorithm
-    public static SortingThread DEFAULT_SORT = new Bubblesort(N);
+    public static SortingThread DEFAULT_SORT = new Insertionsort(N);
 
     /**
      * Exponential map function: f(x) = a*e^(b*x)
