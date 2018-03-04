@@ -1,3 +1,5 @@
 **/build-tmp/
 *.sublime-*
-java/output/
+out/*
+.idea/*
+Algosound.iml
