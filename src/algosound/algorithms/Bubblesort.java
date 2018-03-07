@@ -14,9 +14,19 @@ import algosound.util.AlgosoundUtil;
  */
 public class Bubblesort extends SortingThread {
 
+    // Sonification variants for bubblesort.
+    private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_BUBBLESORT", "/wave_pause_BUBBLESORT", "/wave_resume_BUBBLESORT", "/wave_set_BUBBLESORT",
+            "/wave_free_BUBBLESORT", "/hellowave_BUBBLESORT", "/boot_wave_BUBBLESORT");
+    private static final Sonification SCALE = new Sonification("SCALE","/scale_start_BUBBLESORT", "", "", "/scale_play_BUBBLESORT", "", "/helloscale_BUBBLESORT",
+            "/boot_scale_BUBBLESORT");
+    private final int FREQ_MIN = 200, FREQ_MAX = 4000;
+
     public Bubblesort(int N) {
         super(N);
         name = "Bubblesort";
+        sonifications.add(WAVE);
+        sonifications.add(SCALE);
+        selected_sonification = WAVE;
     }
 
     @Override
@@ -24,12 +34,12 @@ public class Bubblesort extends SortingThread {
         System.out.println("--- bubblesort-thread started.");
 
         OSC osc = OSC.getInstance();
-        Sonification selected = osc.getSelectedSonification();
-        if (selected == Sonification.WAVE) {
-            osc.sendMessage(osc.STARTAUDIO);
-        } else if (selected == Sonification.SCALE) {
-            int[] args = { Sonification.FREQ_MIN, Sonification.FREQ_MAX };
-            osc.sendMessage(osc.STARTAUDIO, args);
+        Sonification sel = selected_sonification;
+        if (sel == WAVE) {
+            osc.sendMessage(sel.STARTPATH);
+        } else if (sel == SCALE) {
+            int[] args = { FREQ_MIN, FREQ_MAX };
+            osc.sendMessage(sel.STARTPATH, args);
         }
         // Gain access to monitor. If not possible, wait here.
         synchronized (this) {
@@ -62,9 +72,9 @@ public class Bubblesort extends SortingThread {
                     // Send osc message for sonification.
                     int value = a[i];
                     System.out.println("value to map: " + value);
-                    int[] args = { AlgosoundUtil.expmap(value) };
+                    int[] args = { AlgosoundUtil.expmap(value, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX) };
                     System.out.println("mapped values: " + args[0]);
-                    osc.sendMessage(osc.MODAUDIO, args);
+                    osc.sendMessage(sel.MODPATH, args);
                 }
             } while (swap);
             /**
@@ -72,7 +82,7 @@ public class Bubblesort extends SortingThread {
              * swap has happened or the thread has been interrupted.
              */
         }
-        osc.sendMessage(osc.FREEAUDIO);
+        osc.sendMessage(sel.FREEPATH);
         System.out.println("--- bubblesort-thread terminated.");
     }
 }

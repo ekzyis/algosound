@@ -1,8 +1,10 @@
 package algosound.algorithms;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import algosound.data.Element;
+import algosound.data.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;
 import algosound.util.AlgosoundUtil;
@@ -33,6 +35,12 @@ public abstract class SortingThread extends Thread {
     // Should this thread exit?
     private boolean exiting;
 
+    // List of available sonifications.
+    protected List<Sonification> sonifications;
+    private int index;
+    // Selected sonification
+    protected Sonification selected_sonification;
+
     public SortingThread(int N) {
         name = "abstract";
         elements = Element.createElements(N, Algosound.getInstance());
@@ -45,6 +53,8 @@ public abstract class SortingThread extends Thread {
         exiting = false;
         // Set as daemon thread.
         setDaemon(true);
+        sonifications = new ArrayList<>();
+        index = 0;
     }
 
     public String getString() {
@@ -83,10 +93,10 @@ public abstract class SortingThread extends Thread {
         while (isPaused() && !isExiting()) {
             try {
                 System.out.println("--- sort: pausing.");
-                OSC.getInstance().sendMessage(OSC.getInstance().PAUSEAUDIO);
+                OSC.getInstance().sendMessage(selected_sonification.PAUSEPATH);
                 this.wait();
                 System.out.println("--- sort: resuming.");
-                OSC.getInstance().sendMessage(OSC.getInstance().RESUMEAUDIO);
+                OSC.getInstance().sendMessage(selected_sonification.RESUMEPATH);
             } catch (InterruptedException e) {
                 // Exception clears the interrupted flag. Reset it to check it later.
                 this.interrupt();
@@ -181,4 +191,23 @@ public abstract class SortingThread extends Thread {
         elements[i] = elements[j];
         elements[j] = tmp;
     }
+
+    public Sonification getSelectedSonification() {
+        return selected_sonification;
+    };
+
+    public void changeSonification() {
+        index = (index + 1) % sonifications.size();
+        selected_sonification = sonifications.get(index);
+    }
+
+    public void setSonification(int index) {
+        this.index = index;
+        selected_sonification = sonifications.get(index);
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
 }

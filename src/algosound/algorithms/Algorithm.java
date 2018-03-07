@@ -21,7 +21,11 @@ public enum Algorithm {
         this.sort  = sort;
     }
 
-    public SortingThread getInstance() {
+    /**
+     * Creates a new instance of the sorting thread and returns it.
+     * @return new sorting thread instance
+     */
+    public SortingThread getNewInstance() {
         // Create a new instance.
         /**
          * We need to get the correct constructor first
@@ -34,10 +38,22 @@ public enum Algorithm {
             e.printStackTrace();
         }
         try {
+            // Save current selected sonification index.
+            int index = sort.getIndex();
             sort = constructor.newInstance(N);
+            // Reset to previously selected sonification.
+            sort.setSonification(index);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+        return sort;
+    }
+
+    /**
+     *
+     * @return current instance of sorting thread
+     */
+    public SortingThread getInstance() {
         return sort;
     }
 }

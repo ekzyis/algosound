@@ -3,6 +3,7 @@ package algosound.algorithms;
 
 import algosound.data.Sonification;
 import algosound.net.OSC;
+import algosound.util.AlgosoundUtil;
 
 import java.awt.*;
 
@@ -18,9 +19,19 @@ import static algosound.util.AlgosoundUtil.expmap;
  */
 public class Insertionsort extends SortingThread {
 
+    // Sonification variants for bubblesort.
+    private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_INSERTIONSORT", "/wave_pause_INSERTIONSORT", "/wave_resume_INSERTIONSORT", "/wave_set_INSERTIONSORT",
+            "/wave_free_INSERTIONSORT", "/hellowave_INSERTIONSORT", "/boot_wave_INSERTIONSORT");
+    private static final Sonification SCALE = new Sonification("SCALE","/scale_start_INSERTIONSORT", "", "", "/scale_play_INSERTIONSORT", "", "/helloscale_INSERTIONSORT",
+            "/boot_scale_INSERTIONSORT");
+    private final int FREQ_MIN = 200, FREQ_MAX = 4000;
+
     public Insertionsort(int N) {
         super(N);
         name = "Insertionsort";
+        sonifications.add(WAVE);
+        sonifications.add(SCALE);
+        selected_sonification = WAVE;
     }
 
     @Override
@@ -29,15 +40,12 @@ public class Insertionsort extends SortingThread {
         System.out.println("---insertionsort-thread starting.");
 
         OSC osc = OSC.getInstance();
-        Sonification selected = osc.getSelectedSonification();
-        if(selected == Sonification.WAVE)
-        {
-            osc.sendMessage(osc.STARTAUDIO);
-        }
-        else if(selected == Sonification.SCALE)
-        {
-            int[] args = {Sonification.FREQ_MIN, Sonification.FREQ_MAX};
-            osc.sendMessage(osc.STARTAUDIO, args);
+        Sonification sel = selected_sonification;
+        if(sel == WAVE) {
+            osc.sendMessage(sel.STARTPATH);
+        } else if(sel == SCALE) {
+            int[] args = {FREQ_MIN, FREQ_MAX};
+            osc.sendMessage(sel.STARTPATH, args);
         }
         // Gain access to monitor. If not possible, wait here.
         synchronized(this)
@@ -91,9 +99,9 @@ public class Insertionsort extends SortingThread {
                     // Notify since new frame is ready.
                     notifyFrameReady();
                     System.out.println("values to map: "+a[j]+", "+value);
-                    int[] args = { expmap(a[j]), expmap(value) };
+                    int[] args = { expmap(a[j], 0 , AlgosoundUtil.H, FREQ_MIN, FREQ_MAX), expmap(value, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX) };
                     System.out.println("mapped values: "+args[0]+", "+args[1]);
-                    osc.sendMessage(osc.MODAUDIO, args);
+                    osc.sendMessage(sel.MODPATH, args);
                 }
                 // Place to insert has been found!
                 a[j] = value;
@@ -103,7 +111,7 @@ public class Insertionsort extends SortingThread {
                 notifyFrameReady();
             }
         }
-        osc.sendMessage(osc.FREEAUDIO);
+        osc.sendMessage(sel.FREEPATH);
         System.out.println("--- insertionsort-thread has terminated.");
     }
 

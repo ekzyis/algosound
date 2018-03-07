@@ -7,6 +7,7 @@
 package algosound.net;
 
 import algosound.data.Sonification;
+import algosound.ui.Algosound;
 import netP5.NetAddress;
 import oscP5.OscMessage;
 import oscP5.OscP5;
@@ -29,17 +30,12 @@ public class OSC extends PApplet {
     private final int SC_PORT = 57120;
     private final int OSC_PORT = 12000;
 
-    // Choose sonification variant.
-    private final Sonification[] sList = { Sonification.SCALE, Sonification.WAVE };
-    private int listIndex = 0;
-    private Sonification s = sList[listIndex];
     // Status of connection.
     private boolean connected;
     // SuperCollider status reply.
     private final String SC_REPLY = "/hello";
     // Osc address of listeners.
     private String STATUS;
-    public String BOOT, STARTAUDIO, PAUSEAUDIO, RESUMEAUDIO, MODAUDIO, FREEAUDIO;
 
     // Status thread which checks periodically for sc3-server.
     private final Thread status;
@@ -47,10 +43,9 @@ public class OSC extends PApplet {
     private OSC() {
         OSC = new OscP5(this, OSC_PORT);
         SUPERCOLLIDER = new NetAddress("127.0.0.1", SC_PORT);
-        updatePaths();
         connected = false;
         // Send boot message.
-        sendMessage(BOOT);
+        sendMessage(Algosound.getInstance().getSortingThread().getSelectedSonification().BOOTPATH);
         // Start a thread which periodically checks if sc3-server is still running.
         status = new Thread() {
             @Override
@@ -65,7 +60,7 @@ public class OSC extends PApplet {
                      * variable could work, but would be messy?)
                      */
                     connected = false;
-                    sendMessage(STATUS);
+                    sendMessage(Algosound.getInstance().getSortingThread().getSelectedSonification().STATUSPATH);
                     try {
                         sleep(1000);
                     } catch (InterruptedException e) {
@@ -111,28 +106,6 @@ public class OSC extends PApplet {
 
     public Thread getStatusThread() {
         return status;
-    }
-
-    public Sonification getSelectedSonification() {
-        return s;
-    }
-
-    public void switchSonification() {
-        listIndex++;
-        listIndex = listIndex % sList.length;
-        s = sList[listIndex];
-        updatePaths();
-
-    }
-
-    private void updatePaths() {
-        STARTAUDIO = s.STARTPATH;
-        PAUSEAUDIO = s.PAUSEPATH;
-        RESUMEAUDIO = s.RESUMEPATH;
-        MODAUDIO = s.MODPATH;
-        FREEAUDIO = s.FREEPATH;
-        STATUS = s.STATUSPATH;
-        BOOT = s.BOOTPATH;
     }
 
     public void dispose() {

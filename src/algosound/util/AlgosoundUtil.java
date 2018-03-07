@@ -39,15 +39,9 @@ public class AlgosoundUtil {
         return (int) (a * PApplet.exp(value * b));
     }
 
-    // Convenience method
-    public static int expmap(int value) {
-        return expmap(value, 0, H, Sonification.FREQ_MIN, Sonification.FREQ_MAX);
-    }
-
     // Change algorithm
     public static void changeAlgorithm() {
-        algo_index++;
-        algo_index = algo_index % ALGORITHMS.length;
+        algo_index = (algo_index + 1) % ALGORITHMS.length;
         SELECTED_ALGORITHM = ALGORITHMS[algo_index];
     }
 }
