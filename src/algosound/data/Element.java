@@ -64,7 +64,7 @@ public class Element extends Visual {
 
     // Convenience method.
     public void fill(java.awt.Color c) {
-        inst.fill(c.getRed(), c.getGreen(), c.getBlue());
+        inst.fill(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
     // Set this element as marked.
