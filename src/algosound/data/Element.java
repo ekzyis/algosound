@@ -23,11 +23,11 @@ public class Element extends Visual {
     public final static byte COLORS = 2; // 2^1
     // swap coordinates
     public final static byte COORDINATES = 4; // 2^2
-    private Color c;
+    protected Color c;
     // Was this element accessed by the sorting algorithm during current frame?
-    private boolean marked;
+    protected boolean marked;
     // Is this element in a sorted state?
-    private boolean sorted;
+    protected boolean sorted;
 
     public Element(int _x, int _y, int _w, int _v, PApplet _inst) {
         super(_x, _y, _w, _v, _inst);

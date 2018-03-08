@@ -28,7 +28,7 @@ public abstract class SortingThread extends Thread {
     // Has the new frame been drawn?
     private boolean frameDrawn;
     // List of elements to unmark next frame.
-    private ArrayList<Element> unmarkMe;
+    protected ArrayList<Element> unmarkMe;
     // Is this thread marked as paused by the user?
     private boolean paused;
     // Should this thread exit?

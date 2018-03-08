@@ -84,11 +84,27 @@ public class OSC extends PApplet {
 
     /**
      * Send a message to an osc listener with given path and arguments.
+     * @param path path to osc listener.
+     * @args arguments within osc message
      */
     public void sendMessage(String path, int[] args) {
         System.out.println("osc: sending message to: " + path);
         OscMessage msg = new OscMessage(path);
         for (int n : args) {
+            msg.add(n);
+        }
+        if (OSC != null)
+            OSC.send(msg, SUPERCOLLIDER);
+    }
+
+    /**
+     * Send a message to an osc listener with given path and arguments (float-version).
+     * @param path path to osc listener.
+     */
+    public void sendMessage(String path, float[] args) {
+        System.out.println("osc: sending message to: " + path);
+        OscMessage msg = new OscMessage(path);
+        for (float n : args) {
             msg.add(n);
         }
         if (OSC != null)

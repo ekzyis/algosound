@@ -22,7 +22,7 @@ public class AlgosoundUtil {
     // Framerate of visualization.
     public static final int FRAMERATE = 60;
     // List of available algorithms.
-    private static final Algorithm[] ALGORITHMS = {Algorithm.BUBBLESORT, Algorithm.INSERTIONSORT, Algorithm.SELECTIONSORT};
+    private static final Algorithm[] ALGORITHMS = {Algorithm.BUBBLESORT, Algorithm.INSERTIONSORT, Algorithm.SELECTIONSORT, Algorithm.MERGESORT};
     // Selected algorithm
     public static Algorithm SELECTED_ALGORITHM = Algorithm.BUBBLESORT;
     private static int algo_index = 0;
