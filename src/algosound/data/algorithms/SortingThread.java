@@ -1,4 +1,4 @@
-package algosound.algorithms;
+package algosound.data.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import algosound.data.Element;
 import algosound.data.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;
-import algosound.util.AlgosoundUtil;
 
 /**
  * Abstract class for all sorting algorithms. They are all implemented as

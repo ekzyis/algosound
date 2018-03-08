@@ -1,6 +1,6 @@
 package algosound.ui;
 
-import algosound.algorithms.SortingThread;
+import algosound.data.algorithms.SortingThread;
 import algosound.data.Element;
 import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;

@@ -1,6 +1,6 @@
 package algosound.util;
 
-import algosound.algorithms.Algorithm;
+import algosound.data.algorithms.Algorithm;
 import processing.core.PApplet;
 
 /**

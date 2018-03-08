@@ -1,4 +1,4 @@
-package algosound.algorithms;
+package algosound.data.algorithms;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
