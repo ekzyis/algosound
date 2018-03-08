@@ -1,7 +1,6 @@
 package algosound.util;
 
 import algosound.algorithms.Algorithm;
-import algosound.data.Sonification;
 import processing.core.PApplet;
 
 /**
@@ -23,10 +22,11 @@ public class AlgosoundUtil {
     // Framerate of visualization.
     public static final int FRAMERATE = 60;
     // List of available algorithms.
-    private static final Algorithm[] ALGORITHMS = { Algorithm.BUBBLESORT, Algorithm.INSERTIONSORT };
+    private static final Algorithm[] ALGORITHMS = {Algorithm.BUBBLESORT, Algorithm.INSERTIONSORT, Algorithm.SELECTIONSORT};
     // Selected algorithm
     public static Algorithm SELECTED_ALGORITHM = Algorithm.BUBBLESORT;
     private static int algo_index = 0;
+
     /**
      * Exponential map function: f(x) = a*e^(b*x)
      * This function must satisfy following two equations: f(x1) = y1, f(x2) = y2

@@ -14,7 +14,8 @@ import static algosound.util.AlgosoundUtil.N;
  */
 public enum Algorithm {
     BUBBLESORT(new Bubblesort(N)),
-    INSERTIONSORT(new Insertionsort(N));
+    INSERTIONSORT(new Insertionsort(N)),
+    SELECTIONSORT(new Selectionsort(N));
 
     private SortingThread sort;
     Algorithm(SortingThread sort) {
