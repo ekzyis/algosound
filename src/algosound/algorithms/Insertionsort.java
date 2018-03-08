@@ -19,7 +19,7 @@ import static algosound.util.AlgosoundUtil.expmap;
  */
 public class Insertionsort extends SortingThread {
 
-    // Sonification variants for bubblesort.
+    // Sonification variants for insertionsort.
     private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_INSERTIONSORT", "/wave_pause_INSERTIONSORT", "/wave_resume_INSERTIONSORT", "/wave_set_INSERTIONSORT",
             "/wave_free_INSERTIONSORT", "/hellowave_INSERTIONSORT", "/boot_wave_INSERTIONSORT");
     private static final Sonification SCALE = new Sonification("SCALE","/scale_start_INSERTIONSORT", "", "", "/scale_play_INSERTIONSORT", "", "/helloscale_INSERTIONSORT",
