@@ -13,6 +13,7 @@ import java.util.Stack;
 
 import static algosound.util.AlgosoundUtil.expmap;
 import static processing.core.PApplet.append;
+import static processing.core.PApplet.map;
 import static processing.core.PApplet.subset;
 
 /**
@@ -174,7 +175,12 @@ public class Mergesort extends SortingThread {
             int[] left = subset(a,0,cut);
             // Arguments for sonification (times two to compensate for height limit.)
             int arg1 = expmap(a[cut]*2, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-            float[] args = { arg1, 0};
+            /**
+             * Calculate pan value. If real cut index is at start of array, pan to left. If real cut index is at
+             * end of array, pan to right.
+             */
+            pan = map(realCut, 0, elements.length-1, -1, 1);
+            float[] args = { arg1, pan};
             if(MODE==THREAD & !isExiting())
             {
                 /**
@@ -183,6 +189,9 @@ public class Mergesort extends SortingThread {
                  */
                 realCut = cutStack.peek() + cut;
                 mark(realCut);
+                // Update pan value since real cut index has changed.
+                pan = map(realCut, 0, elements.length-1, -1, 1);
+                args[1] = pan;
                 osc.sendMessage(sel.MODPATH,args);
                 notifyFrameReady();
             }
@@ -198,8 +207,9 @@ public class Mergesort extends SortingThread {
                 int len = (int) Math.floor(a.length/2.0);
                 MergesortElement[] subset = (MergesortElement[])(subset(elements,l,len));
                 markInSubset(subset);
-                // Pan sound to the left.
-                args[1] = -1;
+                // Update pan value since real cut index has changed.
+                pan = map(realCut, 0, elements.length-1, -1, 1);
+                args[1] = pan;
                 osc.sendMessage(sel.MODPATH,args);
                 notifyFrameReady();
             }
@@ -224,8 +234,9 @@ public class Mergesort extends SortingThread {
                 int len = (int) Math.ceil(a.length/2.0);
                 MergesortElement[] subset = (MergesortElement[])(subset(elements,r,len));
                 markInSubset(subset);
-                // Pan sound to the right.
-                args[1] = 1;
+                // Update pan value since real cut index has changed.
+                pan = map(realCut, 0, elements.length-1, -1, 1);
+                args[1] = pan;
                 osc.sendMessage(sel.MODPATH,args);
                 notifyFrameReady();
             }
@@ -237,7 +248,6 @@ public class Mergesort extends SortingThread {
                  * Mark cut index.
                  */
                 mark(realCut);
-                args[1] = 0;
                 osc.sendMessage(sel.MODPATH,args);
                 notifyFrameReady();
             }
@@ -378,7 +388,9 @@ public class Mergesort extends SortingThread {
                 // Every swap is one frame.
                 updateElements(merged,leftStart,len);
                 int arg1 = expmap(newlist[i]*2, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-                float[] args = { arg1 };
+                // Pan value is mapped index of merged element.
+                pan = map(leftStart+i, 0, elements.length-1, -1, 1);
+                float[] args = { arg1, pan };
                 osc.sendMessage(sel.MODPATH, args);
                 notifyFrameReady();
             }
@@ -398,7 +410,9 @@ public class Mergesort extends SortingThread {
                     merged[i] = e;
                     updateElements(merged,leftStart,len);
                     int arg1 = expmap(newlist[i]*2, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-                    float[] args = { arg1 };
+                    // Pan value is mapped index of merged element.
+                    pan = map(leftStart+i, 0, elements.length-1, -1, 1);
+                    float[] args = { arg1, pan };
                     osc.sendMessage(sel.MODPATH, args);
                     notifyFrameReady();
                 }
@@ -418,7 +432,9 @@ public class Mergesort extends SortingThread {
                     merged[i] = e;
                     updateElements(merged,leftStart,len);
                     int arg1 = expmap(newlist[i]*2, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-                    float[] args = { arg1 };
+                    // Pan value is mapped index of merged element.
+                    pan = map(leftStart+i, 0, elements.length-1, -1, 1);
+                    float[] args = { arg1, pan };
                     osc.sendMessage(sel.MODPATH, args);
                     notifyFrameReady();
                 }
