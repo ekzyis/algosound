@@ -63,7 +63,7 @@ public class Selectionsort extends SortingThread {
                 for(int i=minIndex+1;i<a.length & !isInterrupted();++i)
                 {
                     int arg1 = expmap(a[i], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-                    float pan = map(i, 0, elements.length-1, -1, 1);;
+                    float pan = map(i, 0, elements.length-1, -1, 1);
                     if(a[i]<a[minIndex])
                     {
                         minIndex = i;
