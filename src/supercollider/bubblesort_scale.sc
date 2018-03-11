@@ -26,13 +26,13 @@ SynthDef(\boot_scale_BUBBLESORT, {
 
 // Sinewave osc playing midi-notes.
 SynthDef(\midisine_scale_BUBBLESORT, {
-	arg midi=69, amp=0.1, atk=0.005, rel=0.3;
+	arg midi=69, amp=0.1, atk=0.005, rel=0.3, pan=0;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
 	amp = amp * midi.clip(50,120).linexp(50,120,2,0.01);
-	sig = SinOsc.ar(midi.midicps) * amp;
+	sig = SinOsc.ar(midi.midicps);
 	sig = sig * env;
-	Out.ar(0, Mix(sig)!2);
+	Out.ar(0, Pan2.ar(sig, pan, amp));
 }).add;
 
 // Modified default-synth ("fade+midi edition").
@@ -97,7 +97,7 @@ OSCdef(\midiplay_scale_OSC_BUBBLESORT, {
 		{ midi = ~scales.at(i); },
 	);
 	"playing midi-note ".post;midi.postln;
-	Synth(\midisine_scale_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75)]);
+	Synth(\midisine_scale_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2]]);
 }, "/scale_play_BUBBLESORT");
 
 // Create address to send messages to Processing client
