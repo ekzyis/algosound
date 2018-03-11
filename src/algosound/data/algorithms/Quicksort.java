@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static algosound.util.AlgosoundUtil.expmap;
+import static processing.core.PApplet.map;
 import static processing.core.PApplet.subset;
 
 /**
@@ -102,11 +103,16 @@ public class Quicksort extends SortingThread {
         int arg1 = expmap(a[l], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
         int arg2 = expmap(a[pivotIndex], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
         int arg3 = expmap(a[r],0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-        int[] args = { arg1 };
+        float pan = map(l, 0, a.length-1, -1, 1);
+        float[] args = { arg1, pan };
         osc.sendMessage(sel.MODPATH.split("~")[0], args);
         args[0] = arg2;
+        pan = map(pivotIndex, 0, a.length-1, -1, 1);
+        args[1] = pan;
         osc.sendMessage(sel.MODPATH.split("~")[1], args);
         args[0] = arg3;
+        pan = map(r, 0, a.length-1, -1, 1);
+        args[1] = pan;
         osc.sendMessage(sel.MODPATH.split("~")[2], args);
 
         notifyFrameReady();
@@ -122,6 +128,8 @@ public class Quicksort extends SortingThread {
 
                 arg1 = expmap(a[l], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
                 args[0] = arg1;
+                pan = map(l, 0, a.length-1, -1, 1);
+                args[1] = pan;
                 osc.sendMessage(sel.MODPATH.split("~")[0], args);
 
                 notifyFrameReady();
@@ -136,6 +144,8 @@ public class Quicksort extends SortingThread {
 
                 arg3 = expmap(a[r],0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
                 args[0] = arg3;
+                pan = map(r, 0, a.length-1, -1, 1);
+                args[1] = pan;
                 osc.sendMessage(sel.MODPATH.split("~")[2], args);
 
                 notifyFrameReady();
@@ -144,7 +154,7 @@ public class Quicksort extends SortingThread {
             {
                 int tmp = a[l];
                 a[l] = a[r];
-                a[r]=tmp;
+                a[r] = tmp;
                 elements[l].swap(elements[r], (byte)(Element.VALUES | Element.COLORS));
                 mark(pivotIndex,pivotColor);
                 markInSubset(subset);
@@ -156,9 +166,13 @@ public class Quicksort extends SortingThread {
                 // Probably no change in sonification after sending of messages.
                 arg1 = expmap(a[l], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
                 args[0] = arg1;
+                pan = map(l, 0, a.length-1, -1, 1);
+                args[1] = pan;
                 osc.sendMessage(sel.MODPATH.split("~")[0], args);
                 arg3 = expmap(a[r], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
                 args[0] = arg3;
+                pan = map(r, 0, a.length-1, -1, 1);
+                args[1] = pan;
                 osc.sendMessage(sel.MODPATH.split("~")[2], args);
 
                 notifyFrameReady();
