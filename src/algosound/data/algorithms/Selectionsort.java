@@ -5,6 +5,7 @@ import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;
 
 import static algosound.util.AlgosoundUtil.expmap;
+import static processing.core.PApplet.map;
 
 /**
  * Selectionsort implementation.
@@ -62,17 +63,18 @@ public class Selectionsort extends SortingThread {
                 for(int i=minIndex+1;i<a.length & !isInterrupted();++i)
                 {
                     int arg1 = expmap(a[i], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
+                    float pan = map(i, 0, elements.length-1, -1, 1);;
                     if(a[i]<a[minIndex])
                     {
                         minIndex = i;
                         int arg2 = expmap(a[minIndex],0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-                        int[] args = {arg2};
+                        float[] args = {arg2, 0};
                         osc.sendMessage(sel.MODPATH.split("~")[1], args);
                     }
                     // Mark element which is getting compared with current smallest element.
                     mark(minIndex);
                     mark(i);
-                    int[] args = {arg1};
+                    float[] args = {arg1, pan};
                     osc.sendMessage(sel.MODPATH.split("~")[0], args);
                     notifyFrameReady();
                 }
