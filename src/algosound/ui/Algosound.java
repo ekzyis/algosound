@@ -1,14 +1,15 @@
 package algosound.ui;
 
+import algosound.data.SoundKnob;
 import algosound.data.algorithms.SortingThread;
 import algosound.data.Element;
 import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;
+import controlP5.*;
 import controlP5.Button;
-import controlP5.ControlEvent;
-import controlP5.ControlP5;
-import controlP5.Controller;
 import processing.core.PApplet;
+
+import java.awt.*;
 
 import static algosound.util.AlgosoundUtil.*;
 
@@ -31,10 +32,11 @@ public class Algosound extends PApplet {
     private Button RESET;
     private Button SONI;
     private Button ALGO;
-
+    private SoundKnob[] knobs;
     @Override
     public void settings() {
-        size(AlgosoundUtil.W + AlgosoundUtil.GUI_W, AlgosoundUtil.H+INFO_H);
+        size(AlgosoundUtil.W + AlgosoundUtil.GUI_W + AlgosoundUtil.SOUNDCONTROL_W, AlgosoundUtil.H+INFO_H);
+
     }
 
     @Override
@@ -42,6 +44,7 @@ public class Algosound extends PApplet {
         frameRate(AlgosoundUtil.FRAMERATE);
         sort = AlgosoundUtil.SELECTED_ALGORITHM.getInstance();
         initGUI();
+        Algosound.getInstance().getSurface().setResizable(true);
     }
 
     public void initGUI() {
@@ -67,6 +70,43 @@ public class Algosound extends PApplet {
         RESET = cp5.addButton("reset").setPosition(x0, yPos[1]).setLabel("Reset");
         SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(sort.getSelectedSonification().NAME);
         ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
+        initSoundPanel();
+    }
+
+    public void initSoundPanel() {
+        int panelwidth;
+        String modpaths = SELECTED_ALGORITHM.getInstance().getSelectedSonification().REALTIMEMOD;
+        int modpathcounter = 0;
+        while(modpaths.indexOf("~") != -1)
+        {
+            modpaths = modpaths.substring(modpaths.indexOf("~")+1);
+            modpathcounter++;
+        }
+        final int XINSET = 5;
+        final int YINSET = 5;
+        int x0 = XINSET;
+        int y0 = YINSET;
+        Point[] pos = new Point[modpathcounter];
+        int x = x0;
+        int y = y0;
+        for(int i = 0; i<pos.length; ++i) {
+            if(x >= SOUNDCONTROL_W - KNOBSIZE) {
+                x = x0;
+                y = y + KNOBSIZE + YINSET;
+            }
+            pos[i] = new Point(x+AlgosoundUtil.W+GUI_W,y);
+            x += KNOBSIZE + XINSET;
+        }
+        knobs = new SoundKnob[modpathcounter];
+        String fullmodpath = SELECTED_ALGORITHM.getInstance().getSelectedSonification().REALTIMEMOD;
+        System.out.println(fullmodpath.split("~")[0]);
+        knobs[0] = (SoundKnob) new SoundKnob(cp5, "ampknob", fullmodpath.split("~")[0])
+                .setPosition(pos[0].x,pos[0].y)
+                .setLabel("AMP")
+                .setRange(0,5)
+                .setValue(0.2f)
+                .setRadius(KNOBSIZE/2)
+                .setDragDirection(Knob.HORIZONTAL);
     }
 
     /**
@@ -121,6 +161,12 @@ public class Algosound extends PApplet {
             // Also update the label of the sonification button
             SONI.setLabel(sort.getSelectedSonification().NAME);
         }
+        // Controller is a knob. Let it send its value to its osc path.
+        else if(c.getClass() == SoundKnob.class)
+        {
+            SoundKnob knob = (SoundKnob) c;
+            knob.fire();
+        }
     }
 
     @Override
@@ -142,6 +188,7 @@ public class Algosound extends PApplet {
             }
             translate(0, -INFO_H);
             drawInfo();
+            drawSoundPanel();
             /**
              * Notify sort thread that frame has been drawn.
              */
@@ -182,6 +229,11 @@ public class Algosound extends PApplet {
         text("SC3-server", 20, 15);
         ellipse(10, 10, 8, 8);
         stroke(0);
+    }
+
+    private void drawSoundPanel()
+    {
+
     }
 
    public SortingThread getSortingThread() {

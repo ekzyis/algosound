@@ -17,10 +17,11 @@ import static processing.core.PApplet.map;
 public class Bubblesort extends SortingThread {
 
     // Sonification variants for bubblesort.
-    private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_BUBBLESORT", "/wave_pause_BUBBLESORT", "/wave_resume_BUBBLESORT", "/wave_set_BUBBLESORT",
-            "/wave_free_BUBBLESORT", "/hellowave_BUBBLESORT", "/boot_wave_BUBBLESORT");
+    private static final String suffix = "_BUBBLESORT";
+    private static final Sonification WAVE = new Sonification("WAVE", "/wave_start" + suffix, "/wave_pause" + suffix, "/wave_resume" + suffix, "/wave_set" + suffix,
+            "/wave_free" + suffix, "/hellowave" + suffix, "/boot_wave" + suffix, "/wave_set_amp"+suffix+"~/wave_set_freqlag"+suffix+"~/wave_set_amplag"+suffix);
     private static final Sonification SCALE = new Sonification("SCALE","/scale_start_BUBBLESORT", "", "", "/scale_play_BUBBLESORT", "", "/helloscale_BUBBLESORT",
-            "/boot_scale_BUBBLESORT");
+            "/boot_scale_BUBBLESORT", "");
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Bubblesort(int N) {

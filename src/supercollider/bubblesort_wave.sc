@@ -71,10 +71,39 @@ OSCdef(\resume_wave_OSC_BUBBLESORT, {
 // Define listener for modifying.
 OSCdef(\mod_wave_OSC_BUBBLESORT, {
 	arg msg;
-	~algowave.set(\amptotal, 1);
 	~algowave.set(\freq, msg[1]);
 }, "/wave_set_BUBBLESORT");
 
+// Realtime modulating of synths
+OSCdef(\mod_wave_freqlag_OSC_BUBBLESORT, {
+	arg msg;
+	if(msg[1] >= 0,
+		{ ~algowave.set(\freqlag, msg[1]) };
+		{}
+	);
+}, "/wave_set_freqlag_BUBBLESORT");
+
+~amp = 1;
+OSCdef(\mod_wave_amp_OSC_BUBBLESORT, {
+	arg msg;
+	// Keep amo between 0 and 2
+	/*if((msg[1] <= 3)*(msg[1] >= 0),
+		{ ~algowave.set(\amptotal, msg[1]) };
+		{}
+	);*/
+	msg[1].postln;
+	~algowave.set(\amptotal, msg[1]);
+	~amp = msg[1];
+	"mod amp".postln;
+}, "/wave_set_amp_BUBBLESORT");
+
+OSCdef(\mod_wave_amplag_OSC_BUBBLESORT, {
+	arg msg;
+	if(msg[1] >= 0,
+		{ ~algowave.set(\amplag, msg[1]) };
+		{}
+	);
+}, "/wave_set_amplag_BUBBLESORT");
 /**
  * Define listener for freeing of synth.
  * KNOWN ISSUES: After freeing, another free-attempt will

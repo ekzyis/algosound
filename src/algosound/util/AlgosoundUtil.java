@@ -19,6 +19,10 @@ public class AlgosoundUtil {
     public static final int GUI_W = 70;
     // Height of Info area.
     public static final int INFO_H = 35;
+    // Width of sound control area.
+    public static final int SOUNDCONTROL_W = 40;
+    // Size of knob
+    public static final int KNOBSIZE = 20;
     // Framerate of visualization.
     public static final int FRAMERATE = 60;
     // List of available algorithms.
