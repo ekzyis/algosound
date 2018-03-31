@@ -4,6 +4,11 @@ import algosound.data.Sonification;
 import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import static processing.core.PApplet.map;
 
 /**
@@ -19,9 +24,9 @@ public class Bubblesort extends SortingThread {
     // Sonification variants for bubblesort.
     private static final String suffix = "_BUBBLESORT";
     private static final Sonification WAVE = new Sonification("WAVE", "/wave_start" + suffix, "/wave_pause" + suffix, "/wave_resume" + suffix, "/wave_set" + suffix,
-            "/wave_free" + suffix, "/hellowave" + suffix, "/boot_wave" + suffix, "/wave_set_amp"+suffix+"~/wave_set_freqlag"+suffix+"~/wave_set_amplag"+suffix);
+            "/wave_free" + suffix, "/hellowave" + suffix, "/boot_wave" + suffix, "/wave_set_amp"+suffix+"~/wave_set_freqlag"+suffix+"~/wave_set_amplag"+suffix, "AMP~FREQLAG~AMPLAG", new float[]{0f,3f,0.2f,0f,2f,0.1f,0f,5f,0.1f});
     private static final Sonification SCALE = new Sonification("SCALE","/scale_start_BUBBLESORT", "", "", "/scale_play_BUBBLESORT", "", "/helloscale_BUBBLESORT",
-            "/boot_scale_BUBBLESORT", "");
+            "/boot_scale_BUBBLESORT");
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Bubblesort(int N) {

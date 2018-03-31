@@ -35,9 +35,9 @@ public class Mergesort extends SortingThread {
 
     // Sonification variants for MERGESORT.
     private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_MERGESORT", "/wave_pause_MERGESORT", "/wave_resume_MERGESORT", "/wave_set_MERGESORT",
-            "/wave_free_MERGESORT", "/hellowave_MERGESORT", "/boot_wave_MERGESORT", "");
+            "/wave_free_MERGESORT", "/hellowave_MERGESORT", "/boot_wave_MERGESORT");
     private static final Sonification SCALE = new Sonification("SCALE","/scale_start_MERGESORT", "", "", "/scale_play_MERGESORT", "", "/helloscale_MERGESORT",
-            "/boot_scale_MERGESORT", "");
+            "/boot_scale_MERGESORT");
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     // Keep track of stack of the cut indizes while sorting for proper visualization.

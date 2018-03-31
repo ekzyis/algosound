@@ -193,7 +193,9 @@ public abstract class SortingThread extends Thread {
 
     public Sonification getSelectedSonification() {
         return selected_sonification;
-    };
+    }
+
+    ;
 
     public void changeSonification() {
         index = (index + 1) % sonifications.size();
@@ -208,5 +210,4 @@ public abstract class SortingThread extends Thread {
     public int getIndex() {
         return index;
     }
-
 }

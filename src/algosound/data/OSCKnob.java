@@ -11,10 +11,10 @@ import controlP5.Knob;
  * @author ekzyis
  * @date 30/03/2018
  */
-public class SoundKnob extends Knob {
+public class OSCKnob extends Knob {
     final String OSCPATH;
 
-    public SoundKnob(ControlP5 controlP5, String s, String path) {
+    public OSCKnob(ControlP5 controlP5, String s, String path) {
         super(controlP5, s);
         this.OSCPATH = path;
     }

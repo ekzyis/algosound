@@ -20,9 +20,9 @@ public class Selectionsort extends SortingThread {
 
     // Sonification variants for selectionsort.
     private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_SELECTIONSORT", "/wave_pause_SELECTIONSORT", "/wave_resume_SELECTIONSORT", "/wave_set_SELECTIONSORT~/min_set_SELECTIONSORT",
-            "/wave_free_SELECTIONSORT", "/hellowave_SELECTIONSORT", "/boot_wave_SELECTIONSORT", "");
+            "/wave_free_SELECTIONSORT", "/hellowave_SELECTIONSORT", "/boot_wave_SELECTIONSORT");
     private static final Sonification SCALE = new Sonification("SCALE","/scale_start_SELECTIONSORT", "", "", "/scale_play_SELECTIONSORT~/scale_play_SELECTIONSORT", "", "/helloscale_SELECTIONSORT",
-            "/boot_scale_SELECTIONSORT", "");
+            "/boot_scale_SELECTIONSORT");
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Selectionsort(int N) {
