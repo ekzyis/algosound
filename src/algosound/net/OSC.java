@@ -90,9 +90,12 @@ public class OSC extends PApplet {
     public void sendMessage(String path, int[] args) {
         System.out.println("osc: sending message to: " + path);
         OscMessage msg = new OscMessage(path);
+        System.out.print("--- arguments[ ");
         for (int n : args) {
             msg.add(n);
+            System.out.print(n+" ");
         }
+        System.out.println("]");
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
     }
@@ -104,9 +107,12 @@ public class OSC extends PApplet {
     public void sendMessage(String path, float[] args) {
         System.out.println("osc: sending message to: " + path);
         OscMessage msg = new OscMessage(path);
+        System.out.print("--- arguments[ ");
         for (float n : args) {
             msg.add(n);
+            System.out.print(n+" ");
         }
+        System.out.println("]");
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
     }

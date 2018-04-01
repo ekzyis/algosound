@@ -20,7 +20,6 @@ public class OSCKnob extends Knob {
     }
 
     public void fire() {
-        System.out.println("VALUE: " + super.getValue());
         float[] args = {super.getValue()};
         OSC.getInstance().sendMessage(OSCPATH, args );
     }

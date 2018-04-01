@@ -23,9 +23,11 @@ public class Sonification {
     // Name of this sonification and paths for the osc listeners.
     public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH, BOOTPATH, REALTIMEPATH, REALTIMENAME;
     // Default values of knobs. Three floats per path/name: min, max and default value.
-    float[] DEFAULTVALUES;
+    private final float[] DEFAULTVALUES;
+    // The knobs instances.
+    private OSCKnob[] knobs;
     public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
-            String boot, String realtime, String rtname, float[] defvalues) {
+            String boot, String rtpaths, String rtname, float[] defvalues) {
         this.NAME = name;
         this.STARTPATH = start;
         this.PAUSEPATH = pause;
@@ -34,9 +36,10 @@ public class Sonification {
         this.FREEPATH = free;
         this.STATUSPATH = status;
         this.BOOTPATH = boot;
-        this.REALTIMEPATH = realtime;
+        this.REALTIMEPATH = rtpaths;
         this.REALTIMENAME = rtname;
         this.DEFAULTVALUES = defvalues;
+        this.knobs = null;
     }
 
     public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
@@ -83,7 +86,7 @@ public class Sonification {
             System.out.println(pos[i]);
             x += KNOBSIZE + XINSET;
         }
-        OSCKnob[] knobs = new OSCKnob[modpathcounter];
+        knobs = new OSCKnob[modpathcounter];
         String[] names = REALTIMENAME.split("~");
         String[] paths = REALTIMEPATH.split("~");
         for(int i=0;i<paths.length;++i) {
@@ -98,5 +101,15 @@ public class Sonification {
             System.out.println(DEFAULTVALUES[j] + " " + DEFAULTVALUES[j+1] + " " + DEFAULTVALUES[j+2]);
         }
         return 0;
+    }
+
+    // Clear knobs from controlP5-instance thus making room for another sound panel.
+    public void clearSoundPanel(ControlP5 cp5) {
+        if(knobs!=null) {
+            for(Knob k : knobs) {
+                System.out.println("REMOVING KNOB "+k);
+                k.remove();
+            }
+        }
     }
 }

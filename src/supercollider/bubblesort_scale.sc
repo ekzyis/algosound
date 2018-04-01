@@ -57,7 +57,9 @@ OSCdef(\boot_scale_OSC_BUBBLESORT, {
  * Define listener for setting up of scale.
  * Setup depends on given minimal frequency and max frequency.
  */
-OSCdef(\start_scale_OSC_BUBBLESORT, {
+~minfreq = 200;
+~maxfreq = 4000;
+~initscale = {
 	arg msg;
 	var min_freq, max_freq, min_midi, max_midi;
 
@@ -69,10 +71,13 @@ OSCdef(\start_scale_OSC_BUBBLESORT, {
 	min_midi = min_freq.cpsmidi.round(2);
 	// Calculate amount of scales with 12 steps per octave.
 	d = ((max_freq.cpsmidi.round - min_midi)/12).round;
+	d.postln;
 	(d+1).do{
 		|i|
 		~scales = ~scales ++ (Scale.minor.degrees+(min_midi+(12*i)));
 	};
+	~minfreq = min_freq;
+	~maxfreq = max_freq;
 	"scales=".post;~scales.postln;
 
 	/**
@@ -85,7 +90,28 @@ OSCdef(\start_scale_OSC_BUBBLESORT, {
 		Array.fill(6,{ arg i; (i*0.25) + 0.25;}).choose
 	}); // Array.fill inception
 	"durations=".post;~durations.postln;*/
-}, "/scale_start_BUBBLESORT");
+};
+
+OSCdef(\start_scale_OSC_BUBBLESORT, ~initscale, "/scale_start_BUBBLESORT");
+
+OSCdef(\mod_scale_MAXFREQ_OSC_BUBBLESORT, {
+	arg msg;
+	"/scale_set_MAXFREQ".postln;
+	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+}, "/scale_set_MAXFREQ_BUBBLESORT");
+
+OSCdef(\mod_scale_MINFREQ_OSC_BUBBLESORT, {
+	arg msg;
+	"/scale_set_MINFREQ".postln;
+	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+}, "/scale_set_MINFREQ_BUBBLESORT");
+
+~amp = 0.1;
+OSCdef(\mod_scale_amp_OSC_BUBBLESORT, {
+	arg msg;
+	"/scale_set_amp".postln;
+	~amp = msg[1];
+}, "/scale_set_amp_BUBBLESORT");
 
 // Define listener for playing a midi note.
 OSCdef(\midiplay_scale_OSC_BUBBLESORT, {
@@ -97,7 +123,7 @@ OSCdef(\midiplay_scale_OSC_BUBBLESORT, {
 		{ midi = ~scales.at(i); },
 	);
 	"playing midi-note ".post;midi.postln;
-	Synth(\midisine_scale_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2]]);
+	Synth(\midisine_scale_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
 }, "/scale_play_BUBBLESORT");
 
 // Create address to send messages to Processing client

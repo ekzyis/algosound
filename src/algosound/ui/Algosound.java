@@ -116,7 +116,9 @@ public class Algosound extends PApplet {
             // Unlock selection of algorithms.
             ALGO.unlock();
         } else if (c == SONI && !sort.isAlive()) {
+            sort.getSelectedSonification().clearSoundPanel(cp5);
             sort.changeSonification();
+            sort.getSelectedSonification().initSoundPanel(cp5);
             SONI.setLabel(sort.getSelectedSonification().NAME);
         }
         else if (c == ALGO && !sort.isAlive()) {
