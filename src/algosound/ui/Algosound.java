@@ -32,7 +32,8 @@ public class Algosound extends PApplet {
     private Button RESET;
     private Button SONI;
     private Button ALGO;
-    private OSCKnob[] knobs;
+    private Controller SPEED;
+
     @Override
     public void settings() {
         size(AlgosoundUtil.W + AlgosoundUtil.GUI_W + AlgosoundUtil.SOUNDCONTROL_W, AlgosoundUtil.H+INFO_H);
@@ -69,6 +70,11 @@ public class Algosound extends PApplet {
         RESET = cp5.addButton("reset").setPosition(x0, yPos[1]).setLabel("Reset");
         SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(sort.getSelectedSonification().NAME);
         ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
+        // Initialize the controller for frame rate.
+        SPEED = cp5.addSlider("framerate").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(50).setRange(1,120);
+
+
+
         // Init the sound panel of selected sonification
         SELECTED_ALGORITHM.getInstance().getSelectedSonification().initSoundPanel(cp5);
     }
