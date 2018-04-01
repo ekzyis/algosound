@@ -1,6 +1,6 @@
 package algosound.ui;
 
-import algosound.data.OSCKnob;
+import algosound.net.OSCKnob;
 import algosound.data.algorithms.SortingThread;
 import algosound.data.Element;
 import algosound.net.OSC;
@@ -8,8 +8,6 @@ import algosound.util.AlgosoundUtil;
 import controlP5.*;
 import controlP5.Button;
 import processing.core.PApplet;
-
-import java.awt.*;
 
 import static algosound.util.AlgosoundUtil.*;
 
@@ -133,11 +131,9 @@ public class Algosound extends PApplet {
             // Also update the label of the sonification button
             SONI.setLabel(sort.getSelectedSonification().NAME);
         }
-        // Controller is a knob. Let it send its value to its osc path.
-        else if(c.getClass() == OSCKnob.class)
-        {
+        else if(c.getClass() == OSCKnob.class) {
             OSCKnob knob = (OSCKnob) c;
-            knob.fire();
+            knob.send();
         }
     }
 

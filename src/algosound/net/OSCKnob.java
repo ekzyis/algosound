@@ -1,4 +1,4 @@
-package algosound.data;
+package algosound.net;
 
 import algosound.net.OSC;
 import controlP5.ControlP5;
@@ -11,7 +11,8 @@ import controlP5.Knob;
  * @author ekzyis
  * @date 30/03/2018
  */
-public class OSCKnob extends Knob {
+public class OSCKnob extends Knob implements OSCInterface {
+    // Path where msg should be send to.
     final String OSCPATH;
 
     public OSCKnob(ControlP5 controlP5, String s, String path) {
@@ -19,7 +20,8 @@ public class OSCKnob extends Knob {
         this.OSCPATH = path;
     }
 
-    public void fire() {
+    @Override
+    public void send() {
         float[] args = {super.getValue()};
         OSC.getInstance().sendMessage(OSCPATH, args );
     }

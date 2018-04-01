@@ -1,5 +1,7 @@
 package algosound.data;
 
+import algosound.net.OSCKnob;
+import algosound.net.OSCSlider;
 import algosound.util.AlgosoundUtil;
 import controlP5.ControlP5;
 import controlP5.Controller;
@@ -50,13 +52,25 @@ public class Sonification {
      * Init controllers for realtime modulating of synths.
      * @return 0 if successful, else 1.
      */
+    private int modus = 1;
     public int initSoundPanel(ControlP5 cp5) {
         if(DEFAULTVALUES == null)
         {
             System.err.println("CAN NOT INITIALIZE SOUND PANEL: DEFAULT VALUES NULL");
         }
-        final int XINSET = 5;
-        final int YINSET = 20;
+        int XINSET, YINSET;
+        if(modus==0) {
+            XINSET = 15;
+            YINSET = 15;
+        }
+        else if(modus==1) {
+            XINSET = 5;
+            YINSET = 10;
+        }
+        else {
+            XINSET = 5;
+            YINSET = 5;
+        }
         // Return if knob does not fit panelsize.
         if(SOUNDCONTROL_W - KNOBSIZE < 2*XINSET) {
             System.err.println("CAN NOT INITIALIZE SOUND PANEL: KNOB DOES NOT FIT");
@@ -69,34 +83,70 @@ public class Sonification {
             return 1;
         }
         int modpathcounter = REALTIMEPATH.split("~").length;
-        int x0 = XINSET;
-        int y0 = 10;
-        // Calculate position of coming controllers.
-        Point[] pos = new Point[modpathcounter];
-        int x = x0;
-        int y = y0;
-        for(int i = 0; i<pos.length; ++i) {
-            if(x >= SOUNDCONTROL_W - KNOBSIZE) {
-                x = x0;
-                y += KNOBSIZE + YINSET;
+        if(modus==0) {
+            // Calculate position of coming controllers.
+            Point[] pos = new Point[modpathcounter];
+            int x0 = 15;
+            int y0 = 10;
+            int x = x0;
+            int y = y0;
+            for(int i = 0; i<pos.length; ++i) {
+                if(x >= SOUNDCONTROL_W - KNOBSIZE) {
+                    x = x0;
+                    y += KNOBSIZE + YINSET;
+                }
+                pos[i] = new Point(x+ AlgosoundUtil.W+GUI_W,y);
+                System.out.println(pos[i]);
+                x += KNOBSIZE + XINSET;
             }
-            pos[i] = new Point(x+ AlgosoundUtil.W+GUI_W,y);
-            System.out.println(pos[i]);
-            x += KNOBSIZE + XINSET;
+            controllers = new OSCKnob[modpathcounter];
+            String[] names = REALTIMENAME.split("~");
+            String[] paths = REALTIMEPATH.split("~");
+            for(int i=0;i<paths.length;++i) {
+                int j = i*3;
+                controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i])
+                        .setPosition(pos[i].x,pos[i].y)
+                        .setLabel(names[i])
+                        .setRadius(KNOBSIZE/2)
+                        .setDragDirection(Knob.HORIZONTAL)
+                        .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j+1])
+                        .setValue(DEFAULTVALUES[j+2]);
+                System.out.println(DEFAULTVALUES[j] + " " + DEFAULTVALUES[j+1] + " " + DEFAULTVALUES[j+2]);
+            }
         }
-        controllers = new OSCKnob[modpathcounter];
-        String[] names = REALTIMENAME.split("~");
-        String[] paths = REALTIMEPATH.split("~");
-        for(int i=0;i<paths.length;++i) {
-            int j = i*3;
-            controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i])
-                    .setPosition(pos[i].x,pos[i].y)
-                    .setLabel(names[i])
-                    .setRadius(KNOBSIZE/2)
-                    .setDragDirection(Knob.HORIZONTAL)
-                    .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j+1])
-                    .setValue(DEFAULTVALUES[j+2]);
-            System.out.println(DEFAULTVALUES[j] + " " + DEFAULTVALUES[j+1] + " " + DEFAULTVALUES[j+2]);
+        else if(modus==1) {
+            // Calculate position of coming controllers.
+            Point[] pos = new Point[modpathcounter];
+            int x0 = XINSET;
+            int y0 = YINSET;
+            int x = x0;
+            int y = y0;
+            for(int i = 0; i<pos.length; ++i) {
+                if(x >= SOUNDCONTROL_W - SLIDERWIDTH) {
+                    x = x0;
+                    y += SLIDERHEIGHT + YINSET;
+                }
+                pos[i] = new Point(x+ AlgosoundUtil.W+GUI_W,y);
+                System.out.println(pos[i]);
+                x += SLIDERWIDTH + XINSET;
+            }
+            controllers = new OSCSlider[modpathcounter];
+            String[] names = REALTIMENAME.split("~");
+            String[] paths = REALTIMEPATH.split("~");
+            for(int i=0;i<paths.length;++i) {
+                int j = i*3;
+                controllers[i] = (OSCSlider) new OSCSlider(cp5, names[i], paths[i])
+                        .setPosition(pos[i].x,pos[i].y)
+                        .setLabel(names[i])
+                        .setWidth(SLIDERWIDTH)
+                        .setHeight(SLIDERHEIGHT)
+                        .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j+1])
+                        .setValue(DEFAULTVALUES[j+2]);
+                System.out.println(DEFAULTVALUES[j] + " " + DEFAULTVALUES[j+1] + " " + DEFAULTVALUES[j+2]);
+            }
+        }
+        else {
+            return 1;
         }
         return 0;
     }
