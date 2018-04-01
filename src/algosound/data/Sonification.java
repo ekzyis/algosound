@@ -2,14 +2,13 @@ package algosound.data;
 
 import algosound.util.AlgosoundUtil;
 import controlP5.ControlP5;
+import controlP5.Controller;
 import controlP5.Knob;
 
 import java.awt.*;
-import java.util.List;
 
 import static algosound.util.AlgosoundUtil.*;
 import static algosound.util.AlgosoundUtil.KNOBSIZE;
-import static algosound.util.AlgosoundUtil.SELECTED_ALGORITHM;
 
 /**
  * Sonification-class. This class is used in the implemented algorithms
@@ -22,10 +21,10 @@ import static algosound.util.AlgosoundUtil.SELECTED_ALGORITHM;
 public class Sonification {
     // Name of this sonification and paths for the osc listeners.
     public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH, BOOTPATH, REALTIMEPATH, REALTIMENAME;
-    // Default values of knobs. Three floats per path/name: min, max and default value.
+    // Default values of controllers. Three floats per path/name: min, max and default value.
     private final float[] DEFAULTVALUES;
-    // The knobs instances.
-    private OSCKnob[] knobs;
+    // The controllers.
+    private Controller[] controllers;
     public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
             String boot, String rtpaths, String rtname, float[] defvalues) {
         this.NAME = name;
@@ -39,7 +38,7 @@ public class Sonification {
         this.REALTIMEPATH = rtpaths;
         this.REALTIMENAME = rtname;
         this.DEFAULTVALUES = defvalues;
-        this.knobs = null;
+        this.controllers = null;
     }
 
     public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
@@ -48,10 +47,9 @@ public class Sonification {
     }
 
     /**
-     * Init knobs for realtime modulating of synths.
+     * Init controllers for realtime modulating of synths.
      * @return 0 if successful, else 1.
      */
-
     public int initSoundPanel(ControlP5 cp5) {
         if(DEFAULTVALUES == null)
         {
@@ -73,7 +71,7 @@ public class Sonification {
         int modpathcounter = REALTIMEPATH.split("~").length;
         int x0 = XINSET;
         int y0 = 10;
-        // Calculate position of coming knobs.
+        // Calculate position of coming controllers.
         Point[] pos = new Point[modpathcounter];
         int x = x0;
         int y = y0;
@@ -86,12 +84,12 @@ public class Sonification {
             System.out.println(pos[i]);
             x += KNOBSIZE + XINSET;
         }
-        knobs = new OSCKnob[modpathcounter];
+        controllers = new OSCKnob[modpathcounter];
         String[] names = REALTIMENAME.split("~");
         String[] paths = REALTIMEPATH.split("~");
         for(int i=0;i<paths.length;++i) {
             int j = i*3;
-            knobs[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i])
+            controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i])
                     .setPosition(pos[i].x,pos[i].y)
                     .setLabel(names[i])
                     .setRadius(KNOBSIZE/2)
@@ -103,12 +101,12 @@ public class Sonification {
         return 0;
     }
 
-    // Clear knobs from controlP5-instance thus making room for another sound panel.
+    // Clear controllers from controlP5-instance thus making room for another sound panel.
     public void clearSoundPanel(ControlP5 cp5) {
-        if(knobs!=null) {
-            for(Knob k : knobs) {
-                System.out.println("REMOVING KNOB "+k);
-                k.remove();
+        if(controllers !=null) {
+            for(Controller c : controllers) {
+                System.out.println("REMOVING CONTROLLER "+c);
+                c.remove();
             }
         }
     }
