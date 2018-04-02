@@ -13,6 +13,8 @@ import oscP5.OscMessage;
 import oscP5.OscP5;
 import processing.core.PApplet;
 
+import java.lang.reflect.Type;
+
 /**
  * Open sound control file. All methods and logic about sending and receiving of
  * OSC messages is implemented here. Extends PApplet to be able to receive
@@ -100,10 +102,6 @@ public class OSC extends PApplet {
             OSC.send(msg, SUPERCOLLIDER);
     }
 
-    /**
-     * Send a message to an osc listener with given path and arguments (float-version).
-     * @param path path to osc listener.
-     */
     public void sendMessage(String path, float[] args) {
         System.out.println("osc: sending message to: " + path);
         OscMessage msg = new OscMessage(path);
@@ -116,6 +114,27 @@ public class OSC extends PApplet {
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
     }
+
+    /**
+     * Send a message to an osc listener with given path and arguments (generic-version).
+     * Does not work because java primitives like int and float are no real "Types" like Number.
+     * @param path path to osc listener.
+     */
+    /*
+    public <T> void sendMessage(String path, T[] args) {
+        System.out.println("osc: sending message to: " + path);
+        OscMessage msg = new OscMessage(path);
+        System.out.print("--- arguments[ ");
+        for (T n : args) {
+            float add = (float) n;
+            msg.add((float) n);
+            System.out.print(n+" ");
+        }
+        System.out.println("]");
+        if (OSC != null)
+            OSC.send(msg, SUPERCOLLIDER);
+    }
+    */
 
     // Convenience method.
     public void sendMessage(String path) {
