@@ -4,6 +4,7 @@ import algosound.net.OSCKnob;
 import algosound.net.OSCSlider;
 import algosound.util.AlgosoundUtil;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Controller;
 import controlP5.Knob;
 
@@ -164,6 +165,15 @@ public class Sonification {
     // Set style of sonification
     public void setStyle(int x) {
         this.STYLE = x;
+    }
+
+    // Reset sliders to default.
+    public void reset() {
+        int i = 0;
+        for(Controller c : controllers) {
+            c.setValue(DEFAULTVALUES[(3*i)+2]);
+            i++;
+        }
     }
 
     // Clear controllers from controlP5-instance thus making room for another sound panel.

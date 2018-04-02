@@ -109,6 +109,7 @@ public class Algosound extends PApplet {
                 sort.unpause();
                 c.setLabel("Pause");
             }
+            // ### RESET
         } else if (c == RESET) {
             START.setLabel("Start");
             System.out.println("--- sort: reset");
@@ -123,6 +124,8 @@ public class Algosound extends PApplet {
             SPEED.setValue(PREFERRED_FRAMERATE);
             ALGORITHMFPS = PREFERRED_FRAMERATE;
             frameRate(PREFERRED_FRAMERATE);
+            // Reset sonifaction sound panel.
+            sort.getSelectedSonification().reset();
         } else if (c == SONI && !sort.isAlive()) {
             sort.getSelectedSonification().clearSoundPanel(cp5);
             sort.changeSonification();
