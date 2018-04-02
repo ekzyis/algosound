@@ -27,6 +27,11 @@ public class Sonification {
     private final float[] DEFAULTVALUES;
     // The controllers.
     private Controller[] controllers;
+    // Style of sonification
+    private int STYLE;
+    // Types of styles
+    public static int KNOBSTYLE = 0;
+    public static int SLIDERSTYLE = 1;
     public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
             String boot, String rtpaths, String rtname, float[] defvalues) {
         this.NAME = name;
@@ -41,6 +46,7 @@ public class Sonification {
         this.REALTIMENAME = rtname;
         this.DEFAULTVALUES = defvalues;
         this.controllers = null;
+        this.STYLE = SLIDERSTYLE;
     }
 
     public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
@@ -52,18 +58,17 @@ public class Sonification {
      * Init controllers for realtime modulating of synths.
      * @return 0 if successful, else 1.
      */
-    private int modus = 1;
     public int initSoundPanel(ControlP5 cp5) {
         if(DEFAULTVALUES == null)
         {
             System.err.println("CAN NOT INITIALIZE SOUND PANEL: DEFAULT VALUES NULL");
         }
         int XINSET, YINSET;
-        if(modus==0) {
+        if(STYLE==0) {
             XINSET = 15;
             YINSET = 15;
         }
-        else if(modus==1) {
+        else if(STYLE==1) {
             XINSET = 5;
             YINSET = 10;
         }
@@ -83,7 +88,7 @@ public class Sonification {
             return 1;
         }
         int modpathcounter = REALTIMEPATH.split("~").length;
-        if(modus==0) {
+        if(STYLE==KNOBSTYLE) {
             // Calculate position of coming controllers.
             Point[] pos = new Point[modpathcounter];
             int x0 = 15;
@@ -115,7 +120,7 @@ public class Sonification {
                 System.out.println(DEFAULTVALUES[j] + " " + DEFAULTVALUES[j+1] + " " + DEFAULTVALUES[j+2]);
             }
         }
-        else if(modus==1) {
+        else if(STYLE==SLIDERSTYLE) {
             // Calculate position of coming controllers.
             Point[] pos = new Point[modpathcounter];
             int x0 = XINSET;
@@ -147,13 +152,18 @@ public class Sonification {
                         .setHeight(SLIDERHEIGHT)
                         .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j+1])
                         .setValue(DEFAULTVALUES[j+2]);
-                System.out.println(DEFAULTVALUES[j] + " " + DEFAULTVALUES[j+1] + " " + DEFAULTVALUES[j+2]);
             }
         }
         else {
+            System.err.println("CAN NOT INITALIZE PANEL: NO STYLE SET");
             return 1;
         }
         return 0;
+    }
+
+    // Set style of sonification
+    public void setStyle(int x) {
+        this.STYLE = x;
     }
 
     // Clear controllers from controlP5-instance thus making room for another sound panel.
