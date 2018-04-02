@@ -131,7 +131,7 @@ public class Algosound extends PApplet {
             SONI.setLabel(sort.getSelectedSonification().NAME);
         }
         else if(c == SPEED) {
-            // Only change framerate of sorting! Dont change framerate of actual redrawing.
+            // Only change framerate of sorting! Don't change framerate of actual redrawing.
             ALGORITHMFPS = c.getValue();
             if(ALGORITHMFPS > FRAMERATE ||
                     (ALGORITHMFPS < FRAMERATE && ALGORITHMFPS >= PREFERRED_FRAMERATE)) {

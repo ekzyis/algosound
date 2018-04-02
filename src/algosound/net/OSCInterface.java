@@ -1,7 +1,7 @@
 package algosound.net;
 
 /**
- * Interface for controlP5.controllers;
+ * Interface for controlP5.controllers to send osc messages.;
  * ================================
  *
  * @author ekzyis
