@@ -38,7 +38,7 @@ public abstract class SortingThread extends Thread {
     private boolean paused;
     // Should this thread exit?
     private boolean exiting;
-    // Can animation thread be notified?
+    // Is thread currently limited by FPS?
     private boolean waitDueToFPS;
 
     // List of available sonifications.
@@ -139,11 +139,11 @@ public abstract class SortingThread extends Thread {
          * Measure time of frame calculating for waiting to match ALGORITHMFPS
          * @see ALGORITHMFPS
          */
-        if(ALGORITHMFPS != FRAMERATE && ALGORITHMFPS>0) {
+        if(ALGORITHMFPS>0) {
             double delay = (1/ALGORITHMFPS) * 1000;
             Timer t = new Timer();
             SortingThread inst = this;
-            System.out.println("--- sort: delay = "+delay);
+            // System.out.println("--- sort: delay = "+delay);
             waitDueToFPS = true;
             t.schedule(new TimerTask() {
                 @Override
