@@ -70,7 +70,7 @@ public class Algosound extends PApplet {
         SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(sort.getSelectedSonification().NAME);
         ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
         // Initialize the controller for algorithm speed.
-        SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(50).setRange(1f,1000f);
+        SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(50).setRange(1f,1000f).setValue(FRAMERATE);
 
         // Init the sound panel of selected sonification
         SELECTED_ALGORITHM.getInstance().getSelectedSonification().initSoundPanel(cp5);
@@ -118,6 +118,11 @@ public class Algosound extends PApplet {
             SONI.unlock();
             // Unlock selection of algorithms.
             ALGO.unlock();
+            // Reset framerate slider
+            FRAMERATE = PREFERRED_FRAMERATE;
+            SPEED.setValue(PREFERRED_FRAMERATE);
+            ALGORITHMFPS = PREFERRED_FRAMERATE;
+            frameRate(PREFERRED_FRAMERATE);
         } else if (c == SONI && !sort.isAlive()) {
             sort.getSelectedSonification().clearSoundPanel(cp5);
             sort.changeSonification();
@@ -144,7 +149,7 @@ public class Algosound extends PApplet {
             }
         }
         else if(c.getClass() == OSCKnob.class) {
-            OSCSlider k = (OSCSlider) c;
+            OSCKnob k = (OSCKnob) c;
             k.send();
         }
         else if(c.getClass() == OSCSlider.class) {
