@@ -97,17 +97,20 @@ public abstract class SortingThread extends Thread {
          * Check if this frame the user did press the pause button. If yes and thread is
          * not exiting, the thread will pause until the user wants to resume.
          */
-        while (isPaused() && !isExiting()) {
-            try {
-                System.out.println("--- sort: pausing.");
-                OSC.getInstance().sendMessage(selected_sonification.PAUSEPATH);
-                this.wait();
-                System.out.println("--- sort: resuming.");
-                OSC.getInstance().sendMessage(selected_sonification.RESUMEPATH);
-            } catch (InterruptedException e) {
-                // Exception clears the interrupted flag. Reset it to check it later.
-                this.interrupt();
+        if(isPaused() && !isExiting()) {
+            System.out.println("--- sort: pausing.");
+            while (isPaused() && !isExiting()) {
+                try {
+
+                    OSC.getInstance().sendMessage(selected_sonification.PAUSEPATH);
+                    this.wait();
+                    OSC.getInstance().sendMessage(selected_sonification.RESUMEPATH);
+                } catch (InterruptedException e) {
+                    // Exception clears the interrupted flag. Reset it to check it later.
+                    this.interrupt();
+                }
             }
+            System.out.println("--- sort: resuming.");
         }
         while(isWaitingDueToFPS()) {
             try {

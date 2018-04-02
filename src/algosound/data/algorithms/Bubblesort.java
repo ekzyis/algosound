@@ -79,10 +79,10 @@ public class Bubblesort extends SortingThread {
                     notifyFrameReady();
                     // Send osc message for sonification.
                     int value = a[i];
-                    System.out.println("value to map: " + value);
+                    // System.out.println("value to map: " + value);
                     float pan = map(i, 0, elements.length-1, -1, 1);
                     float[] args = { AlgosoundUtil.expmap(value, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX), pan };
-                    System.out.println("mapped values: " + args[0]);
+                    // System.out.println("mapped values: " + args[0]);
                     osc.sendMessage(sel.MODPATH, args);
                 }
             } while (swap);
