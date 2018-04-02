@@ -2,11 +2,16 @@ package algosound.data.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import algosound.data.Element;
 import algosound.data.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;
+
+import static algosound.util.AlgosoundUtil.ALGORITHMFPS;
+import static algosound.util.AlgosoundUtil.FRAMERATE;
 
 /**
  * Abstract class for all sorting algorithms. They are all implemented as
@@ -33,6 +38,8 @@ public abstract class SortingThread extends Thread {
     private boolean paused;
     // Should this thread exit?
     private boolean exiting;
+    // Can animation thread be notified?
+    private boolean waitDueToFPS;
 
     // List of available sonifications.
     protected List<Sonification> sonifications;
@@ -54,6 +61,7 @@ public abstract class SortingThread extends Thread {
         setDaemon(true);
         sonifications = new ArrayList<>();
         index = 0;
+        waitDueToFPS = false;
     }
 
     public String getString() {
@@ -101,6 +109,15 @@ public abstract class SortingThread extends Thread {
                 this.interrupt();
             }
         }
+        while(isWaitingDueToFPS()) {
+            try {
+                System.out.println("--- sort: waiting due to choosen fps.");
+                this.wait();
+            } catch (InterruptedException e) {
+                // Exception clears the interrupted flag. Reset it to check it later.
+                this.interrupt();
+            }
+        }
         // Clear markers from last frame.
         clearMarkers();
         frameDrawn = false;
@@ -115,6 +132,26 @@ public abstract class SortingThread extends Thread {
          * unsets the interrupted-flag so the thread will not exit when interrupted
          * while pausing or waiting for a new frame.
          */
+        /**
+         * Measure time of frame calculating for waiting to match ALGORITHMFPS
+         * @see ALGORITHMFPS
+         */
+        if(ALGORITHMFPS != FRAMERATE && ALGORITHMFPS>0) {
+            double delay = (1/ALGORITHMFPS) * 1000;
+            Timer t = new Timer();
+            SortingThread inst = this;
+            System.out.println("--- sort: delay = "+delay);
+            waitDueToFPS = true;
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    waitDueToFPS = false;
+                    synchronized(inst) {
+                        inst.notify();
+                    }
+                }
+            }, (long) delay);
+        }
     }
 
     // Notify thread that new frame has been drawn.
@@ -146,6 +183,11 @@ public abstract class SortingThread extends Thread {
 
     public boolean isExiting() {
         return exiting;
+    }
+
+    public boolean isWaitingDueToFPS()
+    {
+        return waitDueToFPS;
     }
 
     // Set the exit-flag and interrupt the thread; waking it up from eventual
@@ -194,8 +236,6 @@ public abstract class SortingThread extends Thread {
     public Sonification getSelectedSonification() {
         return selected_sonification;
     }
-
-    ;
 
     public void changeSonification() {
         index = (index + 1) % sonifications.size();

@@ -90,6 +90,8 @@ public class Sonification {
             int y0 = 10;
             int x = x0;
             int y = y0;
+            String[] names = REALTIMENAME.split("~");
+            String[] paths = REALTIMEPATH.split("~");
             for(int i = 0; i<pos.length; ++i) {
                 if(x >= SOUNDCONTROL_W - KNOBSIZE) {
                     x = x0;
@@ -100,8 +102,7 @@ public class Sonification {
                 x += KNOBSIZE + XINSET;
             }
             controllers = new OSCKnob[modpathcounter];
-            String[] names = REALTIMENAME.split("~");
-            String[] paths = REALTIMEPATH.split("~");
+
             for(int i=0;i<paths.length;++i) {
                 int j = i*3;
                 controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i])
@@ -121,18 +122,22 @@ public class Sonification {
             int y0 = YINSET;
             int x = x0;
             int y = y0;
+            String[] names = REALTIMENAME.split("~");
+            String[] paths = REALTIMEPATH.split("~");
             for(int i = 0; i<pos.length; ++i) {
                 if(x >= SOUNDCONTROL_W - SLIDERWIDTH) {
                     x = x0;
                     y += SLIDERHEIGHT + YINSET;
                 }
                 pos[i] = new Point(x+ AlgosoundUtil.W+GUI_W,y);
+                int charwidth = 0;
+                for(int j=0;j<names[i].length(); j++) {
+                    charwidth += 2;
+                }
                 System.out.println(pos[i]);
-                x += SLIDERWIDTH + XINSET;
+                x += SLIDERWIDTH + XINSET  + charwidth;
             }
             controllers = new OSCSlider[modpathcounter];
-            String[] names = REALTIMENAME.split("~");
-            String[] paths = REALTIMEPATH.split("~");
             for(int i=0;i<paths.length;++i) {
                 int j = i*3;
                 controllers[i] = (OSCSlider) new OSCSlider(cp5, names[i], paths[i])
@@ -155,7 +160,6 @@ public class Sonification {
     public void clearSoundPanel(ControlP5 cp5) {
         if(controllers !=null) {
             for(Controller c : controllers) {
-                System.out.println("REMOVING CONTROLLER "+c);
                 c.remove();
             }
         }

@@ -20,14 +20,18 @@ public class AlgosoundUtil {
     // Height of Info area.
     public static final int INFO_H = 35;
     // Width of sound control area.
-    public static final int SOUNDCONTROL_W = 100;
+    public static final int SOUNDCONTROL_W = 120;
     // Size of knob
     public static final int KNOBSIZE = 20;
     // Width and height of sliders
     public static final int SLIDERWIDTH = 70;
     public static final int SLIDERHEIGHT = 10;
+    // Preferred framerate.
+    public static final int PREFERRED_FRAMERATE = 60;
     // Framerate of visualization.
-    public static final int FRAMERATE = 60;
+    public static int FRAMERATE = PREFERRED_FRAMERATE;
+    // Framerate of sorting.
+    public static float ALGORITHMFPS = FRAMERATE;
     // List of available algorithms.
     private static final Algorithm[] ALGORITHMS = {Algorithm.BUBBLESORT, Algorithm.INSERTIONSORT, Algorithm.SELECTIONSORT, Algorithm.MERGESORT, Algorithm.QUICKSORT};
     // Selected algorithm

@@ -4,6 +4,7 @@ import algosound.net.OSCKnob;
 import algosound.data.algorithms.SortingThread;
 import algosound.data.Element;
 import algosound.net.OSC;
+import algosound.net.OSCSlider;
 import algosound.util.AlgosoundUtil;
 import controlP5.*;
 import controlP5.Button;
@@ -68,10 +69,8 @@ public class Algosound extends PApplet {
         RESET = cp5.addButton("reset").setPosition(x0, yPos[1]).setLabel("Reset");
         SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(sort.getSelectedSonification().NAME);
         ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
-        // Initialize the controller for frame rate.
-        SPEED = cp5.addSlider("framerate").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(50).setRange(1,120);
-
-
+        // Initialize the controller for algorithm speed.
+        SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(50).setRange(1f,1000f);
 
         // Init the sound panel of selected sonification
         SELECTED_ALGORITHM.getInstance().getSelectedSonification().initSoundPanel(cp5);
@@ -131,9 +130,26 @@ public class Algosound extends PApplet {
             // Also update the label of the sonification button
             SONI.setLabel(sort.getSelectedSonification().NAME);
         }
+        else if(c == SPEED) {
+            // Only change framerate of sorting! Dont change framerate of actual redrawing.
+            ALGORITHMFPS = c.getValue();
+            if(ALGORITHMFPS > FRAMERATE ||
+                    (ALGORITHMFPS < FRAMERATE && ALGORITHMFPS >= PREFERRED_FRAMERATE)) {
+                frameRate(ALGORITHMFPS);
+                FRAMERATE = (int)(ALGORITHMFPS);
+            }
+            else if(ALGORITHMFPS < PREFERRED_FRAMERATE) {
+                frameRate(PREFERRED_FRAMERATE);
+                FRAMERATE = PREFERRED_FRAMERATE;
+            }
+        }
         else if(c.getClass() == OSCKnob.class) {
-            OSCKnob knob = (OSCKnob) c;
-            knob.send();
+            OSCSlider k = (OSCSlider) c;
+            k.send();
+        }
+        else if(c.getClass() == OSCSlider.class) {
+            OSCSlider s = (OSCSlider) c;
+            s.send();
         }
     }
 
@@ -141,7 +157,7 @@ public class Algosound extends PApplet {
     public void draw() {
         synchronized (sort) {
             background(25);
-            if (sort.isAlive() && !sort.isPaused() && !sort.isExiting()) {
+            if (sort.isAlive() && !sort.isPaused() && !sort.isExiting() && !sort.isWaitingDueToFPS()) {
                 // Wait until new frame is ready.
                 while (!sort.frameIsReady()) {
                     try {
@@ -160,7 +176,7 @@ public class Algosound extends PApplet {
             /**
              * Notify sort thread that frame has been drawn.
              */
-            if (sort.isAlive() && !sort.isPaused()) {
+            if (sort.isAlive() && !sort.isPaused() && !sort.isWaitingDueToFPS()) {
                 sort.notifyFrameDraw();
                 sort.notify();
             }
