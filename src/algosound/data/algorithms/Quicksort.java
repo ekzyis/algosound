@@ -23,11 +23,34 @@ import static processing.core.PApplet.subset;
  */
 public class Quicksort extends SortingThread {
 
+    private static final String suffix = "_QUICKSORT";
     // Sonification variants for quicksort.
-    private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_QUICKSORT", "/wave_pause_QUICKSORT", "/wave_resume_QUICKSORT", "/wave_set1_QUICKSORT~/wave_set2_QUICKSORT~/wave_set3_QUICKSORT",
-            "/wave_free_QUICKSORT", "/hellowave_QUICKSORT", "/boot_wave_QUICKSORT");
-    private static final Sonification SCALE = new Sonification("SCALE","/scale_start_QUICKSORT", "", "", "/scale_play_QUICKSORT~/scale_play_QUICKSORT~/scale_play_QUICKSORT", "", "/helloscale_QUICKSORT",
-            "/boot_scale_QUICKSORT");
+    private static final Sonification WAVE = new Sonification(
+            "WAVE",
+            "/wave_start"+suffix,
+            "/wave_pause"+suffix,
+            "/wave_resume"+suffix,
+            "/wave_set1_QUICKSORT~/wave_set2_QUICKSORT~/wave_set3"+suffix,
+            "/wave_free"+suffix,
+            "/hellowave"+suffix,
+            "/boot_wave"+suffix,
+            "wave_set_amp"+suffix+"~/wave_set_freqlag"+suffix+"~/wave_set_amplag"+suffix,
+            "AMP~FREQLAG~AMPLAG",
+            new float[]{0f,3f,0.2f,
+                    0f,2f,0.1f,
+                    0f,5f,0.1f});
+    private static final Sonification SCALE = new Sonification(
+            "SCALE",
+            "/scale_start"+suffix,
+            "",
+            "",
+            "/scale_play_QUICKSORT~/scale_play_QUICKSORT~/scale_play"+suffix,
+            "",
+            "/helloscale"+suffix,
+            "/boot_scale"+suffix,
+            "/scale_set_amp"+suffix+"~/scale_set_MINFREQ"+suffix+"~/scale_set_MAXFREQ"+suffix,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f,0.3f,0.2f,100f,8000f,200f,100f,8000f,4000f});
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     private QuicksortElement[] elements;

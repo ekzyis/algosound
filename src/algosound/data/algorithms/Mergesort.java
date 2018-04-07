@@ -26,6 +26,7 @@ import static processing.core.PApplet.subset;
  */
 public class Mergesort extends SortingThread {
 
+    private static final String suffix = "_MERGESORT";
     // Variables to pass mergesort() to determine mode.
     final static byte NATIVE = 1;
     final static byte THREAD = 2;
@@ -34,10 +35,32 @@ public class Mergesort extends SortingThread {
     private ArrayList<MergesortElement> unmarkMe;
 
     // Sonification variants for MERGESORT.
-    private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_MERGESORT", "/wave_pause_MERGESORT", "/wave_resume_MERGESORT", "/wave_set_MERGESORT",
-            "/wave_free_MERGESORT", "/hellowave_MERGESORT", "/boot_wave_MERGESORT");
-    private static final Sonification SCALE = new Sonification("SCALE","/scale_start_MERGESORT", "", "", "/scale_play_MERGESORT", "", "/helloscale_MERGESORT",
-            "/boot_scale_MERGESORT");
+    private static final Sonification WAVE = new Sonification(
+            "WAVE",
+            "/wave_start"+suffix,
+            "/wave_pause"+suffix,
+            "/wave_resume"+suffix,
+            "/wave_set"+suffix,
+            "/wave_free"+suffix,
+            "/hellowave"+suffix,
+            "/boot_wave"+suffix,
+            "wave_set_amp"+suffix+"~/wave_set_freqlag"+suffix+"~/wave_set_amplag"+suffix,
+            "AMP~FREQLAG~AMPLAG",
+            new float[]{0f,3f,0.2f,
+                    0f,2f,0.1f,
+                    0f,5f,0.1f});
+    private static final Sonification SCALE = new Sonification(
+            "SCALE",
+            "/scale_start"+suffix,
+            "",
+            "",
+            "/scale_play"+suffix,
+            "",
+            "/helloscale"+suffix,
+            "/boot_scale"+suffix,
+            "/scale_set_amp"+suffix+"~/scale_set_MINFREQ"+suffix+"~/scale_set_MAXFREQ"+suffix,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f,0.3f,0.2f,100f,8000f,200f,100f,8000f,4000f});
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     // Keep track of stack of the cut indizes while sorting for proper visualization.

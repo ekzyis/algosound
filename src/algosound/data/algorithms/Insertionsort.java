@@ -26,10 +26,10 @@ public class Insertionsort extends SortingThread {
             "/wave_star"+suffix,
             "/wave_pause"+suffix,
             "/wave_resume"+suffix,
-            "/wave_set"+suffix   ,
-            "/wave_free"+suffix   ,
-            "/hellowave"+suffix   ,
-            "/boot_wave"+suffix   ,
+            "/wave_set"+suffix,
+            "/wave_free"+suffix,
+            "/hellowave"+suffix,
+            "/boot_wave"+suffix,
             "wave_set_amp"+suffix+"~/wave_set_freqlag"+suffix+"~/wave_set_amplag"+suffix+"~/pulse_set_freq"+suffix+"~/pulse_set_amp"+suffix,
             "AMP~FREQLAG~AMPLAG~PULSEFREQ~PULSEAMP",
             new float[]{0f,3f,0.2f,
@@ -39,13 +39,16 @@ public class Insertionsort extends SortingThread {
                     0f,1f,0.2f,});
     private static final Sonification SCALE = new Sonification(
             "SCALE",
-            "/scale_start"+suffix   ,
+            "/scale_start"+suffix,
             "",
             "",
-            "/scale_play"+suffix   ,
+            "/scale_play"+suffix,
             "",
-            "/helloscale"+suffix   ,
-            "/boot_scale"+suffix);
+            "/helloscale"+suffix,
+            "/boot_scale"+suffix,
+            "/scale_set_amp"+suffix+"~/scale_set_MINFREQ"+suffix+"~/scale_set_MAXFREQ"+suffix,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f,0.3f,0.2f,100f,8000f,200f,100f,8000f,4000f});
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Insertionsort(int N) {
