@@ -63,6 +63,7 @@ public class Sonification {
         if(DEFAULTVALUES == null)
         {
             System.err.println("CAN NOT INITIALIZE SOUND PANEL: DEFAULT VALUES NULL");
+            return 1;
         }
         int XINSET, YINSET;
         if(STYLE==0) {

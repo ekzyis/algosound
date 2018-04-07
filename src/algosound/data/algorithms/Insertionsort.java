@@ -19,11 +19,33 @@ import static algosound.util.AlgosoundUtil.expmap;
  */
 public class Insertionsort extends SortingThread {
 
+    private static final String suffix = "_INSERTIONSORT";
     // Sonification variants for insertionsort.
-    private static final Sonification WAVE = new Sonification("WAVE", "/wave_start_INSERTIONSORT", "/wave_pause_INSERTIONSORT", "/wave_resume_INSERTIONSORT", "/wave_set_INSERTIONSORT",
-            "/wave_free_INSERTIONSORT", "/hellowave_INSERTIONSORT", "/boot_wave_INSERTIONSORT");
-    private static final Sonification SCALE = new Sonification("SCALE","/scale_start_INSERTIONSORT", "", "", "/scale_play_INSERTIONSORT", "", "/helloscale_INSERTIONSORT",
-            "/boot_scale_INSERTIONSORT");
+    private static final Sonification WAVE = new Sonification(
+            "WAVE",
+            "/wave_star"+suffix,
+            "/wave_pause"+suffix,
+            "/wave_resume"+suffix,
+            "/wave_set"+suffix   ,
+            "/wave_free"+suffix   ,
+            "/hellowave"+suffix   ,
+            "/boot_wave"+suffix   ,
+            "wave_set_amp"+suffix+"~/wave_set_freqlag"+suffix+"~/wave_set_amplag"+suffix+"~/pulse_set_freq"+suffix+"~/pulse_set_amp"+suffix,
+            "AMP~FREQLAG~AMPLAG~PULSEFREQ~PULSEAMP",
+            new float[]{0f,3f,0.2f,
+                    0f,2f,0.1f,
+                    0f,5f,0.1f,
+                    1f,100f,10f,
+                    0f,1f,0.2f,});
+    private static final Sonification SCALE = new Sonification(
+            "SCALE",
+            "/scale_start"+suffix   ,
+            "",
+            "",
+            "/scale_play"+suffix   ,
+            "",
+            "/helloscale"+suffix   ,
+            "/boot_scale"+suffix);
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Insertionsort(int N) {

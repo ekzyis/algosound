@@ -133,10 +133,13 @@ public class Algosound extends PApplet {
             SONI.setLabel(sort.getSelectedSonification().NAME);
         }
         else if (c == ALGO && !sort.isAlive()) {
+            sort.getSelectedSonification().clearSoundPanel(cp5);
             AlgosoundUtil.changeAlgorithm();
             sort = SELECTED_ALGORITHM.getInstance();
             // Also update the label of the sonification button
             SONI.setLabel(sort.getSelectedSonification().NAME);
+            // Init sound panel
+            sort.getSelectedSonification().initSoundPanel(cp5);
         }
         else if(c == SPEED) {
             // Only change framerate of sorting! Don't change framerate of actual redrawing.
