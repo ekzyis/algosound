@@ -49,8 +49,8 @@ public class Algosound extends PApplet {
     public void initGUI() {
         // Initialize the graphical user interface.
         cp5 = new ControlP5(this);// Create the y-coordinates for the buttons and save them in an array.
-        Button.autoWidth = 50;
-        Button.autoHeight = 20;
+        Button.autoWidth = 65;
+        Button.autoHeight = 25;
         int yInset = 10;
         int len = (int) ((AlgosoundUtil.H + INFO_H) / (yInset + Button.autoHeight));
         int[] yPos = new int[len];
@@ -70,7 +70,7 @@ public class Algosound extends PApplet {
         SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(sort.getSelectedSonification().NAME);
         ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
         // Initialize the controller for algorithm speed.
-        SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(50).setRange(1f,1000f).setValue(FRAMERATE);
+        SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(45).setRange(1f,1000f).setValue(FRAMERATE);
 
         // Init the sound panel of selected sonification
         SELECTED_ALGORITHM.getInstance().getSelectedSonification().initSoundPanel(cp5);

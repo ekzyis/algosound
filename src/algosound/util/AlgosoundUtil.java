@@ -16,11 +16,11 @@ public class AlgosoundUtil {
     // Number of elements to be sorted.
     public static final int N = W / 5;
     // Width of GUI area.
-    public static final int GUI_W = 70;
+    public static final int GUI_W = 80;
     // Height of Info area.
     public static final int INFO_H = 35;
     // Width of sound control area.
-    public static final int SOUNDCONTROL_W = 120;
+    public static final int SOUNDCONTROL_W = 130;
     // Size of knob
     public static final int KNOBSIZE = 20;
     // Width and height of sliders
