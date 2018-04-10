@@ -16,8 +16,8 @@ import static algosound.util.AlgosoundUtil.ALGORITHMFPS;
 import static algosound.util.AlgosoundUtil.N;
 
 /**
- * Abstract class for all sorting algorithms. They are all implemented as
- * threads.
+ * Abstract class for all sorting algorithms.
+ * - type of visual: Element
  * ================================
  *
  * @author ekzyis
