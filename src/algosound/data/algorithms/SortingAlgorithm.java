@@ -11,6 +11,7 @@ import algosound.net.OSC;
 import algosound.ui.Algosound;
 
 import static algosound.util.AlgosoundUtil.ALGORITHMFPS;
+import static algosound.util.AlgosoundUtil.N;
 
 /**
  * Abstract class for all sorting algorithms. They are all implemented as
@@ -20,7 +21,7 @@ import static algosound.util.AlgosoundUtil.ALGORITHMFPS;
  * @author ekzyis
  * @date 17/02/2018
  */
-public abstract class SortingAlgorithm extends Thread {
+public abstract class SortingAlgorithm extends Thread implements AnimatedAlgorithm{
     // Name of sorting algorithm to display in info area.
     protected String name;
     // Array which should be sorted.
@@ -76,7 +77,7 @@ public abstract class SortingAlgorithm extends Thread {
     }
 
     // Notify thread waiting for lock that new frame is ready.
-    protected void notifyFrameReady() {
+    public void notifyFrameReady() {
         frameReady = true;
         this.notify();
         /**
@@ -201,7 +202,7 @@ public abstract class SortingAlgorithm extends Thread {
     }
 
     // Return elements.
-    public Element[] getElements() {
+    public Element[] getVisuals() {
         return elements;
     }
 

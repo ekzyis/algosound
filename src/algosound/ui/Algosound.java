@@ -1,5 +1,6 @@
 package algosound.ui;
 
+import algosound.data.Visual;
 import algosound.net.OSCKnob;
 import algosound.data.algorithms.SortingAlgorithm;
 import algosound.data.Element;
@@ -178,8 +179,8 @@ public class Algosound extends PApplet {
                 }
             }
             translate(0, INFO_H);
-            for (Element e : sort.getElements()) {
-                e.show();
+            for (Visual v : sort.getVisuals()) {
+                v.show();
             }
             translate(0, -INFO_H);
             drawInfo();

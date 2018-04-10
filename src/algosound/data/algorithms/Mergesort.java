@@ -541,7 +541,7 @@ public class Mergesort extends SortingAlgorithm {
     }
 
     @Override
-    public MergesortElement[] getElements() {
+    public MergesortElement[] getVisuals() {
         return elements;
     }
 }

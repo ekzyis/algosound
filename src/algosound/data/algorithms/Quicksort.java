@@ -249,7 +249,7 @@ public class Quicksort extends SortingAlgorithm {
     }
 
     @Override
-    public QuicksortElement[] getElements() {
+    public QuicksortElement[] getVisuals() {
         return elements;
     }
 }

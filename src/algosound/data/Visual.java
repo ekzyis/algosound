@@ -19,7 +19,7 @@ public abstract class Visual {
         inst = _inst;
     }
 
-    abstract void show();
+    public abstract void show();
 
     public int getX() {
         return x;
