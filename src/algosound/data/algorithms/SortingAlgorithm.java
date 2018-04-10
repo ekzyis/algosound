@@ -11,7 +11,6 @@ import algosound.net.OSC;
 import algosound.ui.Algosound;
 
 import static algosound.util.AlgosoundUtil.ALGORITHMFPS;
-import static algosound.util.AlgosoundUtil.FRAMERATE;
 
 /**
  * Abstract class for all sorting algorithms. They are all implemented as
@@ -21,7 +20,7 @@ import static algosound.util.AlgosoundUtil.FRAMERATE;
  * @author ekzyis
  * @date 17/02/2018
  */
-public abstract class SortingThread extends Thread {
+public abstract class SortingAlgorithm extends Thread {
     // Name of sorting algorithm to display in info area.
     protected String name;
     // Array which should be sorted.
@@ -47,7 +46,7 @@ public abstract class SortingThread extends Thread {
     // Selected sonification
     protected Sonification selected_sonification;
 
-    public SortingThread(int N) {
+    public SortingAlgorithm(int N) {
         name = "abstract";
         elements = Element.createElements(N, Algosound.getInstance());
         a = Element.getValues(elements);
@@ -142,7 +141,7 @@ public abstract class SortingThread extends Thread {
         if(ALGORITHMFPS>0) {
             double delay = (1/ALGORITHMFPS) * 1000;
             Timer t = new Timer();
-            SortingThread inst = this;
+            SortingAlgorithm inst = this;
             // System.out.println("--- sort: delay = "+delay);
             waitDueToFPS = true;
             t.schedule(new TimerTask() {

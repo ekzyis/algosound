@@ -19,8 +19,8 @@ public enum Algorithm {
     MERGESORT(new Mergesort(N)),
     QUICKSORT(new Quicksort(N));
 
-    private SortingThread sort;
-    Algorithm(SortingThread sort) {
+    private SortingAlgorithm sort;
+    Algorithm(SortingAlgorithm sort) {
         this.sort  = sort;
     }
 
@@ -28,13 +28,13 @@ public enum Algorithm {
      * Creates a new instance of the sorting thread and returns it.
      * @return new sorting thread instance
      */
-    public SortingThread getNewInstance() {
+    public SortingAlgorithm getNewInstance() {
         // Create a new instance.
         /**
          * We need to get the correct constructor first
          * since we don't use the default constructor
          */
-        Constructor<? extends SortingThread> constructor = null;
+        Constructor<? extends SortingAlgorithm> constructor = null;
         try {
             constructor = (sort.getClass()).getConstructor(int.class);
         } catch (NoSuchMethodException e) {
@@ -56,7 +56,7 @@ public enum Algorithm {
      *
      * @return current instance of sorting thread
      */
-    public SortingThread getInstance() {
+    public SortingAlgorithm getInstance() {
         return sort;
     }
 }

@@ -4,11 +4,6 @@ import algosound.data.Sonification;
 import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import static processing.core.PApplet.map;
 
 /**
@@ -19,7 +14,7 @@ import static processing.core.PApplet.map;
  * @author ekzyis
  * @date 17/02/2018
  */
-public class Bubblesort extends SortingThread {
+public class Bubblesort extends SortingAlgorithm {
 
     // Sonification variants for bubblesort.
     private static final String suffix = "_BUBBLESORT";

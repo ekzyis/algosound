@@ -24,7 +24,7 @@ import static processing.core.PApplet.subset;
  * @author ekzyis
  * @date 08/03/2018
  */
-public class Mergesort extends SortingThread {
+public class Mergesort extends SortingAlgorithm {
 
     private static final String suffix = "_MERGESORT";
     // Variables to pass mergesort() to determine mode.

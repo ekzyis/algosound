@@ -17,7 +17,7 @@ import static algosound.util.AlgosoundUtil.expmap;
  * @author ekzyis
  * @date 04/03/2018
  */
-public class Insertionsort extends SortingThread {
+public class Insertionsort extends SortingAlgorithm {
 
     private static final String suffix = "_INSERTIONSORT";
     // Sonification variants for insertionsort.

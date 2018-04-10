@@ -16,7 +16,7 @@ import static processing.core.PApplet.map;
  * @author ekzyis
  * @date 08/03/2018
  */
-public class Selectionsort extends SortingThread {
+public class Selectionsort extends SortingAlgorithm {
 
     private static final String suffix = "_SELECTIONSORT";
     // Sonification variants for selectionsort.

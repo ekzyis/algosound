@@ -21,7 +21,7 @@ import static processing.core.PApplet.subset;
  * @author ekzyis
  * @date 08/03/2018
  */
-public class Quicksort extends SortingThread {
+public class Quicksort extends SortingAlgorithm {
 
     private static final String suffix = "_QUICKSORT";
     // Sonification variants for quicksort.

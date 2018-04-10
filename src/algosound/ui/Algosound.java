@@ -1,7 +1,7 @@
 package algosound.ui;
 
 import algosound.net.OSCKnob;
-import algosound.data.algorithms.SortingThread;
+import algosound.data.algorithms.SortingAlgorithm;
 import algosound.data.Element;
 import algosound.net.OSC;
 import algosound.net.OSCSlider;
@@ -23,7 +23,7 @@ import static algosound.util.AlgosoundUtil.*;
 public class Algosound extends PApplet {
 
     private static Algosound instance;
-    private SortingThread sort;
+    private SortingAlgorithm sort;
     // `GUI`-instance
     private ControlP5 cp5;
     private Button START;
@@ -231,7 +231,7 @@ public class Algosound extends PApplet {
 
     }
 
-   public SortingThread getSortingThread() {
+   public SortingAlgorithm getSortingThread() {
         return sort;
    }
 
