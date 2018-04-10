@@ -52,25 +52,26 @@ OSCdef(\boot_wave_OSC_BUBBLESORT, {
 
 // Define listener for start of algowave-synth.
 OSCdef(\start_wave_OSC_BUBBLESORT, {
-	"creating algowave".postln;
+	"\\start_wave_OSC_BUBBLESORT".postln;
 	~algowave = Synth(\algowave_wave_BUBBLESORT);
 }, "/wave_start_BUBBLESORT");
 
 // Define listener for pausing of algowave-synth.
 OSCdef(\pause_wave_OSC_BUBBLESORT, {
-	"pausing algowave.".postln;
+	"\\pause_wave_OSC_BUBBLESORT".postln;
 	~algowave.set(\amptotal, 0);
 }, "/wave_pause_BUBBLESORT");
 
 // Define listener for resuming of algowave-synth.
 OSCdef(\resume_wave_OSC_BUBBLESORT, {
-	"resuming algowave.".postln;
+	"\\resume_wave_OSC_BUBBLESORT".postln;
 	~algowave.set(\amptotal, ~amp);
 }, "/wave_resume_BUBBLESORT");
 
 // Define listener for modifying.
 OSCdef(\mod_wave_OSC_BUBBLESORT, {
 	arg msg;
+	"\\mod_wave_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~algowave.set(\freq, msg[1]);
 	~algowave.set(\amptotal, ~amp);
 }, "/wave_set_BUBBLESORT");
@@ -78,18 +79,20 @@ OSCdef(\mod_wave_OSC_BUBBLESORT, {
 // Realtime modulating of synths
 OSCdef(\mod_wave_freqlag_OSC_BUBBLESORT, {
 	arg msg;
-	"mod freqlag".postln;
+	"\\mod_wave_freqlag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~algowave.set(\freqlag, msg[1]);
 }, "/wave_set_freqlag_BUBBLESORT");
 
 ~amp = 1;
 OSCdef(\mod_wave_amp_OSC_BUBBLESORT, {
 	arg msg;
+	"\\mod_wave_amp_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~amp = msg[1];
 }, "/wave_set_amp_BUBBLESORT");
 
 OSCdef(\mod_wave_amplag_OSC_BUBBLESORT, {
 	arg msg;
+	"\\mod_wave_amplag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~algowave.set(\amplag, msg[1]);
 }, "/wave_set_amplag_BUBBLESORT");
 /**
@@ -104,7 +107,7 @@ OSCdef(\mod_wave_amplag_OSC_BUBBLESORT, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\free_wave_OSC_BUBBLESORT, {
-	"freeing algowave.".postln;
+	"\\free_wave_OSC_BUBBLESORT".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
 }, "/wave_free_BUBBLESORT");

@@ -48,7 +48,7 @@ SynthDef(\default_midifade_scale_BUBBLESORT, {
 
 // Define listener for boot sound.
 OSCdef(\boot_scale_OSC_BUBBLESORT, {
-	"playing boot sound.".postln;
+	"\\boot_scale_OSC_BUBBLESORT".postln;
 	// Play boot sound
 	Synth(\boot_scale_BUBBLESORT);
 }, "/boot_scale_BUBBLESORT");
@@ -71,14 +71,13 @@ OSCdef(\boot_scale_OSC_BUBBLESORT, {
 	min_midi = min_freq.cpsmidi.round(2);
 	// Calculate amount of scales with 12 steps per octave.
 	d = ((max_freq.cpsmidi.round - min_midi)/12).round;
-	d.postln;
 	(d+1).do{
 		|i|
 		~scales = ~scales ++ (Scale.minor.degrees+(min_midi+(12*i)));
 	};
 	~minfreq = min_freq;
 	~maxfreq = max_freq;
-	"scales=".post;~scales.postln;
+	"~initscale: scales=".post;~scales.postln;
 
 	/**
 	 * Generate a random sequence of duration times.
@@ -92,24 +91,27 @@ OSCdef(\boot_scale_OSC_BUBBLESORT, {
 	"durations=".post;~durations.postln;*/
 };
 
-OSCdef(\start_scale_OSC_BUBBLESORT, ~initscale, "/scale_start_BUBBLESORT");
+OSCdef(\start_scale_OSC_BUBBLESORT, {
+	"\\start_scale_OSC_BUBBLESORT".postln;
+	~initscale;
+}, "/scale_start_BUBBLESORT");
 
 OSCdef(\mod_scale_MAXFREQ_OSC_BUBBLESORT, {
 	arg msg;
-	"/scale_set_MAXFREQ".postln;
+	"\\mod_scale_MAXFREQ_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
 }, "/scale_set_MAXFREQ_BUBBLESORT");
 
 OSCdef(\mod_scale_MINFREQ_OSC_BUBBLESORT, {
 	arg msg;
-	"/scale_set_MINFREQ".postln;
+	"\\mod_scale_MINFREQ_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
 }, "/scale_set_MINFREQ_BUBBLESORT");
 
 ~amp = 0.1;
 OSCdef(\mod_scale_amp_OSC_BUBBLESORT, {
 	arg msg;
-	"/scale_set_amp".postln;
+	"\\mod_scale_amp_OSC_BUBBLESORT - arguments: [";msg[1].post;"]".postln;
 	~amp = msg[1];
 }, "/scale_set_amp_BUBBLESORT");
 
@@ -122,7 +124,7 @@ OSCdef(\midiplay_scale_OSC_BUBBLESORT, {
 		{ midi = (msg[1].cpsmidi.round)-1 },
 		{ midi = ~scales.at(i); },
 	);
-	"playing midi-note ".post;midi.postln;
+	"\\midiplay_scale_OSC_BUBBLESORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
 	Synth(\midisine_scale_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
 }, "/scale_play_BUBBLESORT");
 
