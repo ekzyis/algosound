@@ -1,62 +1,52 @@
 package algosound.data.algorithms;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import static algosound.util.AlgosoundUtil.N;
+import algosound.data.Sonification;
+import algosound.data.Visual;
 
 /**
- * Algorithms. This file wraps the algorithms into enums to easily refer to them.
+ * Interface for algorithms.
+ * All implementation of algorithms have to implement this interface to guarantee they can be visualized and listened to.
  * ================================
  *
  * @author ekzyis
- * @date 04/03/2018
+ * @date 10/04/2018
  */
-public enum Algorithm {
-    BUBBLESORT(new Bubblesort(N)),
-    INSERTIONSORT(new Insertionsort(N)),
-    SELECTIONSORT(new Selectionsort(N)),
-    MERGESORT(new Mergesort(N)),
-    QUICKSORT(new Quicksort(N));
+public interface Algorithm {
+    // Name of algorithm
+    String getString();
+    // Start the algorithm
+    void start();
+    // Is frame ready for drawing?
+    boolean frameIsReady();
+    // Has frame been drawn?
+    boolean frameIsDrawn();
+    // Notify animation thread that frame is ready.
+    void notifyFrameReady();
+    // Get notified that frame has been drawn.
+    void notifyFrameDraw();
+    // Is algorithm currently paused?
+    boolean isPaused();
+    // Pause the algorithm.
+    void pause();
+    // Resume the algorithm
+    void resumeAlgorithm();
+    // Should algorithm exit?
+    boolean isExiting();
+    // Start exit sequence.
+    void exit();
+    // Should algorithm wait due to fps reasons?
+    boolean isWaitingDueToFPS();
+    // Get the elements for drawing.
+    Visual[] getVisuals();
+    // Reinitialize algorithm.
+    Algorithm reset();
+    // Return selected sonification.
+    Sonification getSelectedSonification();
+    // Change sonification
+    void changeSonification();
+    // Is thread alive?
+    boolean isAlive();
+    // Wait for thread to die.
+    void join() throws InterruptedException;
 
-    private SortingAlgorithm sort;
-    Algorithm(SortingAlgorithm sort) {
-        this.sort  = sort;
-    }
-
-    /**
-     * Creates a new instance of the sorting thread and returns it.
-     * @return new sorting thread instance
-     */
-    public SortingAlgorithm getNewInstance() {
-        // Create a new instance.
-        /**
-         * We need to get the correct constructor first
-         * since we don't use the default constructor
-         */
-        Constructor<? extends SortingAlgorithm> constructor = null;
-        try {
-            constructor = (sort.getClass()).getConstructor(int.class);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        try {
-            // Save current selected sonification index.
-            int index = sort.getIndex();
-            sort = constructor.newInstance(N);
-            // Reset to previously selected sonification.
-            sort.setSonification(index);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return sort;
-    }
-
-    /**
-     *
-     * @return current instance of sorting thread
-     */
-    public SortingAlgorithm getInstance() {
-        return sort;
-    }
 }

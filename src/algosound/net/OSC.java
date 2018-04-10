@@ -47,7 +47,7 @@ public class OSC extends PApplet {
         SUPERCOLLIDER = new NetAddress("127.0.0.1", SC_PORT);
         connected = false;
         // Send boot message.
-        sendMessage(Algosound.getInstance().getSortingThread().getSelectedSonification().BOOTPATH);
+        sendMessage(Algosound.getInstance().getAlgorithm().getSelectedSonification().BOOTPATH);
         // Start a thread which periodically checks if sc3-server is still running.
         status = new Thread() {
             @Override
@@ -62,7 +62,7 @@ public class OSC extends PApplet {
                      * variable could work, but would be messy?)
                      */
                     connected = false;
-                    sendMessage(Algosound.getInstance().getSortingThread().getSelectedSonification().STATUSPATH);
+                    sendMessage(Algosound.getInstance().getAlgorithm().getSelectedSonification().STATUSPATH);
                     try {
                         sleep(1000);
                     } catch (InterruptedException e) {

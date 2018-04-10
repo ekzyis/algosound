@@ -1,6 +1,7 @@
 package algosound.util;
 
 import algosound.data.algorithms.Algorithm;
+import algosound.data.algorithms.SortingAlgorithm;
 import processing.core.PApplet;
 
 /**
@@ -33,9 +34,9 @@ public class AlgosoundUtil {
     // Framerate of sorting.
     public static float ALGORITHMFPS = FRAMERATE;
     // List of available algorithms.
-    private static final Algorithm[] ALGORITHMS = {Algorithm.BUBBLESORT, Algorithm.INSERTIONSORT, Algorithm.SELECTIONSORT, Algorithm.MERGESORT, Algorithm.QUICKSORT};
+    private static final Algorithm[] ALGORITHMS = {SortingAlgorithm.BUBBLESORT, SortingAlgorithm.INSERTIONSORT, SortingAlgorithm.SELECTIONSORT, SortingAlgorithm.MERGESORT, SortingAlgorithm.QUICKSORT};
     // Selected algorithm
-    public static Algorithm SELECTED_ALGORITHM = Algorithm.BUBBLESORT;
+    public static Algorithm SELECTED_ALGORITHM = SortingAlgorithm.BUBBLESORT;
     private static int algo_index = 0;
 
     /**

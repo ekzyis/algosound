@@ -1,5 +1,7 @@
 package algosound.data.algorithms;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -21,7 +23,12 @@ import static algosound.util.AlgosoundUtil.N;
  * @author ekzyis
  * @date 17/02/2018
  */
-public abstract class SortingAlgorithm extends Thread implements AnimatedAlgorithm{
+public abstract class SortingAlgorithm extends Thread implements Algorithm {
+    public final static SortingAlgorithm BUBBLESORT = new Bubblesort(N);
+    public final static SortingAlgorithm INSERTIONSORT = new Insertionsort(N);
+    public final static SortingAlgorithm SELECTIONSORT = new Selectionsort(N);
+    public final static SortingAlgorithm MERGESORT = new Mergesort(N);
+    public final static SortingAlgorithm QUICKSORT = new Quicksort(N);
     // Name of sorting algorithm to display in info area.
     protected String name;
     // Array which should be sorted.
@@ -176,7 +183,7 @@ public abstract class SortingAlgorithm extends Thread implements AnimatedAlgorit
         }
     }
 
-    public void unpause() {
+    public void resumeAlgorithm() {
         this.paused = false;
         // Notify thread since it should no longer be paused.
         synchronized (this) {
@@ -252,5 +259,35 @@ public abstract class SortingAlgorithm extends Thread implements AnimatedAlgorit
 
     public int getIndex() {
         return index;
+    }
+
+    /**
+     * Reset the sorting process. Create a new random array. Maintain selected sonification.
+     *
+     * @return a instance which has been reset
+     */
+    public SortingAlgorithm reset() {
+        // Save current selected sonification index.
+        int index = this.getIndex();
+        /**
+         * We need to get the concrete constructor first
+         * since we can't use the abstract constructor.
+         */
+        Constructor<? extends SortingAlgorithm> constructor = null;
+        try {
+            constructor = this.getClass().getConstructor(int.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        System.out.println(constructor);
+        SortingAlgorithm sort;
+        try {
+            sort = constructor.newInstance(N);
+            sort.setSonification(index);
+            return sort;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

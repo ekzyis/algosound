@@ -1,9 +1,8 @@
 package algosound.ui;
 
 import algosound.data.Visual;
+import algosound.data.algorithms.Algorithm;
 import algosound.net.OSCKnob;
-import algosound.data.algorithms.SortingAlgorithm;
-import algosound.data.Element;
 import algosound.net.OSC;
 import algosound.net.OSCSlider;
 import algosound.util.AlgosoundUtil;
@@ -24,7 +23,7 @@ import static algosound.util.AlgosoundUtil.*;
 public class Algosound extends PApplet {
 
     private static Algosound instance;
-    private SortingAlgorithm sort;
+    private Algorithm sort;
     // `GUI`-instance
     private ControlP5 cp5;
     private Button START;
@@ -42,7 +41,7 @@ public class Algosound extends PApplet {
     @Override
     public void setup() {
         frameRate(AlgosoundUtil.FRAMERATE);
-        sort = AlgosoundUtil.SELECTED_ALGORITHM.getInstance();
+        sort = AlgosoundUtil.SELECTED_ALGORITHM;
         initGUI();
         Algosound.getInstance().getSurface().setResizable(true);
     }
@@ -74,7 +73,7 @@ public class Algosound extends PApplet {
         SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(45).setRange(1f,1000f).setValue(FRAMERATE);
 
         // Init the sound panel of selected sonification
-        SELECTED_ALGORITHM.getInstance().getSelectedSonification().initSoundPanel(cp5);
+        SELECTED_ALGORITHM.getSelectedSonification().initSoundPanel(cp5);
     }
 
     /**
@@ -86,36 +85,40 @@ public class Algosound extends PApplet {
         if (c == START) {
             String currentLabel = c.getLabel();
             // Do action corresponding to current label.
-            if (currentLabel.equals("Start")) {
-                /**
-                 * Did thread already start? If not, start it. (Execution never reaches this
-                 * statement when it would be false since the label will never be again "Start"
-                 * so it's actually unnecessary.)
-                 */
-                if (!sort.isAlive()) {
-                    // println("---starting audio");
-                    sort.start();
-                    // Lock selected sonification.
-                    SONI.lock();
-                    // Lock selected algorithm.
-                    ALGO.lock();
-                }
-                c.setLabel("Pause");
-            } else if (currentLabel.equals("Pause")) {
-                // println("---pause audio");
-                sort.pause();
-                c.setLabel("Resume");
-            } else if (currentLabel.equals("Resume")) {
-                // println("---resume audio");
-                sort.unpause();
-                c.setLabel("Pause");
+            switch (currentLabel) {
+                case "Start":
+                    /**
+                     * Did thread already start? If not, start it. (Execution never reaches this
+                     * statement when it would be false since the label will never be again "Start"
+                     * so it's actually unnecessary.)
+                     */
+                    if (!sort.isAlive()) {
+                        // println("---starting audio");
+                        sort.start();
+                        // Lock selected sonification.
+                        SONI.lock();
+                        // Lock selected algorithm.
+                        ALGO.lock();
+                    }
+                    c.setLabel("Pause");
+                    break;
+                case "Pause":
+                    // println("---pause audio");
+                    sort.pause();
+                    c.setLabel("Resume");
+                    break;
+                case "Resume":
+                    // println("---resume audio");
+                    sort.resumeAlgorithm();
+                    c.setLabel("Pause");
+                    break;
             }
             // ### RESET
         } else if (c == RESET) {
             START.setLabel("Start");
             System.out.println("--- sort: reset");
             OSC.getInstance().sendMessage(sort.getSelectedSonification().FREEPATH);
-            sort = SELECTED_ALGORITHM.getNewInstance();
+            sort = sort.reset();
             // Unlock selection of sonifications.
             SONI.unlock();
             // Unlock selection of algorithms.
@@ -136,7 +139,7 @@ public class Algosound extends PApplet {
         else if (c == ALGO && !sort.isAlive()) {
             sort.getSelectedSonification().clearSoundPanel(cp5);
             AlgosoundUtil.changeAlgorithm();
-            sort = SELECTED_ALGORITHM.getInstance();
+            sort = SELECTED_ALGORITHM;
             // Also update the label of the sonification button
             SONI.setLabel(sort.getSelectedSonification().NAME);
             // Init sound panel
@@ -184,7 +187,6 @@ public class Algosound extends PApplet {
             }
             translate(0, -INFO_H);
             drawInfo();
-            drawSoundPanel();
             /**
              * Notify sort thread that frame has been drawn.
              */
@@ -227,12 +229,7 @@ public class Algosound extends PApplet {
         stroke(0);
     }
 
-    private void drawSoundPanel()
-    {
-
-    }
-
-   public SortingAlgorithm getSortingThread() {
+   public Algorithm getAlgorithm() {
         return sort;
    }
 
