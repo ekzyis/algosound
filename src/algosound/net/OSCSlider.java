@@ -22,6 +22,6 @@ public class OSCSlider extends Slider implements OSCInterface {
     @Override
     public void send() {
         float[] args = {super.getValue()};
-        OSC.getInstance().sendMessage(OSCPATH, args );
+        OSC.getInstance().sendMessage(OSCPATH, args);
     }
 }

@@ -21,9 +21,9 @@ public class QuicksortElement extends Element {
     // With what color is this element marked? (If it is.)
     private Color markedColor;
     // Marking color for subsets
-    private Color subsetColor = new Color(0,0,255,50);
+    private Color subsetColor = new Color(0, 0, 255, 50);
     // Marking color for merging elements
-    private Color swapColor = new Color(0,255,0,75);
+    private Color swapColor = new Color(0, 255, 0, 75);
 
     // Is this element in a subset currently marked by quicksort?
     private boolean inSubset;
@@ -39,43 +39,38 @@ public class QuicksortElement extends Element {
     @Override
     public void show() {
         int realHeight = AlgosoundUtil.H;
-        if(inSubset == true)
-        {
+        if (inSubset == true) {
             // blueish transparent background
             inst.noStroke();
             fill(subsetColor);
-            inst.rect(x,0,w,realHeight);
+            inst.rect(x, 0, w, realHeight);
             inst.stroke(0);
-        }
-        else if(swapping == true)
-        {
+        } else if (swapping == true) {
             // greenish transparent background
             inst.noStroke();
             fill(swapColor);
-            inst.rect(x,0,w,realHeight);
+            inst.rect(x, 0, w, realHeight);
             inst.stroke(0);
         }
-        if(sorted == true)
-        {
+        if (sorted == true) {
             // green transparent background
-            fill(new Color(0,255,0,50));
+            fill(new Color(0, 255, 0, 50));
             inst.noStroke();
-            inst.rect(x,0,w,realHeight);
+            inst.rect(x, 0, w, realHeight);
             inst.stroke(0);
         }
-        if(marked == true)
-        {
+        if (marked == true) {
             // red vertical line
             fill(markedColor);
             inst.noStroke();
             inst.rectMode(CENTER);
-            PVector center = new PVector(x+w/2,(AlgosoundUtil.H-h)/2);
-            inst.rect(center.x,center.y,1,AlgosoundUtil.H-h);
+            PVector center = new PVector(x + w / 2, (AlgosoundUtil.H - h) / 2);
+            inst.rect(center.x, center.y, 1, AlgosoundUtil.H - h);
             inst.rectMode(CORNER);
             inst.stroke(0);
         }
         fill(c);
-        inst.rect(x,y,w,-h);
+        inst.rect(x, y, w, -h);
     }
 
     /**
@@ -87,7 +82,7 @@ public class QuicksortElement extends Element {
      */
     public static QuicksortElement[] createElements(int n, PApplet sketch) {
         QuicksortElement[] elements = new QuicksortElement[n];
-        int elementwidth = AlgosoundUtil.W/n;
+        int elementwidth = AlgosoundUtil.W / n;
         Color[] c = new Color[]{
                 new Color(255, 50, 50),
                 new Color(50, 255, 50),
@@ -97,39 +92,34 @@ public class QuicksortElement extends Element {
         int xd = 0;
         // color array offset
         int cd = 0;
-        for(int i=0;i<elements.length;++i)
-        {
-            int value = (int)(Math.random()*AlgosoundUtil.H);
-            elements[i] = new QuicksortElement(xd,AlgosoundUtil.H,elementwidth,value,sketch, c[cd]);
+        for (int i = 0; i < elements.length; ++i) {
+            int value = (int) (Math.random() * AlgosoundUtil.H);
+            elements[i] = new QuicksortElement(xd, AlgosoundUtil.H, elementwidth, value, sketch, c[cd]);
             xd += elementwidth;
             cd++;
-            if(cd==c.length) cd = 0;
+            if (cd == c.length) cd = 0;
         }
         return elements;
     }
 
     // Set this element's state as sorted.
-    public void setSorted(boolean set)
-    {
+    public void setSorted(boolean set) {
         this.sorted = set;
     }
 
     // Set this element's state as in a subset.
-    public void setInSubset(boolean set)
-    {
+    public void setInSubset(boolean set) {
         this.inSubset = set;
     }
 
     // Set this element as marked.
-    public void mark(Color c)
-    {
+    public void mark(Color c) {
         this.marked = true;
         this.markedColor = c;
     }
 
     // Mark element as swapping.
-    public void setSwapping(boolean set)
-    {
+    public void setSwapping(boolean set) {
         this.swapping = set;
     }
 }

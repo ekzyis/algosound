@@ -1,16 +1,16 @@
 package algosound.data.algorithms;
 
+import algosound.data.Element;
+import algosound.data.Sonification;
+import algosound.net.OSC;
+import algosound.ui.Algosound;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import algosound.data.Element;
-import algosound.data.Sonification;
-import algosound.net.OSC;
-import algosound.ui.Algosound;
 
 import static algosound.util.AlgosoundUtil.ALGORITHMFPS;
 import static algosound.util.AlgosoundUtil.N;
@@ -104,7 +104,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
          * Check if this frame the user did press the pause button. If yes and thread is
          * not exiting, the thread will pause until the user wants to resume.
          */
-        if(isPaused() && !isExiting()) {
+        if (isPaused() && !isExiting()) {
             System.out.println("--- sort: pausing.");
             while (isPaused() && !isExiting()) {
                 try {
@@ -119,7 +119,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
             }
             System.out.println("--- sort: resuming.");
         }
-        while(isWaitingDueToFPS()) {
+        while (isWaitingDueToFPS()) {
             try {
                 System.out.println("--- sort: waiting due to choosen fps.");
                 this.wait();
@@ -146,8 +146,8 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
          * Measure time of frame calculating for waiting to match ALGORITHMFPS
          * @see ALGORITHMFPS
          */
-        if(ALGORITHMFPS>0) {
-            double delay = (1/ALGORITHMFPS) * 1000;
+        if (ALGORITHMFPS > 0) {
+            double delay = (1 / ALGORITHMFPS) * 1000;
             Timer t = new Timer();
             SortingAlgorithm inst = this;
             // System.out.println("--- sort: delay = "+delay);
@@ -156,7 +156,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
                 @Override
                 public void run() {
                     waitDueToFPS = false;
-                    synchronized(inst) {
+                    synchronized (inst) {
                         inst.notify();
                     }
                 }
@@ -195,8 +195,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
         return exiting;
     }
 
-    public boolean isWaitingDueToFPS()
-    {
+    public boolean isWaitingDueToFPS() {
         return waitDueToFPS;
     }
 

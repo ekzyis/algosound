@@ -3,8 +3,7 @@ package algosound.data;
 import algosound.util.AlgosoundUtil;
 import processing.core.PApplet;
 
-import java.awt.Color;
-import processing.core.PApplet;
+import java.awt.*;
 
 
 /**
@@ -125,7 +124,7 @@ public class MergesortElement extends Element {
          * Heightlimit for elements. Without this, elements could go higher
          * than actual canvas height due to recursion lifting the elements.
          */
-        int maxHeight = (int)(AlgosoundUtil.H-(Math.log(n)/Math.log(2))*20);
+        int maxHeight = (int) (AlgosoundUtil.H - (Math.log(n) / Math.log(2)) * 20);
         for (int i = 0; i < elements.length; ++i) {
             int value = (int) (Math.random() * maxHeight);
             elements[i] = new MergesortElement(xd, AlgosoundUtil.H, elementwidth, value, sketch, c[cd]);

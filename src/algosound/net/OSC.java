@@ -1,19 +1,16 @@
 /*
-* @Author: ekzyis
-* @Date:   17-02-2018 23:48:24
-* @Last Modified by:   ekzyis
-* @Last Modified time: 18-02-2018 01:00:15
-*/
+ * @Author: ekzyis
+ * @Date:   17-02-2018 23:48:24
+ * @Last Modified by:   ekzyis
+ * @Last Modified time: 18-02-2018 01:00:15
+ */
 package algosound.net;
 
-import algosound.data.Sonification;
 import algosound.ui.Algosound;
 import netP5.NetAddress;
 import oscP5.OscMessage;
 import oscP5.OscP5;
 import processing.core.PApplet;
-
-import java.lang.reflect.Type;
 
 /**
  * Open sound control file. All methods and logic about sending and receiving of
@@ -86,31 +83,32 @@ public class OSC extends PApplet {
 
     /**
      * Send a message to an osc listener with given path and arguments.
+     *
      * @param path path to osc listener.
      * @args arguments within osc message
      */
     public void sendMessage(String path, int[] args) {
-         System.out.println("osc: sending message to: " + path);
+        System.out.println("osc: sending message to: " + path);
         OscMessage msg = new OscMessage(path);
-         System.out.print("--- arguments[ ");
+        System.out.print("--- arguments[ ");
         for (int n : args) {
             msg.add(n);
-             System.out.print(n+" ");
+            System.out.print(n + " ");
         }
-         System.out.println("]");
+        System.out.println("]");
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
     }
 
     public void sendMessage(String path, float[] args) {
-         System.out.println("osc: sending message to: " + path);
+        System.out.println("osc: sending message to: " + path);
         OscMessage msg = new OscMessage(path);
-         System.out.print("--- arguments[ ");
+        System.out.print("--- arguments[ ");
         for (float n : args) {
             msg.add(n);
-             System.out.print(n+" ");
+            System.out.print(n + " ");
         }
-         System.out.println("]");
+        System.out.println("]");
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
     }
@@ -118,6 +116,7 @@ public class OSC extends PApplet {
     /**
      * Send a message to an osc listener with given path and arguments (generic-version).
      * Does not work because java primitives like int and float are no real "Types" like Number.
+     *
      * @param path path to osc listener.
      */
     /*

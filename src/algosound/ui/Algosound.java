@@ -2,12 +2,14 @@ package algosound.ui;
 
 import algosound.data.Visual;
 import algosound.data.algorithms.Algorithm;
-import algosound.net.OSCKnob;
 import algosound.net.OSC;
+import algosound.net.OSCKnob;
 import algosound.net.OSCSlider;
 import algosound.util.AlgosoundUtil;
-import controlP5.*;
 import controlP5.Button;
+import controlP5.ControlEvent;
+import controlP5.ControlP5;
+import controlP5.Controller;
 import processing.core.PApplet;
 
 import static algosound.util.AlgosoundUtil.*;
@@ -35,7 +37,7 @@ public class Algosound extends PApplet {
 
     @Override
     public void settings() {
-        size(AlgosoundUtil.W + AlgosoundUtil.GUI_W + AlgosoundUtil.SOUNDCONTROL_W, AlgosoundUtil.H+INFO_H);
+        size(AlgosoundUtil.W + AlgosoundUtil.GUI_W + AlgosoundUtil.SOUNDCONTROL_W, AlgosoundUtil.H + INFO_H);
     }
 
     @Override
@@ -70,7 +72,7 @@ public class Algosound extends PApplet {
         SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(sort.getSelectedSonification().NAME);
         ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
         // Initialize the controller for algorithm speed.
-        SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(45).setRange(1f,1000f).setValue(FRAMERATE);
+        SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(45).setRange(1f, 1000f).setValue(FRAMERATE);
 
         // Init the sound panel of selected sonification
         SELECTED_ALGORITHM.getSelectedSonification().initSoundPanel(cp5);
@@ -135,8 +137,7 @@ public class Algosound extends PApplet {
             sort.changeSonification();
             sort.getSelectedSonification().initSoundPanel(cp5);
             SONI.setLabel(sort.getSelectedSonification().NAME);
-        }
-        else if (c == ALGO && !sort.isAlive()) {
+        } else if (c == ALGO && !sort.isAlive()) {
             sort.getSelectedSonification().clearSoundPanel(cp5);
             AlgosoundUtil.changeAlgorithm();
             sort = SELECTED_ALGORITHM;
@@ -144,25 +145,21 @@ public class Algosound extends PApplet {
             SONI.setLabel(sort.getSelectedSonification().NAME);
             // Init sound panel
             sort.getSelectedSonification().initSoundPanel(cp5);
-        }
-        else if(c == SPEED) {
+        } else if (c == SPEED) {
             // Only change framerate of sorting! Don't change framerate of actual redrawing.
             ALGORITHMFPS = c.getValue();
-            if(ALGORITHMFPS > FRAMERATE ||
+            if (ALGORITHMFPS > FRAMERATE ||
                     (ALGORITHMFPS < FRAMERATE && ALGORITHMFPS >= PREFERRED_FRAMERATE)) {
                 frameRate(ALGORITHMFPS);
-                FRAMERATE = (int)(ALGORITHMFPS);
-            }
-            else if(ALGORITHMFPS < PREFERRED_FRAMERATE) {
+                FRAMERATE = (int) (ALGORITHMFPS);
+            } else if (ALGORITHMFPS < PREFERRED_FRAMERATE) {
                 frameRate(PREFERRED_FRAMERATE);
                 FRAMERATE = PREFERRED_FRAMERATE;
             }
-        }
-        else if(c.getClass() == OSCKnob.class) {
+        } else if (c.getClass() == OSCKnob.class) {
             OSCKnob k = (OSCKnob) c;
             k.send();
-        }
-        else if(c.getClass() == OSCSlider.class) {
+        } else if (c.getClass() == OSCSlider.class) {
             OSCSlider s = (OSCSlider) c;
             s.send();
         }
@@ -205,7 +202,7 @@ public class Algosound extends PApplet {
 
     private void drawNumberOfElements() {
         fill(255);
-        text("Number of elements: "+AlgosoundUtil.N, 240, 15);
+        text("Number of elements: " + AlgosoundUtil.N, 240, 15);
     }
 
     private void drawCurrentSortAlgoName() {
@@ -229,9 +226,9 @@ public class Algosound extends PApplet {
         stroke(0);
     }
 
-   public Algorithm getAlgorithm() {
+    public Algorithm getAlgorithm() {
         return sort;
-   }
+    }
 
     // This function is called during exit.
     @Override
@@ -271,7 +268,7 @@ public class Algosound extends PApplet {
 
     public static void main(String[] passedArgs) {
         // Create a sketch
-        String[] processingArgs = { "Algosound" };
+        String[] processingArgs = {"Algosound"};
         Algosound inst = Algosound.getInstance();
         PApplet.runSketch(processingArgs, inst);
     }

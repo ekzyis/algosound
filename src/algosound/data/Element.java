@@ -1,9 +1,9 @@
 package algosound.data;
 
-import java.awt.Color;
-
 import algosound.util.AlgosoundUtil;
 import processing.core.PApplet;
+
+import java.awt.*;
 
 /**
  * Rectangle-shaped visual object.
@@ -114,20 +114,18 @@ public class Element extends Visual {
     /**
      * Return n random elements as an array.
      *
-     * @param n
-     *            number of elements
-     * @param sketch
-     *            PApplet instance
+     * @param n      number of elements
+     * @param sketch PApplet instance
      * @return array with random elements
      */
     public static Element[] createElements(int n, PApplet sketch) {
         Element[] elements = new Element[n];
         int elementwidth = AlgosoundUtil.W / n;
-        Color[] c = new Color[] {
+        Color[] c = new Color[]{
                 new Color(255, 50, 50),
                 new Color(50, 255, 50),
                 new Color(50, 50, 255),
-                new Color(200, 50, 200) };
+                new Color(200, 50, 200)};
         // x offset
         int xd = 0;
         // color array offset

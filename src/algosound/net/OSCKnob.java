@@ -1,6 +1,5 @@
 package algosound.net;
 
-import algosound.net.OSC;
 import controlP5.ControlP5;
 import controlP5.Knob;
 
@@ -23,6 +22,6 @@ public class OSCKnob extends Knob implements OSCInterface {
     @Override
     public void send() {
         float[] args = {super.getValue()};
-        OSC.getInstance().sendMessage(OSCPATH, args );
+        OSC.getInstance().sendMessage(OSCPATH, args);
     }
 }
