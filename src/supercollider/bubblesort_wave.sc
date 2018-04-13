@@ -46,7 +46,7 @@ SynthDef(\algowave_wave_BUBBLESORT, {
 
 // Define listener for boot sound.
 OSCdef(\boot_wave_OSC_BUBBLESORT, {
-	"playing boot sound.".postln;
+	"\\boot_wave_OSC_BUBBLESORT".postln;
 	Synth(\boot_wave_BUBBLESORT);
 }, "/boot_wave_BUBBLESORT");
 

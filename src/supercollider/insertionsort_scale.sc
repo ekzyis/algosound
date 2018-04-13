@@ -57,7 +57,9 @@ OSCdef(\boot_scale_OSC_INSERTIONSORT, {
  * Define listener for setting up of scale.
  * Setup depends on given minimal frequency and max frequency.
  */
-OSCdef(\start_scale_OSC_INSERTIONSORT, {
+~minfreq = 200;
+~maxfreq = 4000;
+~initscale = {
 	arg msg;
 	var min_freq, max_freq, min_midi, max_midi;
 
@@ -73,7 +75,9 @@ OSCdef(\start_scale_OSC_INSERTIONSORT, {
 		|i|
 		~scales = ~scales ++ (Scale.minor.degrees+(min_midi+(12*i)));
 	};
-	"scales=".post;~scales.postln;
+	~minfreq = min_freq;
+	~maxfreq = max_freq;
+	"~initscale: scales=".post;~scales.postln;
 
 	/**
 	 * Generate a random sequence of duration times.
@@ -85,7 +89,35 @@ OSCdef(\start_scale_OSC_INSERTIONSORT, {
 		Array.fill(6,{ arg i; (i*0.25) + 0.25;}).choose
 	}); // Array.fill inception
 	"durations=".post;~durations.postln;*/
+};
+
+/**
+ * Define listener for setting up of scale.
+ * Setup depends on given minimal frequency and max frequency.
+ */
+OSCdef(\start_scale_OSC_INSERTIONSORT, {
+	"\\start_scale_OSC_INSERTIONSORT".postln;
+	~initscale;
 }, "/scale_start_INSERTIONSORT");
+
+OSCdef(\mod_scale_MAXFREQ_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_scale_MAXFREQ_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+}, "/scale_set_MAXFREQ_INSERTIONSORT");
+
+OSCdef(\mod_scale_MINFREQ_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_scale_MINFREQ_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+}, "/scale_set_MINFREQ_INSERTIONSORT");
+
+~amp = 0.1;
+OSCdef(\mod_scale_amp_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_scale_amp_OSC_INSERTIONSORT - arguments: [";msg[1].post;"]".postln;
+	~amp = msg[1];
+}, "/scale_set_amp_INSERTIONSORT");
 
 // Define listener for playing a midi note.
 OSCdef(\midiplay_scale_OSC_INSERTIONSORT, {
@@ -96,8 +128,8 @@ OSCdef(\midiplay_scale_OSC_INSERTIONSORT, {
 		{ midi = (msg[1].cpsmidi.round)-1 },
 		{ midi = ~scales.at(i); },
 	);
-	"playing midi-note ".post;midi.postln;
-	Synth(\midisine_scale_INSERTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75)]);
+	"\\midiplay_scale_OSC_INSERTIONSORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
+	Synth(\midisine_scale_INSERTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
 }, "/scale_play_INSERTIONSORT");
 
 // Create address to send messages to Processing client

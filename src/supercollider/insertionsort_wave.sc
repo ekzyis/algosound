@@ -71,41 +71,73 @@ SynthDef(\insert_wave_INSERTIONSORT, {
 
 // Define listener for boot sound.
 OSCdef(\boot_wave_OSC_INSERTIONSORT, {
-	"playing boot sound.".postln;
+	"\\boot_wave_OSC_INSERTIONSORT".postln;
 	Synth(\boot);
 }, "/boot_wave_INSERTIONSORT");
 
 // Define listener for start of algowave- and insert-synth.
 OSCdef(\start_wave_OSC_INSERTIONSORT, {
-	"creating algowave".postln;
+	"\\start_wave_OSC_INSERTIONSORT".postln;
 	~algowave = Synth(\algowave_wave_INSERTIONSORT);
-	"creating insert synth".postln;
 	~insert = Synth.after(~algowave,\insert_wave_INSERTIONSORT, [\amp, 0]);
 }, "/wave_start_INSERTIONSORT");
 
 // Define listener for pausing of synths.
 OSCdef(\pause_wave_OSC_INSERTIONSORT, {
-	"pausing algowave.".postln;
+	"\\pause_wave_OSC_INSERTIONSORT".postln;
 	~algowave.set(\amptotal, 0);
 	~insert.set(\amp, 0);
 }, "/wave_pause_INSERTIONSORT");
 
 // Define listener for resuming of synths.
 OSCdef(\resume_wave_OSC_INSERTIONSORT, {
-	"resuming algowave.".postln;
-	~algowave.set(\amptotal, 1);
-	~insert.set(\amp, 0.2);
+	"\\resume_wave_OSC_INSERTIONSORT".postln;
+	~algowave.set(\amptotal, ~amp);
+	~insert.set(\amp, ~insertamp);
 }, "/wave_resume_INSERTIONSORT");
 
 // Define listener for modifying.
 OSCdef(\mod_wave_OSC_INSERTIONSORT, {
 	arg msg;
-	~algowave.set(\amptotal, 1);
-	~insert.set(\amp, 0.2);
+	"\\mod_wave_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~algowave.set(\amptotal, ~amp);
+	~insert.set(\amp, ~insertamp);
 	~algowave.set(\freq, msg[1]);
 	~insert.set(\freq, msg[2]);
 }, "/wave_set_INSERTIONSORT");
 
+// Realtime modulating of synths
+OSCdef(\mod_wave_freqlag_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_wave_freqlag_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~algowave.set(\freqlag, msg[1]);
+}, "/wave_set_freqlag_INSERTIONSORT");
+
+~amp = 1;
+~insertamp = 0.2;
+OSCdef(\mod_wave_amp_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_wave_amp_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~amp = msg[1];
+}, "/wave_set_amp_INSERTIONSORT");
+
+OSCdef(\mod_wave_amplag_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_wave_amplag_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~algowave.set(\amplag, msg[1]);
+}, "/wave_set_amplag_INSERTIONSORT");
+
+OSCdef(\mod_wave_pulsefreq_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_wave_pulsefreq_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~insert.set(\pulsefreq, msg[1]);
+}, "/wave_pulse_set_freq_INSERTIONSORT");
+
+OSCdef(\mod_wave_pulseamp_OSC_INSERTIONSORT, {
+	arg msg;
+	"\\mod_wave_pulseamp_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~insertamp = msg[1];
+}, "/wave_pulse_set_amp_INSERTIONSORT");
 /**
  * Define listener for freeing of synth.
  * KNOWN ISSUES: After freeing, another free-attempt will
@@ -118,10 +150,9 @@ OSCdef(\mod_wave_OSC_INSERTIONSORT, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\free_wave_OSC_INSERTIONSORT, {
-	"freeing algowave.".postln;
+	"\\free_wave_OSC_INSERTIONSORT".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
-	"freeing insert synth.".postln;
 	~insert.set(\gate, 0);
 }, "/wave_free_INSERTIONSORT");
 
