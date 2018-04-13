@@ -34,8 +34,6 @@ public class Mergesort extends SortingAlgorithm {
     private MergesortElement[] elements;
     private ArrayList<MergesortElement> unmarkMe;
 
-    private final int FREQ_MIN = 200, FREQ_MAX = 4000;
-
     // Keep track of stack of the cut indizes while sorting for proper visualization.
     private Stack<Integer> cutStack;
 

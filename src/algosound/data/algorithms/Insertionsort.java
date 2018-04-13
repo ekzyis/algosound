@@ -22,7 +22,6 @@ import static algosound.util.AlgosoundUtil.expmap;
 public class Insertionsort extends SortingAlgorithm {
 
     public static final String SUFFIX = "_INSERTIONSORT";
-    private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Insertionsort(int N) {
         super(N);

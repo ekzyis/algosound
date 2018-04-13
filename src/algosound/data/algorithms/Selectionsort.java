@@ -21,7 +21,6 @@ import static processing.core.PApplet.map;
 public class Selectionsort extends SortingAlgorithm {
 
     public static final String SUFFIX = "_SELECTIONSORT";
-    private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Selectionsort(int N) {
         super(N);

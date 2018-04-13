@@ -1,8 +1,10 @@
 package algosound.data;
 
 import algosound.data.algorithms.*;
+import algosound.net.OSC;
 import algosound.net.OSCKnob;
 import algosound.net.OSCSlider;
+import algosound.ui.Algosound;
 import algosound.util.AlgosoundUtil;
 import controlP5.ControlP5;
 import controlP5.Controller;
@@ -162,7 +164,9 @@ public class Sonification {
             "/boot_scale" + Quicksort.SUFFIX,
             "/scale_set_amp" + Quicksort.SUFFIX + "~/scale_set_MINFREQ" + Quicksort.SUFFIX + "~/scale_set_MAXFREQ" + Quicksort.SUFFIX,
             "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f, 100f, 8000f, 200f, 100f, 8000f, 4000f});
+            new float[]{0f, 0.3f, 0.2f,
+                    100f, 8000f, 200f,
+                    100f, 8000f, 4000f});
     // Name of this sonification and paths for the osc listeners.
     public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH, BOOTPATH, REALTIMEPATH, REALTIMENAME;
     // Default values of controllers. Three floats per path/name: min, max and default value.
@@ -208,10 +212,10 @@ public class Sonification {
             return 1;
         }
         int XINSET, YINSET;
-        if (STYLE == 0) {
-            XINSET = 15;
+        if (STYLE == KNOBSTYLE) {
+            XINSET = 20;
             YINSET = 15;
-        } else if (STYLE == 1) {
+        } else if (STYLE == SLIDERSTYLE) {
             XINSET = 5;
             YINSET = 10;
         } else {
@@ -247,17 +251,60 @@ public class Sonification {
                 x += KNOBSIZE + XINSET;
             }
             controllers = new OSCKnob[modpathcounter];
-
             for (int i = 0; i < paths.length; ++i) {
+
+                // MAXFREQ and MINFREQ Knob of SCALE sonificiation need special treatment here.
+                boolean isMinfreqKnob = names[i].equals("MINFREQ");
+                boolean isMaxfreqKnob = names[i].equals("MAXFREQ");
                 int j = i * 3;
-                controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i])
-                        .setPosition(pos[i].x, pos[i].y)
-                        .setLabel(names[i])
-                        .setRadius(KNOBSIZE / 2)
-                        .setDragDirection(Knob.HORIZONTAL)
-                        .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j + 1])
-                        .setValue(DEFAULTVALUES[j + 2]);
+                if (isMinfreqKnob || isMaxfreqKnob) {
+                    final int index = i;
+                    if (isMinfreqKnob) {
+                        controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i]) {
+                            @Override
+                            public void send() {
+                                SortingAlgorithm s = (SortingAlgorithm) Algosound.getInstance().getAlgorithm();
+                                int value = (int) super.getValue();
+                                if (value < s.FREQ_MAX) {
+                                    float[] args = {value};
+                                    OSC.getInstance().sendMessage(paths[index], args);
+                                    s.FREQ_MIN = value;
+                                }
+                            }
+                        };
+                    } else {
+                        controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i]) {
+                            @Override
+                            public void send() {
+                                SortingAlgorithm s = (SortingAlgorithm) Algosound.getInstance().getAlgorithm();
+                                int value = (int) super.getValue();
+                                if (value > s.FREQ_MIN) {
+                                    float[] args = {value};
+                                    OSC.getInstance().sendMessage(paths[index], args);
+                                    s.FREQ_MAX = value;
+                                }
+                            }
+                        };
+                    }
+                    OSCKnob k = (OSCKnob) controllers[i];
+                    k.setPosition(pos[i].x, pos[i].y)
+                            .setLabel(names[i])
+                            .setRadius(KNOBSIZE / 2)
+                            .setDragDirection(Knob.HORIZONTAL)
+                            .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j + 1])
+                            .setValue(DEFAULTVALUES[j + 2]);
+                    controllers[i] = k;
+                } else {
+                    controllers[i] = new OSCKnob(cp5, names[i], paths[i])
+                            .setPosition(pos[i].x, pos[i].y)
+                            .setLabel(names[i])
+                            .setRadius(KNOBSIZE / 2)
+                            .setDragDirection(Knob.HORIZONTAL)
+                            .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j + 1])
+                            .setValue(DEFAULTVALUES[j + 2]);
+                }
             }
+
         } else if (STYLE == SLIDERSTYLE) {
             // Calculate position of coming controllers.
             Point[] pos = new Point[modpathcounter];

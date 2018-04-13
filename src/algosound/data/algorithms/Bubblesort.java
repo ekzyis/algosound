@@ -19,7 +19,6 @@ import static processing.core.PApplet.map;
 public class Bubblesort extends SortingAlgorithm {
 
     public static final String SUFFIX = "_BUBBLESORT";
-    private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Bubblesort(int N) {
         super(N);
