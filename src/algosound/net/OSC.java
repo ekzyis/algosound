@@ -103,16 +103,18 @@ public class OSC extends PApplet {
     }
 
     public void sendMessage(String path, float[] args) {
-        System.out.println("osc: sending message to: " + path);
+        System.out.print("osc: sending message to: " + path);
         OscMessage msg = new OscMessage(path);
-        System.out.print("--- arguments[ ");
+        System.out.print(" with [ ");
         for (float n : args) {
             msg.add(n);
             System.out.print(n + " ");
         }
-        System.out.println("]");
+        System.out.print("] as arguments");
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
+        else System.err.print(" FAILED SENDING MESSAGE");
+        System.out.println();
     }
 
     /**

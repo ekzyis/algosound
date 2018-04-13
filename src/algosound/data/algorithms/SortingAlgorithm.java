@@ -278,7 +278,6 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        System.out.println(constructor);
         SortingAlgorithm sort;
         try {
             sort = constructor.newInstance(N);
