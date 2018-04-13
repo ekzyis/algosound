@@ -7,6 +7,8 @@ import algosound.util.AlgosoundUtil;
 
 import java.awt.*;
 
+import static algosound.data.Sonification.INSERTIONSORT_SCALE;
+import static algosound.data.Sonification.INSERTIONSORT_WAVE;
 import static algosound.util.AlgosoundUtil.expmap;
 
 /**
@@ -19,44 +21,15 @@ import static algosound.util.AlgosoundUtil.expmap;
  */
 public class Insertionsort extends SortingAlgorithm {
 
-    private static final String suffix = "_INSERTIONSORT";
-    // Sonification variants for insertionsort.
-    private static final Sonification WAVE = new Sonification(
-            "WAVE",
-            "/wave_star" + suffix,
-            "/wave_pause" + suffix,
-            "/wave_resume" + suffix,
-            "/wave_set" + suffix,
-            "/wave_free" + suffix,
-            "/hellowave" + suffix,
-            "/boot_wave" + suffix,
-            "wave_set_amp" + suffix + "~/wave_set_freqlag" + suffix + "~/wave_set_amplag" + suffix + "~/pulse_set_freq" + suffix + "~/pulse_set_amp" + suffix,
-            "AMP~FREQLAG~AMPLAG~PULSEFREQ~PULSEAMP",
-            new float[]{0f, 3f, 0.2f,
-                    0f, 2f, 0.1f,
-                    0f, 5f, 0.1f,
-                    1f, 100f, 10f,
-                    0f, 1f, 0.2f,});
-    private static final Sonification SCALE = new Sonification(
-            "SCALE",
-            "/scale_start" + suffix,
-            "",
-            "",
-            "/scale_play" + suffix,
-            "",
-            "/helloscale" + suffix,
-            "/boot_scale" + suffix,
-            "/scale_set_amp" + suffix + "~/scale_set_MINFREQ" + suffix + "~/scale_set_MAXFREQ" + suffix,
-            "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f, 100f, 8000f, 200f, 100f, 8000f, 4000f});
+    public static final String SUFFIX = "_INSERTIONSORT";
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public Insertionsort(int N) {
         super(N);
         name = "Insertionsort";
-        sonifications.add(WAVE);
-        sonifications.add(SCALE);
-        selected_sonification = WAVE;
+        sonifications.add(INSERTIONSORT_WAVE);
+        sonifications.add(INSERTIONSORT_SCALE);
+        selected_sonification = sonifications.get(0);
     }
 
     @Override
@@ -65,9 +38,9 @@ public class Insertionsort extends SortingAlgorithm {
 
         OSC osc = OSC.getInstance();
         Sonification sel = selected_sonification;
-        if (sel == WAVE) {
+        if (sel == INSERTIONSORT_WAVE) {
             osc.sendMessage(sel.STARTPATH);
-        } else if (sel == SCALE) {
+        } else if (sel == INSERTIONSORT_SCALE) {
             int[] args = {FREQ_MIN, FREQ_MAX};
             osc.sendMessage(sel.STARTPATH, args);
         }

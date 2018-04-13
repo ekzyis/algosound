@@ -1,5 +1,6 @@
 package algosound.data;
 
+import algosound.data.algorithms.*;
 import algosound.net.OSCKnob;
 import algosound.net.OSCSlider;
 import algosound.util.AlgosoundUtil;
@@ -20,6 +21,148 @@ import static algosound.util.AlgosoundUtil.*;
  * @date 17/02/2018
  */
 public class Sonification {
+    public static final Sonification BUBBLESORT_WAVE = new Sonification(
+            "WAVE",
+            "/wave_start" + Bubblesort.SUFFIX,
+            "/wave_pause" + Bubblesort.SUFFIX,
+            "/wave_resume" + Bubblesort.SUFFIX,
+            "/wave_set" + Bubblesort.SUFFIX,
+            "/wave_free" + Bubblesort.SUFFIX,
+            "/hellowave" + Bubblesort.SUFFIX,
+            "/boot_wave" + Bubblesort.SUFFIX,
+            "/wave_set_amp" + Bubblesort.SUFFIX + "~/wave_set_freqlag" + Bubblesort.SUFFIX + "~/wave_set_amplag" + Bubblesort.SUFFIX,
+            "AMP~FREQLAG~AMPLAG",
+            new float[]{0f, 3f, 0.2f,
+                    0f, 2f, 0.1f,
+                    0f, 5f, 0.1f});
+    public static final Sonification BUBBLESORT_SCALE = new Sonification(
+            "SCALE",
+            "/scale_start" + Bubblesort.SUFFIX,
+            "",
+            "",
+            "/scale_play" + Bubblesort.SUFFIX,
+            "",
+            "/helloscale" + Bubblesort.SUFFIX,
+            "/boot_scale_BUBBLESORT",
+            "/scale_set_amp" + Bubblesort.SUFFIX + "~/scale_set_MINFREQ" + Bubblesort.SUFFIX + "~/scale_set_MAXFREQ" + Bubblesort.SUFFIX,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f, 0.3f, 0.2f,
+                    100f, 8000f, 200f,
+                    100f, 8000f, 4000f});
+    public static final Sonification INSERTIONSORT_WAVE = new Sonification(
+            "WAVE",
+            "/wave_star" + Insertionsort.SUFFIX,
+            "/wave_pause" + Insertionsort.SUFFIX,
+            "/wave_resume" + Insertionsort.SUFFIX,
+            "/wave_set" + Insertionsort.SUFFIX,
+            "/wave_free" + Insertionsort.SUFFIX,
+            "/hellowave" + Insertionsort.SUFFIX,
+            "/boot_wave" + Insertionsort.SUFFIX,
+            "wave_set_amp" + Insertionsort.SUFFIX + "~/wave_set_freqlag" + Insertionsort.SUFFIX + "~/wave_set_amplag" + Insertionsort.SUFFIX + "~/pulse_set_freq" + Insertionsort.SUFFIX + "~/pulse_set_amp" + Insertionsort.SUFFIX,
+            "AMP~FREQLAG~AMPLAG~PULSEFREQ~PULSEAMP",
+            new float[]{0f, 3f, 0.2f,
+                    0f, 2f, 0.1f,
+                    0f, 5f, 0.1f,
+                    1f, 100f, 10f,
+                    0f, 1f, 0.2f,});
+    public static final Sonification INSERTIONSORT_SCALE = new Sonification(
+            "SCALE",
+            "/scale_start" + Insertionsort.SUFFIX,
+            "",
+            "",
+            "/scale_play" + Insertionsort.SUFFIX,
+            "",
+            "/helloscale" + Insertionsort.SUFFIX,
+            "/boot_scale" + Insertionsort.SUFFIX,
+            "/scale_set_amp" + Insertionsort.SUFFIX + "~/scale_set_MINFREQ" + Insertionsort.SUFFIX + "~/scale_set_MAXFREQ" + Insertionsort.SUFFIX,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f, 0.3f, 0.2f,
+                    100f, 8000f, 200f,
+                    100f, 8000f, 4000f});
+    public static final Sonification SELECTIONSORT_WAVE = new Sonification(
+            "WAVE",
+            "/wave_start" + Selectionsort.SUFFIX,
+            "/wave_pause" + Selectionsort.SUFFIX,
+            "/wave_resume" + Selectionsort.SUFFIX,
+            "/wave_set_SELECTIONSORT~/min_set" + Selectionsort.SUFFIX,
+            "/wave_free" + Selectionsort.SUFFIX,
+            "/hellowave" + Selectionsort.SUFFIX,
+            "/boot_wave" + Selectionsort.SUFFIX,
+            "wave_set_amp" + Selectionsort.SUFFIX + "~/wave_set_freqlag" + Selectionsort.SUFFIX + "~/wave_set_amplag" + Selectionsort.SUFFIX + "~/min_set_pulsefreq" + Selectionsort.SUFFIX + "~/min_set_amp" + Selectionsort.SUFFIX,
+            "AMP~FREQLAG~AMPLAG~MINFREQ~MINAMP",
+            new float[]{0f, 3f, 0.2f,
+                    0f, 2f, 0.1f,
+                    0f, 5f, 0.1f,
+                    0f, 10f, 0f,
+                    0f, 1f, 0.3f});
+    public static final Sonification SELECTIONSORT_SCALE = new Sonification(
+            "SCALE",
+            "/scale_start" + Selectionsort.SUFFIX,
+            "",
+            "",
+            "/scale_play_SELECTIONSORT~/scale_play" + Selectionsort.SUFFIX,
+            "",
+            "/helloscale" + Selectionsort.SUFFIX,
+            "/boot_scale" + Selectionsort.SUFFIX,
+            "/scale_set_amp" + Selectionsort.SUFFIX + "~/scale_set_MINFREQ" + Selectionsort.SUFFIX + "~/scale_set_MAXFREQ" + Selectionsort.SUFFIX,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f, 0.3f, 0.2f,
+                    100f, 8000f, 200f,
+                    100f, 8000f, 4000f});
+    public static final Sonification MERGESORT_WAVE = new Sonification(
+            "WAVE",
+            "/wave_start" + Mergesort.SUFFIX,
+            "/wave_pause" + Mergesort.SUFFIX,
+            "/wave_resume" + Mergesort.SUFFIX,
+            "/wave_set" + Mergesort.SUFFIX,
+            "/wave_free" + Mergesort.SUFFIX,
+            "/hellowave" + Mergesort.SUFFIX,
+            "/boot_wave" + Mergesort.SUFFIX,
+            "wave_set_amp" + Mergesort.SUFFIX + "~/wave_set_freqlag" + Mergesort.SUFFIX + "~/wave_set_amplag" + Mergesort.SUFFIX,
+            "AMP~FREQLAG~AMPLAG",
+            new float[]{0f, 3f, 0.2f,
+                    0f, 2f, 0.1f,
+                    0f, 5f, 0.1f});
+    public static final Sonification MERGESORT_SCALE = new Sonification(
+            "SCALE",
+            "/scale_start" + Mergesort.SUFFIX,
+            "",
+            "",
+            "/scale_play" + Mergesort.SUFFIX,
+            "",
+            "/helloscale" + Mergesort.SUFFIX,
+            "/boot_scale" + Mergesort.SUFFIX,
+            "/scale_set_amp" + Mergesort.SUFFIX + "~/scale_set_MINFREQ" + Mergesort.SUFFIX + "~/scale_set_MAXFREQ" + Mergesort.SUFFIX,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f, 0.3f, 0.2f,
+                    100f, 8000f, 200f,
+                    100f, 8000f, 4000f});
+    public static final Sonification QUICKSORT_WAVE = new Sonification(
+            "WAVE",
+            "/wave_start" + Quicksort.SUFFIX,
+            "/wave_pause" + Quicksort.SUFFIX,
+            "/wave_resume" + Quicksort.SUFFIX,
+            "/wave_set1_QUICKSORT~/wave_set2_QUICKSORT~/wave_set3" + Quicksort.SUFFIX,
+            "/wave_free" + Quicksort.SUFFIX,
+            "/hellowave" + Quicksort.SUFFIX,
+            "/boot_wave" + Quicksort.SUFFIX,
+            "wave_set_amp" + Quicksort.SUFFIX + "~/wave_set_freqlag" + Quicksort.SUFFIX + "~/wave_set_amplag" + Quicksort.SUFFIX,
+            "AMP~FREQLAG~AMPLAG",
+            new float[]{0f, 3f, 0.2f,
+                    0f, 2f, 0.1f,
+                    0f, 5f, 0.1f});
+    public static final Sonification QUICKSORT_SCALE = new Sonification(
+            "SCALE",
+            "/scale_start" + Quicksort.SUFFIX,
+            "",
+            "",
+            "/scale_play_QUICKSORT~/scale_play_QUICKSORT~/scale_play" + Quicksort.SUFFIX,
+            "",
+            "/helloscale" + Quicksort.SUFFIX,
+            "/boot_scale" + Quicksort.SUFFIX,
+            "/scale_set_amp" + Quicksort.SUFFIX + "~/scale_set_MINFREQ" + Quicksort.SUFFIX + "~/scale_set_MAXFREQ" + Quicksort.SUFFIX,
+            "AMP~MINFREQ~MAXFREQ",
+            new float[]{0f, 0.3f, 0.2f, 100f, 8000f, 200f, 100f, 8000f, 4000f});
     // Name of this sonification and paths for the osc listeners.
     public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH, BOOTPATH, REALTIMEPATH, REALTIMENAME;
     // Default values of controllers. Three floats per path/name: min, max and default value.
@@ -101,7 +244,6 @@ public class Sonification {
                     y += KNOBSIZE + YINSET;
                 }
                 pos[i] = new Point(x + AlgosoundUtil.W + GUI_W, y);
-                System.out.println(pos[i]);
                 x += KNOBSIZE + XINSET;
             }
             controllers = new OSCKnob[modpathcounter];
@@ -115,7 +257,6 @@ public class Sonification {
                         .setDragDirection(Knob.HORIZONTAL)
                         .setRange(DEFAULTVALUES[j], DEFAULTVALUES[j + 1])
                         .setValue(DEFAULTVALUES[j + 2]);
-                System.out.println(DEFAULTVALUES[j] + " " + DEFAULTVALUES[j + 1] + " " + DEFAULTVALUES[j + 2]);
             }
         } else if (STYLE == SLIDERSTYLE) {
             // Calculate position of coming controllers.
@@ -136,7 +277,6 @@ public class Sonification {
                 for (int j = 0; j < names[i].length(); j++) {
                     charwidth += 2;
                 }
-                System.out.println(pos[i]);
                 x += SLIDERWIDTH + XINSET + charwidth;
             }
             controllers = new OSCSlider[modpathcounter];

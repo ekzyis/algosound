@@ -11,6 +11,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import static algosound.data.Sonification.MERGESORT_SCALE;
+import static algosound.data.Sonification.MERGESORT_WAVE;
 import static algosound.util.AlgosoundUtil.expmap;
 import static processing.core.PApplet.*;
 
@@ -24,7 +26,7 @@ import static processing.core.PApplet.*;
  */
 public class Mergesort extends SortingAlgorithm {
 
-    private static final String suffix = "_MERGESORT";
+    public static final String SUFFIX = "_MERGESORT";
     // Variables to pass mergesort() to determine mode.
     final static byte NATIVE = 1;
     final static byte THREAD = 2;
@@ -32,33 +34,6 @@ public class Mergesort extends SortingAlgorithm {
     private MergesortElement[] elements;
     private ArrayList<MergesortElement> unmarkMe;
 
-    // Sonification variants for MERGESORT.
-    private static final Sonification WAVE = new Sonification(
-            "WAVE",
-            "/wave_start" + suffix,
-            "/wave_pause" + suffix,
-            "/wave_resume" + suffix,
-            "/wave_set" + suffix,
-            "/wave_free" + suffix,
-            "/hellowave" + suffix,
-            "/boot_wave" + suffix,
-            "wave_set_amp" + suffix + "~/wave_set_freqlag" + suffix + "~/wave_set_amplag" + suffix,
-            "AMP~FREQLAG~AMPLAG",
-            new float[]{0f, 3f, 0.2f,
-                    0f, 2f, 0.1f,
-                    0f, 5f, 0.1f});
-    private static final Sonification SCALE = new Sonification(
-            "SCALE",
-            "/scale_start" + suffix,
-            "",
-            "",
-            "/scale_play" + suffix,
-            "",
-            "/helloscale" + suffix,
-            "/boot_scale" + suffix,
-            "/scale_set_amp" + suffix + "~/scale_set_MINFREQ" + suffix + "~/scale_set_MAXFREQ" + suffix,
-            "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f, 100f, 8000f, 200f, 100f, 8000f, 4000f});
     private final int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     // Keep track of stack of the cut indizes while sorting for proper visualization.
@@ -73,9 +48,9 @@ public class Mergesort extends SortingAlgorithm {
         // Needed for proper cut index and subset visualization.
         cutStack.push(0);
         name = "Mergesort";
-        sonifications.add(WAVE);
-        sonifications.add(SCALE);
-        selected_sonification = WAVE;
+        sonifications.add(MERGESORT_WAVE);
+        sonifications.add(MERGESORT_SCALE);
+        selected_sonification = sonifications.get(0);
     }
 
     @Override
@@ -83,9 +58,9 @@ public class Mergesort extends SortingAlgorithm {
         System.out.println("--- mergesort-thread has started.");
         OSC osc = OSC.getInstance();
         Sonification sel = selected_sonification;
-        if (sel == WAVE) {
+        if (sel == MERGESORT_WAVE) {
             osc.sendMessage(sel.STARTPATH);
-        } else if (sel == SCALE) {
+        } else if (sel == MERGESORT_SCALE) {
             int[] args = {FREQ_MIN, FREQ_MAX};
             osc.sendMessage(sel.STARTPATH, args);
         }
