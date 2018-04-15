@@ -11,6 +11,8 @@ import controlP5.ControlP5;
 import controlP5.Controller;
 import processing.core.PApplet;
 
+import java.awt.*;
+
 import static algosound.util.AlgosoundUtil.*;
 
 /**
@@ -178,6 +180,9 @@ public class Algosound extends PApplet {
             for (Visual v : sort.getVisuals()) {
                 v.show();
             }
+            if (sort.isPaused()) {
+                drawPause();
+            }
             translate(0, -INFO_H);
             drawInfo();
             /**
@@ -188,6 +193,48 @@ public class Algosound extends PApplet {
                 sort.notify();
             }
         }
+    }
+
+    // Needed for drawing of pause.
+    private int phaseIndex = 0;
+    private Color[] pauseColors = new Color[]{
+            new Color(255, 0, 0),
+            new Color(0, 255, 0),
+            new Color(0, 0, 255),
+            new Color(128, 128, 0),
+            new Color(0, 128, 128),
+            new Color(128, 0, 128),
+            new Color(64, 255, 128),
+            new Color(255, 128, 64),
+            new Color(128, 64, 255)
+    };
+    private Color pauseColor = pauseColors[0];
+
+    private void drawPause() {
+        fill(25, 200);
+        noStroke();
+        rect(0, 0, AlgosoundUtil.W, AlgosoundUtil.H);
+        // Every 20 frames, the color of the pause symbol changes randomly.
+        if (frameCount % 5 == 0) {
+            phaseIndex = (int) random(0, pauseColors.length);
+            pauseColor = pauseColors[phaseIndex];
+        }
+        fill(pauseColor);
+        int centerx = (AlgosoundUtil.W / 2);
+        int centery = (AlgosoundUtil.H / 2);
+        stroke(0);
+        strokeWeight(5);
+        //line(centerx, 0, centerx, AlgosoundUtil.H);
+        //line(0, centery, AlgosoundUtil.W, centery);
+        strokeWeight(1);
+        noStroke();
+        rectMode(CENTER);
+        rect(centerx - 12, centery - 20, 12, 40);
+        rect(centerx + 12, centery - 20, 12, 40);
+        rectMode(CORNER);
+        textAlign(CENTER, CENTER);
+        text("Paused", centerx, centery + 12);
+        textAlign(CORNER, CORNER);
     }
 
     private void drawInfo() {
@@ -260,6 +307,11 @@ public class Algosound extends PApplet {
             instance = new Algosound();
         }
         return instance;
+    }
+
+    // PApplet.fill() method modified for java.awt.Color
+    public void fill(java.awt.Color c) {
+        fill(c.getRed(), c.getGreen(), c.getBlue());
     }
 
     public static void main(String[] passedArgs) {
