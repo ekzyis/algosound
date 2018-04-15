@@ -122,6 +122,8 @@ public class Algosound extends PApplet {
             System.out.println("--- sort: reset");
             OSC.getInstance().sendMessage(sort.getSelectedSonification().FREEPATH);
             sort = sort.reset();
+            // Overwrite instance in algorithm list with this new one.
+            AlgosoundUtil.updateAlgorithm(sort);
             // Unlock selection of sonifications.
             SONI.unlock();
             // Unlock selection of algorithms.

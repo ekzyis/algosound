@@ -56,4 +56,13 @@ public class AlgosoundUtil {
         algo_index = (algo_index + 1) % ALGORITHMS.length;
         SELECTED_ALGORITHM = ALGORITHMS[algo_index];
     }
+
+    // Update algorithm instances in list with given instance.
+    public static void updateAlgorithm(Algorithm algo) {
+        for (int i = 0; i < ALGORITHMS.length; ++i) {
+            if (ALGORITHMS[i].getString().equals(algo.getString())) {
+                ALGORITHMS[i] = algo;
+            }
+        }
+    }
 }
