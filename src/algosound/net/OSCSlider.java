@@ -10,8 +10,8 @@ import controlP5.Slider;
  * @author ekzyis
  * @date 02/04/2018
  */
-public class OSCSlider extends Slider implements OSCInterface {
-    // Path where msg should be send to.
+public class OSCSlider extends Slider implements ControllerInterface {
+    // Path where msg should be fire to.
     final String OSCPATH;
 
     public OSCSlider(ControlP5 controlP5, String s, String path) {
@@ -20,7 +20,7 @@ public class OSCSlider extends Slider implements OSCInterface {
     }
 
     @Override
-    public void send() {
+    public void fire() {
         float[] args = {super.getValue()};
         OSC.getInstance().sendMessage(OSCPATH, args);
     }

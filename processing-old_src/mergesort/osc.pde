@@ -60,7 +60,7 @@ void initOSC()
 // Listen for messages.
 void oscEvent(OscMessage msg)
 {
-    // SC3 will send SC_REPLY-message if OSC did send OSC_STATUS-message.
+    // SC3 will fire SC_REPLY-message if OSC did fire OSC_STATUS-message.
     if(msg.checkAddrPattern(SC_REPLY)) connected = true;
 }
 
@@ -75,7 +75,7 @@ void sendMessage(String path, float[] args)
     {
         msg.add(n);
     }
-    if(OSC!=null) OSC.send(msg,SUPERCOLLIDER);
+    if(OSC!=null) OSC.fire(msg,SUPERCOLLIDER);
 }
 // Convenience method.
 void sendMessage(String path)

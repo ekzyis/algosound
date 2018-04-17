@@ -41,6 +41,6 @@ void mousePressed()
   // add data to message for supercollider
   msg.add(map(mouseX, 0, 128, 0, 200));
   msg.add(map(mouseY, 0, 128, 0, 200));
-  // send message
-  osc.send(msg,supercollider);
+  // fire message
+  osc.fire(msg,supercollider);
 }

@@ -3,7 +3,7 @@ package algosound.ui;
 import algosound.data.Visual;
 import algosound.data.algorithms.Algorithm;
 import algosound.net.OSC;
-import algosound.net.OSCInterface;
+import algosound.net.ControllerInterface;
 import algosound.util.AlgosoundUtil;
 import controlP5.Button;
 import controlP5.ControlEvent;
@@ -159,9 +159,9 @@ public class Algosound extends PApplet {
                 frameRate(PREFERRED_FRAMERATE);
                 FRAMERATE = PREFERRED_FRAMERATE;
             }
-        } else if (c instanceof OSCInterface) {
-            OSCInterface i = (OSCInterface) c;
-            i.send();
+        } else if (c instanceof ControllerInterface) {
+            ControllerInterface i = (ControllerInterface) c;
+            i.fire();
         }
     }
 
@@ -309,6 +309,10 @@ public class Algosound extends PApplet {
             instance = new Algosound();
         }
         return instance;
+    }
+
+    public ControlP5 getCP5() {
+        return cp5;
     }
 
     // PApplet.fill() method modified for java.awt.Color

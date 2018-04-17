@@ -196,6 +196,22 @@ public class Sonification {
         this.STYLE = SLIDERSTYLE;
     }
 
+    public Sonification(String name, String start, String pause, String resume, String mod, String free, String status, String boot, Controller[] controllers) {
+        this.NAME = name;
+        this.STARTPATH = start;
+        this.PAUSEPATH = pause;
+        this.RESUMEPATH = resume;
+        this.MODPATH = mod;
+        this.FREEPATH = free;
+        this.STATUSPATH = status;
+        this.BOOTPATH = boot;
+        this.controllers = controllers;
+        this.STYLE = SLIDERSTYLE;
+        this.REALTIMEPATH = null;
+        this.REALTIMENAME = null;
+        this.DEFAULTVALUES = null;
+    }
+
     public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
                         String boot) {
         this(name, start, pause, resume, mod, free, status, boot, "", "", null);
@@ -262,7 +278,7 @@ public class Sonification {
                     if (isMinfreqKnob) {
                         controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i]) {
                             @Override
-                            public void send() {
+                            public void fire() {
                                 SortingAlgorithm s = (SortingAlgorithm) Algosound.getInstance().getAlgorithm();
                                 int value = (int) super.getValue();
                                 if (value < s.FREQ_MAX) {
@@ -275,7 +291,7 @@ public class Sonification {
                     } else {
                         controllers[i] = (OSCKnob) new OSCKnob(cp5, names[i], paths[i]) {
                             @Override
-                            public void send() {
+                            public void fire() {
                                 SortingAlgorithm s = (SortingAlgorithm) Algosound.getInstance().getAlgorithm();
                                 int value = (int) super.getValue();
                                 if (value > s.FREQ_MIN) {

@@ -100,7 +100,7 @@ OSCdef(\midiplay_scale_OSC_BUBBLESORT, {
 	Synth(\midisine_scale_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75)]);
 }, "/scale_play_BUBBLESORT");
 
-// Create address to send messages to Processing client
+// Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;

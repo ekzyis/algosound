@@ -53,7 +53,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
     private int index;
     // Selected sonification
     protected Sonification selected_sonification;
-    // Frequencies for SCALE sonification.
+    // Frequencies for sonification.
     public int FREQ_MIN = 200, FREQ_MAX = 4000;
 
     public SortingAlgorithm(int N) {

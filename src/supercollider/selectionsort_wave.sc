@@ -114,7 +114,7 @@ OSCdef(\free_wave_OSC_SELECTIONSORT, {
 	~algowave.set(\gate, 0);
 }, "/wave_free_SELECTIONSORT");
 
-// Create address to send messages to Processing client
+// Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;

@@ -100,7 +100,7 @@ OSCdef(\midiplay_scale_OSC_INSERTIONSORT, {
 	Synth(\midisine_scale_INSERTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75)]);
 }, "/scale_play_INSERTIONSORT");
 
-// Create address to send messages to Processing client
+// Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;

@@ -101,7 +101,7 @@ OSCdef(\midiplay_scale_OSC_QUICKSORT, {
 	Synth(\midisine_scale_QUICKSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2]]);
 }, "/scale_play_QUICKSORT");
 
-// Create address to send messages to Processing client
+// Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;

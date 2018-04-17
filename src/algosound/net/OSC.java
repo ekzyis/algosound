@@ -76,7 +76,7 @@ public class OSC extends PApplet {
     // Listen for messages.
     public void oscEvent(OscMessage msg) {
         // System.out.println("osc: message received: " + msg.addrPattern());
-        // SC3 will send SC_REPLY-message if OSC did send OSC_STATUS-message.
+        // SC3 will fire SC_REPLY-message if OSC did fire OSC_STATUS-message.
         if (msg.checkAddrPattern(SC_REPLY))
             connected = true;
     }
@@ -135,7 +135,7 @@ public class OSC extends PApplet {
         }
         System.out.println("]");
         if (OSC != null)
-            OSC.send(msg, SUPERCOLLIDER);
+            OSC.fire(msg, SUPERCOLLIDER);
     }
     */
 
