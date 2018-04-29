@@ -106,5 +106,5 @@ Added features in this update:
 * Input controllers: User can now modify parameters of the synths while sorting
 * Pause icon: Visible, animated feedback for the user that sorting has been paused. *WARNING: Icon is affected by fps slider. Photosensitive epilepsy patients should proceed with caution.*
 
-Currently, I am working on overhauling the sonifications since the Sonification class does handle stuff it shouldn't. Algosound should dictate where things should be on the canvas. Only the controller should be created by Sonification, not the real drawing of those. This will make implementing new sonifications or user input a lot easier.
+Currently, I am working on overhauling the sonifications since the Sonification class does handle stuff it shouldn't. Algosound should dictate where things should be on the canvas. Only the controller should be created by Sonification. This will make implementing new sonifications or user input a lot easier.
 
