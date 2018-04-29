@@ -9,7 +9,7 @@ Project for a computermusic seminar about SuperCollider with Processing and OSC 
 [Update #1 - 29.01.18](https://github.com/ekzyis/algosound#update-1-what-have-i-gotten-myself-into---290118) <br />
 [Update #2 - 09.02.18](https://github.com/ekzyis/algosound#update-2-gen-1-sonification---check---090218) <br />
 [Update #3 - 11.02.18](https://github.com/ekzyis/algosound#update-3-finished-gen-2-sonification-and-some-ui---110218) <br />
---[Update #3.1 - 18.04.18](https://github.com/ekzyis/algosound#update-3.1-going-from-processing-(back)-to-java---180418)
+--[Update #3.1 - 18.04.18](https://github.com/ekzyis/algosound#update-31-going-from-processing-back-to-java---180418)
 ### What is this project about?
 This project's goal is to create visualization and sonification of algorithms using Processing and SuperCollider.
 A good example is this video on YouTube: https://www.youtube.com/watch?v=kPRA0W1kECg&t=36s <br />
