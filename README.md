@@ -8,8 +8,8 @@ Project for a computermusic seminar about SuperCollider with Processing and OSC 
 [How to use - Compiling](https://github.com/ekzyis/algosound#how-to-use---compiling) <br />
 [Update #1 - 29.01.18](https://github.com/ekzyis/algosound#update-1-what-have-i-gotten-myself-into---290118) <br />
 [Update #2 - 09.02.18](https://github.com/ekzyis/algosound#update-2-gen-1-sonification---check---090218) <br />
-[Update #3 - 11.02.18](https://github.com/ekzyis/algosound#update-3--finished-gen-2-sonification-and-some-ui---110218) <br />
-
+[Update #3 - 11.02.18](https://github.com/ekzyis/algosound#update-3-finished-gen-2-sonification-and-some-ui---110218) <br />
+--[Update #3.1 - 18.04.18](https://github.com/ekzyis/algosound#update-3.1-going-from-processing-(back)-to-java---180418)
 ### What is this project about?
 This project's goal is to create visualization and sonification of algorithms using Processing and SuperCollider.
 A good example is this video on YouTube: https://www.youtube.com/watch?v=kPRA0W1kECg&t=36s <br />
@@ -79,7 +79,7 @@ This Gen 2 Sonification has been already implemented in bubblesort.
 
 Implementation of the graph algorithms has not started yet because I want to focus more on synths and sonification before starting to implement two algorithms from scratch, including a whole new visualization.
 
-### Update #3  "Finished gen 2 sonification... and some UI!" - 11.02.18
+### Update #3 "Finished gen 2 sonification... and some UI!" - 11.02.18
 An user interface has been implemented with the controlP5-library. The UI supports functionality for starting, pausing and resetting the sorting and a button to change between both currently implemented sonifications "WAVE" and "SCALE".
 
 This means of course that the gen 2 sonification has been added to all algorithms. The fundamental process of creating this was about producing harmonic notes - in contrast to the random nature of the previous sonification. Therefore, I created a scale in SuperCollider and mapped the values of the current accessed elements to this scale, producing a harmonic tone which represents the accessed element. The current scale (which should be G#-minor - but I'm not a music expert) is not interchangeable by user input. This should change in the future since it has a lot of potential to increase the overall spectrum of sound, amplified by the combination of other still-to-be-added user input.
@@ -91,11 +91,17 @@ My solution to this problem will probably be a single Java application which imp
  * Create more user input to enhance sonifications
  * Fix the "copy-and-paste"-issue of the source files
 
-### Update #3.1  "Going from Processing (back) to Java" - 18.04.18
+### Update #3.1 "Going from Processing (back) to Java" - 18.04.18
 
 [Update #3](https://github.com/ekzyis/algosound#update-3--finished-gen-2-sonification-and-some-ui---110218) was the last update before my work got evaluated by my proofessor. After sending in my code, I did spend some time on finishing rebasing the code base on java code and not Processing code. I am now using <b>IntelliJ IDE</b> and since I didn't talk about this before (but I wished I would) I will list some background information about the project:
 * First, I was using the <b>Processing IDE</b>.
-* After it got very unhandy to have your open files as a tab, I started using Sublime Text 3. This made it possible to add automated header to files when saving. Since I created files a long time ago before I now started using the script, I changed some files manually with the time they "about" got created but I may missed some files or dates. So it would have been very helpful but in the end wasn't.
-* Switching to java meant switchting to a real IDE and not an text editor. I could and did compile my code also in Sublime Text 3 - which I like a lot because of its simplicity and plugins - but I missed some features of IDE like the Outline-window and the package explorer. I used <b>NetBeans</b> before, used some <b>Eclipse</b> due to a lecture (which I disliked for unknown reason) and now wanted to try out <b>IntelliJ IDE</b>. 
+* After it got very unhandy to have your open files as a tab, I started using Sublime Text 3. This made it possible to add automated header to files when saving. Since I created files a long time ago before I started using the script, I changed some files manually with the time they "about" got created but I may missed some files or dates. So it would have been very helpful but in the end wasn't.
+* Switching to java meant switching to a real IDE and not an text editor. I could and did compile my code also in Sublime Text 3 - which I like a lot because of its simplicity and plugins - but I missed some features of IDE like the Outline-window and the package explorer. I used <b>NetBeans</b> before, used some <b>Eclipse</b> due to a lecture (which I disliked for unknown reason) and now wanted to try out <b>IntelliJ IDE</b>. 
 
 This jump to java and additional things like new features does mean some paragraphs had been changed backdated like the [section about compiling](https://github.com/ekzyis/algosound#how-to-use---compiling) or [running](https://github.com/ekzyis/algosound#how-to-use---running-the-application).
+
+Added features in this update:
+* Application bundled: All algorithms are now inside one application!
+* FPS slider: User can now speed up or slow down sorting. Speed is measured in Frames per second.
+* Input controllers: User can now modify parameters of the synths while sorting
+* Pause icon: Visible, animated feedback for the user that sorting has been paused. *WARNING: Icon is affected by fps slider. Photosensitive epilepsy patients should proceed with caution.*
