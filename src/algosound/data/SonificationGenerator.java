@@ -22,7 +22,16 @@ class SonificationGenerator {
     static Sonification BUBBLESORT_WAVE;
 
     // BUBBLESORT-WAVE
-    {
+
+    /**
+     * TODO
+     * Do Controllers need ControlP5 at instantiation?
+     * If so, fix the issue that controlP5 is null since sonifications do get created before the object Algosound
+     * of type PApplet gets initialized. Is there a workaround for this?
+     * -> 1. Create static methods which return the sonifications when needed. Add ControlP5 as argument.
+     * This makes sure that there is a initialized controlP5 instance given. (Check for null)
+     * -> 2.
+     */ {
         Controller[] c;
         String name = "WAVE";
         String start = "/wave_start" + Bubblesort.SUFFIX;

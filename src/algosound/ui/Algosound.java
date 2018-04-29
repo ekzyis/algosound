@@ -2,8 +2,8 @@ package algosound.ui;
 
 import algosound.data.Visual;
 import algosound.data.algorithms.Algorithm;
-import algosound.net.OSC;
 import algosound.net.ControllerInterface;
+import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;
 import controlP5.Button;
 import controlP5.ControlEvent;
@@ -159,6 +159,9 @@ public class Algosound extends PApplet {
                 frameRate(PREFERRED_FRAMERATE);
                 FRAMERATE = PREFERRED_FRAMERATE;
             }
+            // Not needded. Anded nonetheless.
+        } else if (c == EXIT) {
+            exit();
         } else if (c instanceof ControllerInterface) {
             ControllerInterface i = (ControllerInterface) c;
             i.fire();
