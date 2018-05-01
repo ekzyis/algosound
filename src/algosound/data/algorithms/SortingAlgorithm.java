@@ -4,6 +4,7 @@ import algosound.data.Element;
 import algosound.data.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;
+import algosound.util.AlgosoundUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -284,6 +285,8 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
         try {
             sort = constructor.newInstance(N);
             sort.setSonification(index);
+            // Overwrite instance in algorithm list with this new one.
+            AlgosoundUtil.updateAlgorithm(sort);
             return sort;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
