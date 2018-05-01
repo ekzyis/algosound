@@ -159,7 +159,7 @@ public class Algosound extends PApplet {
                 frameRate(PREFERRED_FRAMERATE);
                 FRAMERATE = PREFERRED_FRAMERATE;
             }
-            // Not needded. Anded nonetheless.
+            // Not needded. Added nonetheless.
         } else if (c == EXIT) {
             exit();
         } else if (c instanceof ControllerInterface) {
@@ -219,7 +219,7 @@ public class Algosound extends PApplet {
         fill(25, 200);
         noStroke();
         rect(0, 0, AlgosoundUtil.W, AlgosoundUtil.H);
-        // Every 20 frames, the color of the pause symbol changes randomly.
+        // Every 5 frames, the color of the pause symbol changes randomly.
         if (frameCount % 5 == 0) {
             phaseIndex = (int) random(0, pauseColors.length);
             pauseColor = pauseColors[phaseIndex];
@@ -228,9 +228,6 @@ public class Algosound extends PApplet {
         int centerx = (AlgosoundUtil.W / 2);
         int centery = (AlgosoundUtil.H / 2);
         stroke(0);
-        strokeWeight(5);
-        //line(centerx, 0, centerx, AlgosoundUtil.H);
-        //line(0, centery, AlgosoundUtil.W, centery);
         strokeWeight(1);
         noStroke();
         rectMode(CENTER);
