@@ -250,6 +250,10 @@ public class Sonification {
         }
         int modpathcounter = REALTIMEPATH.split("~").length;
         if (STYLE == KNOBSTYLE) {
+            /**
+             * FIXME
+             * THIS SHOULD BE IN ALGOSOUND NOT IN SONIFICATION! -> SONIFICATION OVERHAUL
+             */
             // Calculate position of coming controllers.
             Point[] pos = new Point[modpathcounter];
             int x0 = 15;

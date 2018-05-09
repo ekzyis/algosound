@@ -19,11 +19,10 @@ import static algosound.util.AlgosoundUtil.KNOBSIZE;
  * @date 18/04/2018
  */
 class SonificationGenerator {
-    static Sonification BUBBLESORT_WAVE;
-
-    // BUBBLESORT-WAVE
 
     /**
+     * BUBBLESORT WAVE
+     * ===============
      * TODO
      * Do Controllers need ControlP5 at instantiation?
      * If so, fix the issue that controlP5 is null since sonifications do get created before the object Algosound
@@ -31,7 +30,8 @@ class SonificationGenerator {
      * -> 1. Create static methods which return the sonifications when needed. Add ControlP5 as argument.
      * This makes sure that there is a initialized controlP5 instance given. (Check for null)
      * -> 2.
-     */ {
+     */
+    public static Sonification getBubblesortWAVE(ControlP5 cp5) {
         Controller[] c;
         String name = "WAVE";
         String start = "/wave_start" + Bubblesort.SUFFIX;
@@ -46,7 +46,6 @@ class SonificationGenerator {
         float[] cvalues = {0f, 3f, 0.2f,
                 0f, 2f, 0.1f,
                 0f, 5f, 0.1f};
-        ControlP5 cp5 = Algosound.getInstance().getCP5();
         c = new Controller[5];
         // First three controllers are osc controllers.
         for (int i = 0; i < 3; ++i) {
@@ -90,7 +89,7 @@ class SonificationGenerator {
                 .setRange(1, 8000)
                 .setValue(4000)
                 .hide();
-        BUBBLESORT_WAVE = new Sonification(name, start, pause, resume, mod, free, status, boot, c);
+        return new Sonification(name, start, pause, resume, mod, free, status, boot, c);
     }
 
     static Sonification BUBBLESORT_SCALE;
