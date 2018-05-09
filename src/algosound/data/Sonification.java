@@ -358,7 +358,7 @@ public class Sonification {
                         .setValue(DEFAULTVALUES[j + 2]);
             }
         } else {
-            System.err.println("CAN NOT INITALIZE PANEL: NO STYLE SET");
+            System.err.println("CAN NOT INITIALIZE PANEL: NO STYLE SET");
             return 1;
         }
         return 0;
