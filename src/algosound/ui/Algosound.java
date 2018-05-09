@@ -51,7 +51,9 @@ public class Algosound extends PApplet {
 
     public void initGUI() {
         // Initialize the graphical user interface.
-        cp5 = new ControlP5(this);// Create the y-coordinates for the buttons and save them in an array.
+        cp5 = new ControlP5(this);
+
+        // Create the y-coordinates for the buttons and save them in an array.
         Button.autoWidth = 65;
         Button.autoHeight = 25;
         int yInset = 10;
