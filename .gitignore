@@ -3,3 +3,4 @@
 out/*
 .idea/*
 Algosound.iml
+__pycache__
