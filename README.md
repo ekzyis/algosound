@@ -1,6 +1,6 @@
 # algosound
 ![showcase](images/algosound_showcase_v2.png) <br />
-Project for a computermusic seminar about SuperCollider with Processing and OSC protocol.
+Project for a computermusic seminar about SuperCollider with ~Processing~ Java and OSC protocol.
 
 ## Index
 [What is this project about?](https://github.com/ekzyis/algosound#what-is-this-project-about) <br />
