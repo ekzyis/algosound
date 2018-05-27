@@ -1,5 +1,5 @@
 # algosound
-![showcase](images/algosound_showcase.png) <br />
+![showcase](images/algosound_showcase_v2.png) <br />
 Project for a computermusic seminar about SuperCollider with Processing and OSC protocol.
 
 ## Index
