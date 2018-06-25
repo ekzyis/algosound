@@ -49,7 +49,8 @@ public class OSC extends PApplet {
         status = new Thread() {
             @Override
             public void run() {
-                System.out.println("--- checkSC3Status-thread started.");
+                System.out.print(new java.text.SimpleDateFormat("### [yyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+                System.out.println("PROCESS @ checkSC3Status started.");
                 while (!isInterrupted()) {
                     /**
                      * TODO: This implementation depends on order of execution. If 1. connected gets
@@ -67,7 +68,8 @@ public class OSC extends PApplet {
                         this.interrupt();
                     }
                 }
-                System.out.println("--- checkSC3Status-thread terminated.");
+                System.out.print(new java.text.SimpleDateFormat("### [yyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+                System.out.println("PROCESS @ checkSC3Status stopped.");
             }
         };
         status.start();
@@ -75,7 +77,8 @@ public class OSC extends PApplet {
 
     // Listen for messages.
     public void oscEvent(OscMessage msg) {
-        // System.out.println("osc: message received: " + msg.addrPattern());
+        System.out.print(new java.text.SimpleDateFormat("### [yyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+        System.out.println("OSC @ RECV_MSG: " + msg.addrPattern());
         // SC3 will fire SC_REPLY-message if OSC did fire OSC_STATUS-message.
         if (msg.checkAddrPattern(SC_REPLY))
             connected = true;
@@ -88,14 +91,15 @@ public class OSC extends PApplet {
      * @args arguments within osc message
      */
     public void sendMessage(String path, int[] args) {
-        System.out.print("osc: sending message to: " + path);
+        System.out.print(new java.text.SimpleDateFormat("### [yyyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+        System.out.print("OSC @ SEND_MSG to: " + path);
         OscMessage msg = new OscMessage(path);
-        System.out.print(" with [ ");
+        System.out.print(", ARGS: [ ");
         for (int n : args) {
             msg.add(n);
             System.out.print(n + " ");
         }
-        System.out.print("] as arguments");
+        System.out.print("]");
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
         else System.err.print(" FAILED SENDING MESSAGE");
@@ -103,14 +107,15 @@ public class OSC extends PApplet {
     }
 
     public void sendMessage(String path, float[] args) {
-        System.out.print("osc: sending message to: " + path);
+        System.out.print(new java.text.SimpleDateFormat("### [yyyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+        System.out.print("OSC @ SEND_MSG to: " + path);
         OscMessage msg = new OscMessage(path);
-        System.out.print(" with [ ");
+        System.out.print(", ARGS: [ ");
         for (float n : args) {
             msg.add(n);
             System.out.print(n + " ");
         }
-        System.out.print("] as arguments");
+        System.out.print("]");
         if (OSC != null)
             OSC.send(msg, SUPERCOLLIDER);
         else System.err.print(" FAILED SENDING MESSAGE");
