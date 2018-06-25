@@ -2,5 +2,6 @@
 *.sublime-*
 out/*
 .idea/*
-Algosound.iml
+[aA]lgosound.iml
 __pycache__
+lib/*/
