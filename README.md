@@ -71,7 +71,7 @@ My solution to this problem will probably be a single Java application which imp
 * After it got very unhandy to have your open files as a tab, I started using <b>Sublime Text 3</b>. This made it possible to add automated header to files when saving. Since I created files a long time ago before I started using the script, I changed some files manually with the time they "about" got created but I may missed some files or dates. So it would have been very helpful but in the end wasn't.
 * Switching to Java meant switching to a real IDE and not an text editor. I could and did compile my code also in Sublime Text 3 - which I like a lot because of its simplicity and plugins - but I missed some features of IDE like the Outline-window and the package explorer. I used <b>NetBeans</b> before, used some <b>Eclipse</b> due to a lecture (which I disliked for unknown reason) and now wanted to try out <b>IntelliJ IDE</b>. 
 
-This jump to Java and additional things like new features does mean some paragraphs had been changed backdated like the [section about compiling](https://github.com/ekzyis/algosound#how-to-use---compiling) or [running](https://github.com/ekzyis/algosound#how-to-use---running-the-application).
+~~This jump to Java and additional things like new features does mean some paragraphs had been changed backdated like the [section about compiling](https://github.com/ekzyis/algosound#how-to-use---compiling) or [running](https://github.com/ekzyis/algosound#how-to-use---running-the-application).~~ *These paragraphs have been replaced by [Getting started](https://github.com/ekzyis/algosound#getting-started)*
 
 Added features in this update:
 * Application bundled: All algorithms are now inside one application!
