@@ -39,6 +39,9 @@ public class OSC extends PApplet {
     // Status thread which checks periodically for sc3-server.
     private final Thread status;
 
+    // Standardized time format
+    private final java.text.SimpleDateFormat TIMEFORMAT = new java.text.SimpleDateFormat("### [yyyy/M/dd HH:mm:ss] ");
+
     private OSC() {
         OSC = new OscP5(this, OSC_PORT);
         SUPERCOLLIDER = new NetAddress("127.0.0.1", SC_PORT);
@@ -49,7 +52,7 @@ public class OSC extends PApplet {
         status = new Thread() {
             @Override
             public void run() {
-                System.out.print(new java.text.SimpleDateFormat("### [yyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+                System.out.print(TIMEFORMAT.format(new java.util.Date()));
                 System.out.println("PROCESS @ checkSC3Status started.");
                 while (!isInterrupted()) {
                     /**
@@ -68,7 +71,7 @@ public class OSC extends PApplet {
                         this.interrupt();
                     }
                 }
-                System.out.print(new java.text.SimpleDateFormat("### [yyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+                System.out.print(TIMEFORMAT.format(new java.util.Date()));
                 System.out.println("PROCESS @ checkSC3Status stopped.");
             }
         };
@@ -77,7 +80,7 @@ public class OSC extends PApplet {
 
     // Listen for messages.
     public void oscEvent(OscMessage msg) {
-        System.out.print(new java.text.SimpleDateFormat("### [yyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+        System.out.print(TIMEFORMAT.format(new java.util.Date()));
         System.out.println("OSC @ RECV_MSG: " + msg.addrPattern());
         // SC3 will fire SC_REPLY-message if OSC did fire OSC_STATUS-message.
         if (msg.checkAddrPattern(SC_REPLY))
@@ -91,7 +94,7 @@ public class OSC extends PApplet {
      * @args arguments within osc message
      */
     public void sendMessage(String path, int[] args) {
-        System.out.print(new java.text.SimpleDateFormat("### [yyyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+        System.out.print(TIMEFORMAT.format(new java.util.Date()));
         System.out.print("OSC @ SEND_MSG to: " + path);
         OscMessage msg = new OscMessage(path);
         System.out.print(", ARGS: [ ");
@@ -107,7 +110,7 @@ public class OSC extends PApplet {
     }
 
     public void sendMessage(String path, float[] args) {
-        System.out.print(new java.text.SimpleDateFormat("### [yyyy/MM/dd HH:mm:ss] ").format(new java.util.Date()));
+        System.out.print(TIMEFORMAT.format(new java.util.Date()));
         System.out.print("OSC @ SEND_MSG to: " + path);
         OscMessage msg = new OscMessage(path);
         System.out.print(", ARGS: [ ");
