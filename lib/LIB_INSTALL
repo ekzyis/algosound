@@ -1,9 +1,0 @@
-https://processing.org/download/
-  ../library/core/core.jar
-http://www.erase.net/projects/processing-sc/
-  ../processing-sc/supercollider/library/supercollider.jar
-http://www.sojamo.de/libraries/oscP5/
-  ../oscP5/oscP5/library/oscP5.jar
-http://www.sojamo.de/libraries/controlP5/
-  ../controlP5/controlP5/library/controlP5.jar
-

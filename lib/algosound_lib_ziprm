@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rm controlP5-2.2.5.zip
+rm oscP5-0.9.8.zip
+rm processing-sc.zip
+rm processing-3.3.7-linux64.tgz
+

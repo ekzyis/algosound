@@ -24,9 +24,11 @@ First, I am going to make some basic visualization of different algorithms and s
 ```shell
  cd ~
  git clone https://github.com/ekzyis/algosound.git
- cat algosound/lib/LIB_INSTALL
+ cat algosound/lib/LIB_README
 ```
-For compiling the source you need these four libraries which are available to download at the specified location.
+For compiling the source you need these four libraries which are available to download at the specified location (listed in lib/LIB_README).
+
+To make the process of downloading and unzipping the libraries easier, you can use the script *algosound_lib_dl* inside the lib/ folder.
 
  **SuperCollider** <br />
  You will also need to have SuperCollider installed. Download it from [here](https://supercollider.github.io/download.html) if you don't have it already. The version I am using is 3.9.1. If you are new to SuperCollider, go check out this awesome tutorial playlist: <br /> https://www.youtube.com/watch?v=yRzsOOiJ_p4&list=PLPYzvS8A_rTaNDweXe6PX4CXSGq4iEWYC <br />
