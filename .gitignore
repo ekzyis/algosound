@@ -5,3 +5,7 @@ out/*
 [aA]lgosound.iml
 __pycache__
 lib/*/
+controlP5-2.2.5.zip
+oscP5-0.9.8.zip
+processing-3.3.7-linux64.tgz
+processing-sc.zip
