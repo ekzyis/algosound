@@ -12,7 +12,7 @@ import controlP5.Knob;
  */
 public class OSCKnob extends Knob implements ControllerInterface {
     // Path where msg should be fire to.
-    public final String OSCPATH;
+    protected final String OSCPATH;
 
     public OSCKnob(ControlP5 controlP5, String s, String path) {
         super(controlP5, s);
