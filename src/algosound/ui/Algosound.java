@@ -159,7 +159,7 @@ public class Algosound extends PApplet {
                 frameRate(PREFERRED_FRAMERATE);
                 FRAMERATE = PREFERRED_FRAMERATE;
             }
-            // Not needded. Added nonetheless.
+            // Not needed. Added nonetheless.
         } else if (c == EXIT) {
             exit();
         } else if (c instanceof ControllerInterface) {
