@@ -131,11 +131,11 @@ class SonificationGenerator {
                 }
             }
         }.setRadius(KNOBSIZE / 2)
-                .setDragDirection(Knob.HORIZONTAL)
-                .setRange(cvalues[3], cvalues[4])
-                .setValue(cvalues[5])
-                // Do not show them on the canvas since we are currently on creating them
-                .hide();
+        .setDragDirection(Knob.HORIZONTAL)
+        .setRange(cvalues[3], cvalues[4])
+        .setValue(cvalues[5])
+        // Do not show them on the canvas since we are currently on creating them
+        .hide();
         c[2] = new OSCKnob(cp5, cnames[2], oscpaths[2]) {
             @Override
             public void fire() {
@@ -148,11 +148,11 @@ class SonificationGenerator {
                 }
             }
         }.setRadius(KNOBSIZE / 2)
-                .setDragDirection(Knob.HORIZONTAL)
-                .setRange(cvalues[6], cvalues[7])
-                .setValue(cvalues[8])
-                // Do not show them on the canvas since we are currently on creating them
-                .hide();
+        .setDragDirection(Knob.HORIZONTAL)
+        .setRange(cvalues[6], cvalues[7])
+        .setValue(cvalues[8])
+        // Do not show them on the canvas since we are currently on creating them
+        .hide();
         BUBBLESORT_SCALE = new Sonification(name, start, pause, resume, mod, free, status, boot, c);
     }
 }
