@@ -1,7 +1,7 @@
 package algosound.data.algorithms;
 
 import algosound.data.Sonification;
-import algosound.data.Visual;
+import algosound.data.visuals.Visual;
 
 /**
  * Interface for algorithms.

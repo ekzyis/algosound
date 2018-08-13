@@ -1,4 +1,4 @@
-package algosound.data;
+package algosound.data.visuals;
 
 import algosound.util.AlgosoundUtil;
 import processing.core.PApplet;

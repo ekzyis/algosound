@@ -1,4 +1,4 @@
-package algosound.data;
+package algosound.data.visuals;
 
 /**
  * Abstract class for visual elements of any type.

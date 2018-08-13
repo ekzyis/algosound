@@ -1,7 +1,7 @@
 package algosound.data.algorithms;
 
-import algosound.data.Element;
-import algosound.data.MergesortElement;
+import algosound.data.visuals.Element;
+import algosound.data.visuals.MergesortElement;
 import algosound.data.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;

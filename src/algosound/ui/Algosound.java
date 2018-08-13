@@ -1,6 +1,6 @@
 package algosound.ui;
 
-import algosound.data.Visual;
+import algosound.data.visuals.Visual;
 import algosound.data.algorithms.Algorithm;
 import algosound.net.ControllerInterface;
 import algosound.net.OSC;
