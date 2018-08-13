@@ -1,11 +1,11 @@
 package algosound.data.algorithms;
 
-import algosound.data.Sonification;
+import algosound.data.audio.Sonification;
 import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;
 
-import static algosound.data.Sonification.SELECTIONSORT_SCALE;
-import static algosound.data.Sonification.SELECTIONSORT_WAVE;
+import static algosound.data.audio.Sonification.SELECTIONSORT_SCALE;
+import static algosound.data.audio.Sonification.SELECTIONSORT_WAVE;
 import static algosound.util.AlgosoundUtil.expmap;
 import static processing.core.PApplet.map;
 

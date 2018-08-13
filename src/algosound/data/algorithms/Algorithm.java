@@ -1,6 +1,6 @@
 package algosound.data.algorithms;
 
-import algosound.data.Sonification;
+import algosound.data.audio.Sonification;
 import algosound.data.visuals.Visual;
 
 /**

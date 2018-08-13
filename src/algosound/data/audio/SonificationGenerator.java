@@ -1,4 +1,4 @@
-package algosound.data;
+package algosound.data.audio;
 
 import algosound.data.algorithms.Bubblesort;
 import algosound.data.algorithms.SortingAlgorithm;

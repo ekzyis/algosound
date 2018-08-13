@@ -2,7 +2,7 @@ package algosound.data.algorithms;
 
 import algosound.data.visuals.Element;
 import algosound.data.visuals.QuicksortElement;
-import algosound.data.Sonification;
+import algosound.data.audio.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;
 import algosound.util.AlgosoundUtil;
@@ -10,8 +10,8 @@ import algosound.util.AlgosoundUtil;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static algosound.data.Sonification.QUICKSORT_SCALE;
-import static algosound.data.Sonification.QUICKSORT_WAVE;
+import static algosound.data.audio.Sonification.QUICKSORT_SCALE;
+import static algosound.data.audio.Sonification.QUICKSORT_WAVE;
 import static algosound.util.AlgosoundUtil.expmap;
 import static processing.core.PApplet.map;
 import static processing.core.PApplet.subset;

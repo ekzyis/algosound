@@ -1,4 +1,4 @@
-package algosound.data;
+package algosound.data.audio;
 
 import algosound.data.algorithms.*;
 import algosound.net.OSC;

@@ -2,7 +2,7 @@ package algosound.data.algorithms;
 
 import algosound.data.visuals.Element;
 import algosound.data.visuals.MergesortElement;
-import algosound.data.Sonification;
+import algosound.data.audio.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;
 import algosound.util.AlgosoundUtil;
@@ -11,8 +11,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import static algosound.data.Sonification.MERGESORT_SCALE;
-import static algosound.data.Sonification.MERGESORT_WAVE;
+import static algosound.data.audio.Sonification.MERGESORT_SCALE;
+import static algosound.data.audio.Sonification.MERGESORT_WAVE;
 import static algosound.util.AlgosoundUtil.expmap;
 import static processing.core.PApplet.*;
 

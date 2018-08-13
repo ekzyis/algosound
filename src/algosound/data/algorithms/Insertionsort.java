@@ -1,14 +1,14 @@
 package algosound.data.algorithms;
 
 
-import algosound.data.Sonification;
+import algosound.data.audio.Sonification;
 import algosound.net.OSC;
 import algosound.util.AlgosoundUtil;
 
 import java.awt.*;
 
-import static algosound.data.Sonification.INSERTIONSORT_SCALE;
-import static algosound.data.Sonification.INSERTIONSORT_WAVE;
+import static algosound.data.audio.Sonification.INSERTIONSORT_SCALE;
+import static algosound.data.audio.Sonification.INSERTIONSORT_WAVE;
 import static algosound.util.AlgosoundUtil.expmap;
 
 /**

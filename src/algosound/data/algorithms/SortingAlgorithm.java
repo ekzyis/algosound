@@ -1,7 +1,7 @@
 package algosound.data.algorithms;
 
 import algosound.data.visuals.Element;
-import algosound.data.Sonification;
+import algosound.data.audio.Sonification;
 import algosound.net.OSC;
 import algosound.ui.Algosound;
 import algosound.util.AlgosoundUtil;
