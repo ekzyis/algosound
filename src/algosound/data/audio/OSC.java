@@ -4,7 +4,7 @@
  * @Last Modified by:   ekzyis
  * @Last Modified time: 18-02-2018 01:00:15
  */
-package algosound.net;
+package algosound.data.audio;
 
 import algosound.ui.Algosound;
 import netP5.NetAddress;

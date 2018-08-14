@@ -1,9 +1,6 @@
 package algosound.data.audio;
 
 import algosound.data.algorithms.*;
-import algosound.net.OSC;
-import algosound.net.OSCKnob;
-import algosound.net.OSCSlider;
 import algosound.ui.Algosound;
 import algosound.util.AlgosoundUtil;
 import controlP5.ControlP5;
@@ -15,7 +12,7 @@ import java.awt.*;
 import static algosound.util.AlgosoundUtil.*;
 
 /**
- * Sonification-class. This class is used in the implemented algorithms
+ * Sonification class. This class is used in the implemented algorithms
  * to define the paths for the specific sonifications.
  * ================================
  *
@@ -369,7 +366,7 @@ public class Sonification {
         this.STYLE = x;
     }
 
-    // Reset sliders to default.
+    // Reset controllers to default.
     public void reset() {
         int i = 0;
         for (Controller c : controllers) {

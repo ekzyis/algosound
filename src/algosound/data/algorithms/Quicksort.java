@@ -3,7 +3,7 @@ package algosound.data.algorithms;
 import algosound.data.visuals.Element;
 import algosound.data.visuals.QuicksortElement;
 import algosound.data.audio.Sonification;
-import algosound.net.OSC;
+import algosound.data.audio.OSC;
 import algosound.ui.Algosound;
 import algosound.util.AlgosoundUtil;
 

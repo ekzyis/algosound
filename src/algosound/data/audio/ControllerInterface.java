@@ -1,4 +1,4 @@
-package algosound.net;
+package algosound.data.audio;
 
 /**
  * Interface for controlP5.controllers to do something during a control event.

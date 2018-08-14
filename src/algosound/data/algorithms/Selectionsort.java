@@ -1,7 +1,7 @@
 package algosound.data.algorithms;
 
 import algosound.data.audio.Sonification;
-import algosound.net.OSC;
+import algosound.data.audio.OSC;
 import algosound.util.AlgosoundUtil;
 
 import static algosound.data.audio.Sonification.SELECTIONSORT_SCALE;

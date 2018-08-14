@@ -2,8 +2,8 @@ package algosound.ui;
 
 import algosound.data.visuals.Visual;
 import algosound.data.algorithms.Algorithm;
-import algosound.net.ControllerInterface;
-import algosound.net.OSC;
+import algosound.data.audio.ControllerInterface;
+import algosound.data.audio.OSC;
 import algosound.util.AlgosoundUtil;
 import controlP5.Button;
 import controlP5.ControlEvent;

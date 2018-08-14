@@ -1,4 +1,4 @@
-package algosound.net;
+package algosound.data.audio;
 
 import controlP5.ControlP5;
 import controlP5.Knob;
