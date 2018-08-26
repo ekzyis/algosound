@@ -8,6 +8,8 @@ import controlP5.Controller;
 import controlP5.Knob;
 
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import static algosound.util.AlgosoundUtil.*;
 
@@ -19,199 +21,149 @@ import static algosound.util.AlgosoundUtil.*;
  * @author ekzyis
  * @date 17/02/2018
  */
+
+
 public class Sonification {
+
+    interface LambdaInterface {
+        String call(String s1);
+    }
+
+    enum Type {
+        WAVE, SCALE
+    }
+
     public static final Sonification BUBBLESORT_WAVE = new Sonification(
-            "WAVE",
-            "/wave_start" + Bubblesort.SUFFIX,
-            "/wave_pause" + Bubblesort.SUFFIX,
-            "/wave_resume" + Bubblesort.SUFFIX,
-            "/wave_set" + Bubblesort.SUFFIX,
-            "/wave_free" + Bubblesort.SUFFIX,
-            "/hellowave" + Bubblesort.SUFFIX,
-            "/boot_wave" + Bubblesort.SUFFIX,
-            "/wave_set_amp" + Bubblesort.SUFFIX + "~/wave_set_freqlag" + Bubblesort.SUFFIX + "~/wave_set_amplag" + Bubblesort.SUFFIX,
-            "AMP~FREQLAG~AMPLAG",
-            new float[]{0f, 3f, 0.2f,
-                    0f, 2f, 0.1f,
-                    0f, 5f, 0.1f});
+            Type.WAVE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP", "set_amp", 0f, 3f, 0.2f),
+                    new OSCControllerWrapper("FREQLAG", "set_freqlag", 0f, 2f, 0.1f),
+                    new OSCControllerWrapper("AMPLAG", "set_amplag", 0f, 5f, 0.1f)
+            },
+            Bubblesort.SUFFIX
+    );
     public static final Sonification BUBBLESORT_SCALE = new Sonification(
-            "SCALE",
-            "/scale_start" + Bubblesort.SUFFIX,
-            "",
-            "",
-            "/scale_play" + Bubblesort.SUFFIX,
-            "",
-            "/helloscale" + Bubblesort.SUFFIX,
-            "/boot_scale_BUBBLESORT",
-            "/scale_set_amp" + Bubblesort.SUFFIX + "~/scale_set_MINFREQ" + Bubblesort.SUFFIX + "~/scale_set_MAXFREQ" + Bubblesort.SUFFIX,
-            "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f,
-                    100f, 8000f, 200f,
-                    100f, 8000f, 4000f});
+            Type.SCALE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP", "set_amp", 0f, 0.3f, 0.2f),
+                    new OSCControllerWrapper("MINFREQ", "set_MINFREQ", 100f, 8000f, 200f),
+                    new OSCControllerWrapper("MAXFREQ", "set_MAXFREQ", 100f, 8000f, 4000f)
+            },
+            Bubblesort.SUFFIX
+    );
     public static final Sonification INSERTIONSORT_WAVE = new Sonification(
-            "WAVE",
-            "/wave_start" + Insertionsort.SUFFIX,
-            "/wave_pause" + Insertionsort.SUFFIX,
-            "/wave_resume" + Insertionsort.SUFFIX,
-            "/wave_set" + Insertionsort.SUFFIX,
-            "/wave_free" + Insertionsort.SUFFIX,
-            "/hellowave" + Insertionsort.SUFFIX,
-            "/boot_wave" + Insertionsort.SUFFIX,
-            "/wave_set_amp" + Insertionsort.SUFFIX + "~/wave_set_freqlag" + Insertionsort.SUFFIX + "~/wave_set_amplag" + Insertionsort.SUFFIX + "~/wave_pulse_set_freq" + Insertionsort.SUFFIX + "~/wave_pulse_set_amp" + Insertionsort.SUFFIX,
-            "AMP~FREQLAG~AMPLAG~PULSEFREQ~PULSEAMP",
-            new float[]{0f, 3f, 0.2f,
-                    0f, 2f, 0.1f,
-                    0f, 5f, 0.1f,
-                    1f, 100f, 10f,
-                    0f, 1f, 0.2f,});
+            Type.WAVE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp", 0f, 3f, 0.2f),
+                    new OSCControllerWrapper("FREQLAG", "set_freqlag", 0f, 2f, 0.1f),
+                    new OSCControllerWrapper("AMPLAG","set_amplag",0f,5f,0.1f),
+                    new OSCControllerWrapper("PULSEFREQ","pulse_set_freq",1f, 100f, 10f),
+                    new OSCControllerWrapper("PULSEAMP","pulse_set_amp",0f,1f,0.2f)
+            },
+            Insertionsort.SUFFIX
+    );
     public static final Sonification INSERTIONSORT_SCALE = new Sonification(
-            "SCALE",
-            "/scale_start" + Insertionsort.SUFFIX,
-            "",
-            "",
-            "/scale_play" + Insertionsort.SUFFIX,
-            "",
-            "/helloscale" + Insertionsort.SUFFIX,
-            "/boot_scale" + Insertionsort.SUFFIX,
-            "/scale_set_amp" + Insertionsort.SUFFIX + "~/scale_set_MINFREQ" + Insertionsort.SUFFIX + "~/scale_set_MAXFREQ" + Insertionsort.SUFFIX,
-            "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f,
-                    100f, 8000f, 200f,
-                    100f, 8000f, 4000f});
+            Type.SCALE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp",0f, 0.3f, 0.2f),
+                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+            },
+            Insertionsort.SUFFIX
+    );
     public static final Sonification SELECTIONSORT_WAVE = new Sonification(
-            "WAVE",
-            "/wave_start" + Selectionsort.SUFFIX,
-            "/wave_pause" + Selectionsort.SUFFIX,
-            "/wave_resume" + Selectionsort.SUFFIX,
-            "/wave_set_SELECTIONSORT~/min_set" + Selectionsort.SUFFIX,
-            "/wave_free" + Selectionsort.SUFFIX,
-            "/hellowave" + Selectionsort.SUFFIX,
-            "/boot_wave" + Selectionsort.SUFFIX,
-            "/wave_set_amp" + Selectionsort.SUFFIX + "~/wave_set_freqlag" + Selectionsort.SUFFIX + "~/wave_set_amplag" + Selectionsort.SUFFIX + "~/min_set_pulsefreq" + Selectionsort.SUFFIX + "~/min_set_amp" + Selectionsort.SUFFIX,
-            "AMP~FREQLAG~AMPLAG~MINFREQ~MINAMP",
-            new float[]{0f, 3f, 0.2f,
-                    0f, 2f, 0.1f,
-                    0f, 5f, 0.1f,
-                    0f, 10f, 0f,
-                    0f, 1f, 0.3f});
+            Type.WAVE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
+                    new OSCControllerWrapper("FREQLAG","set_freqlag",0f,2f,0.1f),
+                    new OSCControllerWrapper("AMPLAG","set_amplag",0f,5f,0.1f),
+                    new OSCControllerWrapper("MINFREQ","min_set_pulsefreq",0f,10f,0f),
+                    new OSCControllerWrapper("MINAMP","min_set_amp",0f,1f,0.3f)
+            },
+            Selectionsort.SUFFIX
+    );
     public static final Sonification SELECTIONSORT_SCALE = new Sonification(
-            "SCALE",
-            "/scale_start" + Selectionsort.SUFFIX,
-            "",
-            "",
-            "/scale_play_SELECTIONSORT~/scale_play" + Selectionsort.SUFFIX,
-            "",
-            "/helloscale" + Selectionsort.SUFFIX,
-            "/boot_scale" + Selectionsort.SUFFIX,
-            "/scale_set_amp" + Selectionsort.SUFFIX + "~/scale_set_MINFREQ" + Selectionsort.SUFFIX + "~/scale_set_MAXFREQ" + Selectionsort.SUFFIX,
-            "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f,
-                    100f, 8000f, 200f,
-                    100f, 8000f, 4000f});
+            Type.SCALE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp",0f,0.3f,0.2f),
+                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+            },
+            Selectionsort.SUFFIX
+    );
     public static final Sonification MERGESORT_WAVE = new Sonification(
-            "WAVE",
-            "/wave_start" + Mergesort.SUFFIX,
-            "/wave_pause" + Mergesort.SUFFIX,
-            "/wave_resume" + Mergesort.SUFFIX,
-            "/wave_set" + Mergesort.SUFFIX,
-            "/wave_free" + Mergesort.SUFFIX,
-            "/hellowave" + Mergesort.SUFFIX,
-            "/boot_wave" + Mergesort.SUFFIX,
-            "/wave_set_amp" + Mergesort.SUFFIX + "~/wave_set_freqlag" + Mergesort.SUFFIX + "~/wave_set_amplag" + Mergesort.SUFFIX,
-            "AMP~FREQLAG~AMPLAG",
-            new float[]{0f, 3f, 0.2f,
-                    0f, 2f, 0.1f,
-                    0f, 5f, 0.1f});
+            Type.WAVE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
+                    new OSCControllerWrapper("FREQLAG","set_freqlag",0f,2f,0.1f),
+                    new OSCControllerWrapper("AMPLAG","set_amplag",0f,5f,0.1f)
+            },
+            Mergesort.SUFFIX
+    );
     public static final Sonification MERGESORT_SCALE = new Sonification(
-            "SCALE",
-            "/scale_start" + Mergesort.SUFFIX,
-            "",
-            "",
-            "/scale_play" + Mergesort.SUFFIX,
-            "",
-            "/helloscale" + Mergesort.SUFFIX,
-            "/boot_scale" + Mergesort.SUFFIX,
-            "/scale_set_amp" + Mergesort.SUFFIX + "~/scale_set_MINFREQ" + Mergesort.SUFFIX + "~/scale_set_MAXFREQ" + Mergesort.SUFFIX,
-            "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f,
-                    100f, 8000f, 200f,
-                    100f, 8000f, 4000f});
+            Type.SCALE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
+                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+            },
+            Mergesort.SUFFIX
+    );
     public static final Sonification QUICKSORT_WAVE = new Sonification(
-            "WAVE",
-            "/wave_start" + Quicksort.SUFFIX,
-            "/wave_pause" + Quicksort.SUFFIX,
-            "/wave_resume" + Quicksort.SUFFIX,
-            "/wave_set1_QUICKSORT~/wave_set2_QUICKSORT~/wave_set3" + Quicksort.SUFFIX,
-            "/wave_free" + Quicksort.SUFFIX,
-            "/hellowave" + Quicksort.SUFFIX,
-            "/boot_wave" + Quicksort.SUFFIX,
-            "/wave_set_amp" + Quicksort.SUFFIX + "~/wave_set_freqlag" + Quicksort.SUFFIX + "~/wave_set_amplag" + Quicksort.SUFFIX,
-            "AMP~FREQLAG~AMPLAG",
-            new float[]{0f, 3f, 0.2f,
-                    0f, 2f, 0.1f,
-                    0f, 5f, 0.1f});
+            Type.WAVE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
+                    new OSCControllerWrapper("FREQLAG","set_freqlag",0f,2f,0.1f),
+                    new OSCControllerWrapper("AMPLAG","set_freqlag",0f,5f,0.1f)
+            },
+            Quicksort.SUFFIX
+    );
     public static final Sonification QUICKSORT_SCALE = new Sonification(
-            "SCALE",
-            "/scale_start" + Quicksort.SUFFIX,
-            "",
-            "",
-            "/scale_play_QUICKSORT~/scale_play_QUICKSORT~/scale_play" + Quicksort.SUFFIX,
-            "",
-            "/helloscale" + Quicksort.SUFFIX,
-            "/boot_scale" + Quicksort.SUFFIX,
-            "/scale_set_amp" + Quicksort.SUFFIX + "~/scale_set_MINFREQ" + Quicksort.SUFFIX + "~/scale_set_MAXFREQ" + Quicksort.SUFFIX,
-            "AMP~MINFREQ~MAXFREQ",
-            new float[]{0f, 0.3f, 0.2f,
-                    100f, 8000f, 200f,
-                    100f, 8000f, 4000f});
-    // Name of this sonification and paths for the osc listeners.
-    public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, MODPATH, FREEPATH, STATUSPATH, BOOTPATH, REALTIMEPATH, REALTIMENAME;
-    // Default values of controllers. Three floats per path/name: min, max and default value.
-    private final float[] DEFAULTVALUES;
-    // The controllers.
-    private Controller[] controllers;
-    // Style of sonification
-    private int STYLE;
-    // Types of styles
-    public static int KNOBSTYLE = 0;
-    public static int SLIDERSTYLE = 1;
+            Type.SCALE,
+            new OSCControllerWrapper[]{
+                    new OSCControllerWrapper("AMP","set_amp",0f,0.3f,0.2f),
+                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+            },
+            Quicksort.SUFFIX
+    );
+    // Name of this sonification and paths for the OSC listeners in SuperCollider.
+    public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, FREEPATH, STATUSPATH, BOOTPATH;
+    // Modulating the synths can be multiple paths since sonification can have multiple synths
+    public ArrayList<String> MODPATHS;
+    // Wrappers of the input controllers for the GUI
+    private OSCControllerWrapper[] wrappers;
 
-    public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
-                        String boot, String rtpaths, String rtname, float[] defvalues) {
-        this.NAME = name;
-        this.STARTPATH = start;
-        this.PAUSEPATH = pause;
-        this.RESUMEPATH = resume;
-        this.MODPATH = mod;
-        this.FREEPATH = free;
-        this.STATUSPATH = status;
-        this.BOOTPATH = boot;
-        this.REALTIMEPATH = rtpaths;
-        this.REALTIMENAME = rtname;
-        this.DEFAULTVALUES = defvalues;
-        this.controllers = null;
-        this.STYLE = SLIDERSTYLE;
+    public Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix) {
+        LambdaInterface i = null;
+        if(type == Type.WAVE) {
+            i = (String x) -> "/wave" + "_" + x + "_" + suffix;
+            this.NAME = "WAVE";
+        }
+        else if(type == Type.SCALE) {
+            i = (String x) -> "/scale" + "_" + x + "_" + suffix;
+            this.NAME = "SCALE";
+        }
+        else {
+            this.NAME = null;
+        }
+        this.STARTPATH = i.call("start");
+        this.PAUSEPATH = i.call("pause");
+        this.RESUMEPATH = i.call("resume");
+        this.MODPATHS = new ArrayList<>();
+        this.MODPATHS.add(i.call("set"));
+        this.FREEPATH = i.call("free");
+        this.STATUSPATH = i.call("hello");
+        this.BOOTPATH = i.call("boot");
+        for(OSCControllerWrapper w : wrappers) {
+            w.setPath(i.call(w.getPath()));
+        }
+        this.wrappers = wrappers;
     }
 
-    public Sonification(String name, String start, String pause, String resume, String mod, String free, String status, String boot, Controller[] controllers) {
-        this.NAME = name;
-        this.STARTPATH = start;
-        this.PAUSEPATH = pause;
-        this.RESUMEPATH = resume;
-        this.MODPATH = mod;
-        this.FREEPATH = free;
-        this.STATUSPATH = status;
-        this.BOOTPATH = boot;
-        this.controllers = controllers;
-        this.STYLE = SLIDERSTYLE;
-        this.REALTIMEPATH = null;
-        this.REALTIMENAME = null;
-        this.DEFAULTVALUES = null;
-    }
-
-    public Sonification(String name, String start, String pause, String resume, String mod, String free, String status,
-                        String boot) {
-        this(name, start, pause, resume, mod, free, status, boot, "", "", null);
+    public Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix, ArrayList<String> modpaths) {
+        this(type,wrappers,suffix);
+        this.MODPATHS = modpaths;
     }
 
     /**
@@ -219,6 +171,7 @@ public class Sonification {
      *
      * @return 0 if successful, else 1.
      */
+    /*
     public int initSoundPanel(ControlP5 cp5) {
         if (DEFAULTVALUES == null) {
             System.err.println("CAN NOT INITIALIZE SOUND PANEL: DEFAULT VALUES NULL");
@@ -247,10 +200,9 @@ public class Sonification {
         }
         int modpathcounter = REALTIMEPATH.split("~").length;
         if (STYLE == KNOBSTYLE) {
-            /**
-             * FIXME
-             * THIS SHOULD BE IN ALGOSOUND NOT IN SONIFICATION! -> SONIFICATION OVERHAUL
-             */
+            // FIXME
+            // THIS SHOULD BE IN ALGOSOUND NOT IN SONIFICATION! -> SONIFICATION OVERHAUL
+            //
             // Calculate position of coming controllers.
             Point[] pos = new Point[modpathcounter];
             int x0 = 15;
@@ -360,11 +312,7 @@ public class Sonification {
         }
         return 0;
     }
-
-    // Set style of sonification
-    public void setStyle(int x) {
-        this.STYLE = x;
-    }
+    */
 
     // Reset controllers to default.
     public void reset() {
