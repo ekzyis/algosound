@@ -79,7 +79,8 @@ Added features in this update:
 * Application bundled: All algorithms are now inside one application!
 * FPS slider: User can now speed up or slow down sorting. Speed is measured in Frames per second.
 * Input controllers: User can now modify parameters of the synths while sorting
-* Pause icon: Visible, animated feedback for the user that sorting has been paused. *WARNING: Icon is affected by fps slider. Photosensitive epilepsy patients should proceed with caution.*
+* Pause icon: Visible, animated feedback for the user that sorting has been paused.<br>
+*WARNING: Icon is affected by fps slider. Photosensitive epilepsy patients should proceed with caution.* <sup><sup>Don't ask me if this is meant as a joke. I don't know either.</sup></sup>
 
 Currently, I am working on overhauling the sonifications since the Sonification class does handle stuff it shouldn't. Algosound should dictate where things should be on the canvas. Only the controller should be created by Sonification. This will make implementing new sonifications or user input a lot easier.
 
