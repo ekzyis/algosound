@@ -92,7 +92,8 @@ public class Sonification {
                     new OSCControllerWrapper("MINFREQ","min_set_pulsefreq",0f,10f,0f),
                     new OSCControllerWrapper("MINAMP","min_set_amp",0f,1f,0.3f)
             },
-            Selectionsort.SUFFIX
+            Selectionsort.SUFFIX,
+            new ArrayList<String>(Arrays.asList("set","min_set"))
     );
     public static final Sonification SELECTIONSORT_SCALE = new Sonification(
             Type.SCALE,
