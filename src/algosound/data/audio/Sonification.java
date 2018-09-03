@@ -159,8 +159,8 @@ public class Sonification {
         this.FREEPATH = uniquifyer.call("free");
         this.STATUSPATH = uniquifyer.call("hello");
         this.BOOTPATH = uniquifyer.call("boot");
-        for(OSCControllerWrapper w : wrappers) {
-            w.setPath(uniquifyer.call(w.getPath()));
+        for(int i=0; i<wrappers.length; ++i) {
+            wrappers[i].setPath(uniquifyer.call(wrappers[i].getPath()));
         }
         this.wrappers = wrappers;
     }
