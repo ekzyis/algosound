@@ -148,6 +148,17 @@ public class Sonification {
     // Wrappers of the input controllers for the GUI
     private OSCControllerWrapper[] wrappers;
 
+    /**
+     * Constructs a Sonification instance. (no, really?)
+     *
+     * Uses the lambda interface to uniquify all given mod paths.
+     * Uses default paths for starting, resuming, pausing, and more
+     * to prevent redundant code and make maintaining this code easier.
+     *
+     * @param type          Type of instance (used to uniquify paths)
+     * @param wrappers      controllers for user input
+     * @param suffix        suffix of Algorithm for which this sonification is created (used to uniquify paths)
+     */
     private Sonification(Type type, OSCControllerWrapper[] wrappers, String suffix) {
         this.NAME = type.getName();
         this.uniquifyer = (String x) -> "/" + NAME.toLowerCase() + "_" + x + "_" + suffix;
@@ -165,6 +176,15 @@ public class Sonification {
         this.wrappers = wrappers;
     }
 
+    /**
+     * Uses upper constructor.
+     * Used when an Algorithm wants to use multiple mod paths.
+     *
+     * @param type          Type of instance (used to uniquify paths)
+     * @param wrappers      controllers for user input
+     * @param suffix        suffix of Algorithm for which this sonification is created (used to uniquify paths)
+     * @param modpaths      multiple mod paths inside a List
+     */
     public Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix, List<String> modpaths) {
         this(type,wrappers,suffix);
         this.MODPATHS = modpaths;
