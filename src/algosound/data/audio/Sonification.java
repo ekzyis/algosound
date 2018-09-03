@@ -148,7 +148,7 @@ public class Sonification {
     // Wrappers of the input controllers for the GUI
     private OSCControllerWrapper[] wrappers;
 
-    public Sonification(Type type, OSCControllerWrapper[] wrappers, String suffix) {
+    private Sonification(Type type, OSCControllerWrapper[] wrappers, String suffix) {
         this.NAME = type.getName();
         this.uniquifyer = (String x) -> "/" + NAME.toLowerCase() + "_" + x + "_" + suffix;
         this.STARTPATH = uniquifyer.call("start");
