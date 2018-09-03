@@ -6,6 +6,7 @@ import algosound.util.AlgosoundUtil;
 import controlP5.ControlP5;
 import controlP5.Controller;
 import controlP5.Knob;
+import algosound.data.audio.OSCFreqControllerWrapper.Type.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,17 +33,18 @@ public class Sonification {
 
     private static enum Type {
         WAVE {
-            public String getName() {
+            @Override
+            String getName() {
                 return "WAVE";
             }
         },
         SCALE {
             @Override
-            public String getName() {
+            String getName() {
                 return "SCALE";
             }
         };
-        public abstract String getName();
+        abstract String getName();
     }
 
     public static final Sonification BUBBLESORT_WAVE = new Sonification(
@@ -58,8 +60,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP", "set_amp", 0f, 0.3f, 0.2f),
-                    new OSCControllerWrapper("MINFREQ", "set_minfreq", 100f, 8000f, 200f),
-                    new OSCControllerWrapper("MAXFREQ", "set_maxfreq", 100f, 8000f, 4000f)
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MINFREQ,100f,8000f,200f),
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MAXFREQ,100f,8000f,4000f)
             },
             Bubblesort.SUFFIX
     );
@@ -78,8 +80,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f, 0.3f, 0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MINFREQ,100f,8000f,200f),
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MAXFREQ,100f,8000f,4000f)
             },
             Insertionsort.SUFFIX
     );
@@ -99,8 +101,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,0.3f,0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MINFREQ,100f,8000f,200f),
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MAXFREQ,100f,8000f,4000f)
             },
             Selectionsort.SUFFIX
     );
@@ -117,8 +119,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MINFREQ,100f,8000f,200f),
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MAXFREQ,100f,8000f,4000f)
             },
             Mergesort.SUFFIX
     );
@@ -136,8 +138,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,0.3f,0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MINFREQ,100f,8000f,200f),
+                    new OSCFreqControllerWrapper(OSCFreqControllerWrapper.Type.MAXFREQ,100f,8000f,4000f)
             },
             Quicksort.SUFFIX
     );
@@ -191,5 +193,9 @@ public class Sonification {
         for(int i=0; i<MODPATHS.size(); ++i) {
             MODPATHS.set(i, uniquifyer.call(MODPATHS.get(i)));
         }
+    }
+
+    public OSCControllerWrapper[] getWrappers() {
+        return wrappers;
     }
 }

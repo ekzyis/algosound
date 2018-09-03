@@ -1,5 +1,6 @@
 package algosound.data.audio;
 
+import algosound.data.algorithms.SortingAlgorithm;
 import controlP5.ControlP5;
 import controlP5.Knob;
 import controlP5.Slider;
@@ -25,13 +26,13 @@ import controlP5.Slider;
 public class OSCControllerWrapper {
 
     // Name of the controller
-    private String name;
+    String name;
     // OSC path of the controller
-    private String path;
+    String path;
     // Min and max range
-    private float min, max;
+    float min, max;
     // Default value
-    private float def;
+    float def;
 
     public OSCControllerWrapper(String _name, String _path, float _min, float _max, float _def) {
         this.name = _name;
@@ -78,11 +79,11 @@ public class OSCControllerWrapper {
      * @author ekzyis
      * @date 30/03/2018
      */
-    private class OSCKnob extends Knob implements ControllerInterface {
+    public class OSCKnob extends Knob implements ControllerInterface {
         // Path where msg should be fire to.
         protected final String OSCPATH;
 
-        private OSCKnob(ControlP5 controlP5, String s, String path) {
+        OSCKnob(ControlP5 controlP5, String s, String path) {
             super(controlP5, s);
             this.OSCPATH = path;
         }
@@ -101,11 +102,11 @@ public class OSCControllerWrapper {
      * @author ekzyis
      * @date 02/04/2018
      */
-    private class OSCSlider extends Slider implements ControllerInterface {
+    public class OSCSlider extends Slider implements ControllerInterface {
         // Path where msg should be fire to.
         protected final String OSCPATH;
 
-        private OSCSlider(ControlP5 controlP5, String s, String path) {
+        OSCSlider(ControlP5 controlP5, String s, String path) {
             super(controlP5, s);
             this.OSCPATH = path;
         }
@@ -115,5 +116,77 @@ public class OSCControllerWrapper {
             float[] args = {super.getValue()};
             OSC.getInstance().sendMessage(OSCPATH, args);
         }
+    }
+}
+
+/**
+ * Special wrapper class which gives a defined `fire` method to its created knobs and sliders.
+ * ================================
+ *
+ * Checks if given value does not exceed a frequency threshold.
+ *
+ * @author ekzyis
+ * @date 03/09/2018
+ */
+class OSCFreqControllerWrapper extends OSCControllerWrapper {
+
+     public enum Type {
+        MINFREQ {
+            @Override
+            protected void fire(int value, String path) {
+                SortingAlgorithm s = (SortingAlgorithm) algosound.ui.Algosound.getInstance().getAlgorithm();
+                if (value <= s.FREQ_MAX) {
+                    float[] args = {value};
+                    OSC.getInstance().sendMessage(path, args);
+                    s.FREQ_MIN = value;
+                }
+            }
+            @Override
+            String getName() {
+                return "MINFREQ";
+            }
+            @Override
+            String getPath() {
+                return "set_minfreq";
+            }
+        },
+        MAXFREQ {
+            @Override
+            protected void fire(int value, String path) {
+                SortingAlgorithm s = (SortingAlgorithm) algosound.ui.Algosound.getInstance().getAlgorithm();
+                if (value >= s.FREQ_MIN) {
+                    float[] args = {value};
+                    OSC.getInstance().sendMessage(path, args);
+                    s.FREQ_MAX = value;
+                }
+            }
+            @Override
+            String getName() {
+                return "MAXFREQ";
+            }
+            @Override
+            String getPath() {
+                return "set_maxfreq";
+            }
+        };
+        abstract String getName();
+        abstract String getPath();
+        abstract void fire(int value, String path);
+    }
+
+    private Type type;
+
+    public OSCFreqControllerWrapper(Type _type, float _min, float _max, float _def) {
+        super(_type.getName(), _type.getPath(), _min, _max, _def);
+        this.type = _type;
+    }
+
+    @Override
+    public OSCKnob getKnob(ControlP5 cp5) {
+        return (OSCKnob) new OSCKnob(cp5, name, path) {
+            public void fire() {
+                type.fire((int) super.getValue(), path);
+            }
+        }.setRange(min, max).setDefaultValue(def);
     }
 }
