@@ -59,8 +59,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP", "set_amp", 0f, 0.3f, 0.2f),
-                    new OSCControllerWrapper("MINFREQ", "set_MINFREQ", 100f, 8000f, 200f),
-                    new OSCControllerWrapper("MAXFREQ", "set_MAXFREQ", 100f, 8000f, 4000f)
+                    new OSCControllerWrapper("MINFREQ", "set_minfreq", 100f, 8000f, 200f),
+                    new OSCControllerWrapper("MAXFREQ", "set_maxfreq", 100f, 8000f, 4000f)
             },
             Bubblesort.SUFFIX
     );
@@ -79,8 +79,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f, 0.3f, 0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
             },
             Insertionsort.SUFFIX
     );
@@ -99,8 +99,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,0.3f,0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
             },
             Selectionsort.SUFFIX
     );
@@ -117,8 +117,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
             },
             Mergesort.SUFFIX
     );
@@ -136,8 +136,8 @@ public class Sonification {
             Type.SCALE,
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,0.3f,0.2f),
-                    new OSCControllerWrapper("MINFREQ","set_MINFREQ",100f,8000f,200f),
-                    new OSCControllerWrapper("MAXFREQ","set_MAXFREQ",100f,8000f,4000f)
+                    new OSCControllerWrapper("MINFREQ","set_minfreq",100f,8000f,200f),
+                    new OSCControllerWrapper("MAXFREQ","set_maxfreq",100f,8000f,4000f)
             },
             Quicksort.SUFFIX
     );
