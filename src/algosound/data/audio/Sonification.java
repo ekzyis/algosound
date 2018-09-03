@@ -42,7 +42,6 @@ public class Sonification {
                 return "SCALE";
             }
         };
-        // Get name of Type
         public abstract String getName();
     }
 
