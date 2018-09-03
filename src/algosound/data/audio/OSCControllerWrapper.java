@@ -23,6 +23,7 @@ import controlP5.Slider;
  * @date 26/08/2018
  */
 public class OSCControllerWrapper {
+
     // Name of the controller
     private String name;
     // OSC path of the controller
@@ -57,6 +58,19 @@ public class OSCControllerWrapper {
         this.path = _path;
     }
 
+    /**
+     * Interface for controlP5.controllers to do something during a control event.
+     * This makes my own controllers easily detectable since they all implement this interface.
+     * ================================
+     *
+     * @author ekzyis
+     * @date 01/04/2018
+     */
+    private interface ControllerInterface {
+        // Send an osc message.
+        void fire();
+    }
+
      /**
      * This class handles the knobs for real time modulating of the synths.
      * ================================
@@ -78,7 +92,6 @@ public class OSCControllerWrapper {
             float[] args = {super.getValue()};
             OSC.getInstance().sendMessage(OSCPATH, args);
         }
-
     }
 
     /**
