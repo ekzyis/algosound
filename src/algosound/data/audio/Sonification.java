@@ -7,8 +7,8 @@ import controlP5.ControlP5;
 import controlP5.Controller;
 import controlP5.Knob;
 
-import java.awt.*;
-import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
 
 import static algosound.util.AlgosoundUtil.*;
@@ -24,13 +24,26 @@ import static algosound.util.AlgosoundUtil.*;
 
 
 public class Sonification {
-
-    interface LambdaInterface {
+    // Uniquifies given paths
+    private LambdaInterface uniquifyer;
+    private interface LambdaInterface {
         String call(String s1);
     }
 
-    enum Type {
-        WAVE, SCALE
+    private static enum Type {
+        WAVE {
+            public String getName() {
+                return "WAVE";
+            }
+        },
+        SCALE {
+            @Override
+            public String getName() {
+                return "SCALE";
+            }
+        };
+        // Get name of Type
+        public abstract String getName();
     }
 
     public static final Sonification BUBBLESORT_WAVE = new Sonification(
@@ -116,7 +129,8 @@ public class Sonification {
                     new OSCControllerWrapper("FREQLAG","set_freqlag",0f,2f,0.1f),
                     new OSCControllerWrapper("AMPLAG","set_freqlag",0f,5f,0.1f)
             },
-            Quicksort.SUFFIX
+            Quicksort.SUFFIX,
+            new ArrayList<String>(Arrays.asList("set1","set2","set3"))
     );
     public static final Sonification QUICKSORT_SCALE = new Sonification(
             Type.SCALE,
@@ -130,40 +144,33 @@ public class Sonification {
     // Name of this sonification and paths for the OSC listeners in SuperCollider.
     public final String NAME, STARTPATH, PAUSEPATH, RESUMEPATH, FREEPATH, STATUSPATH, BOOTPATH;
     // Modulating the synths can be multiple paths since sonification can have multiple synths
-    public ArrayList<String> MODPATHS;
+    public List<String> MODPATHS;
     // Wrappers of the input controllers for the GUI
     private OSCControllerWrapper[] wrappers;
 
-    public Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix) {
-        LambdaInterface i = null;
-        if(type == Type.WAVE) {
-            i = (String x) -> "/wave" + "_" + x + "_" + suffix;
-            this.NAME = "WAVE";
-        }
-        else if(type == Type.SCALE) {
-            i = (String x) -> "/scale" + "_" + x + "_" + suffix;
-            this.NAME = "SCALE";
-        }
-        else {
-            this.NAME = null;
-        }
-        this.STARTPATH = i.call("start");
-        this.PAUSEPATH = i.call("pause");
-        this.RESUMEPATH = i.call("resume");
-        this.MODPATHS = new ArrayList<>();
-        this.MODPATHS.add(i.call("set"));
-        this.FREEPATH = i.call("free");
-        this.STATUSPATH = i.call("hello");
-        this.BOOTPATH = i.call("boot");
+    public Sonification(Type type, OSCControllerWrapper[] wrappers, String suffix) {
+        this.NAME = type.getName();
+        this.uniquifyer = (String x) -> "/" + NAME.toLowerCase() + "_" + x + "_" + suffix;
+        this.STARTPATH = uniquifyer.call("start");
+        this.PAUSEPATH = uniquifyer.call("pause");
+        this.RESUMEPATH = uniquifyer.call("resume");
+        this.MODPATHS = new ArrayList<String>();
+        this.MODPATHS.add(uniquifyer.call("set"));
+        this.FREEPATH = uniquifyer.call("free");
+        this.STATUSPATH = uniquifyer.call("hello");
+        this.BOOTPATH = uniquifyer.call("boot");
         for(OSCControllerWrapper w : wrappers) {
-            w.setPath(i.call(w.getPath()));
+            w.setPath(uniquifyer.call(w.getPath()));
         }
         this.wrappers = wrappers;
     }
 
-    public Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix, ArrayList<String> modpaths) {
+    public Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix, List<String> modpaths) {
         this(type,wrappers,suffix);
         this.MODPATHS = modpaths;
+        for(int i=0; i<MODPATHS.size(); ++i) {
+            MODPATHS.set(i, uniquifyer.call(MODPATHS.get(i)));
+        }
     }
 
     /**
