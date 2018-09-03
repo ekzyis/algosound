@@ -1,14 +1,13 @@
 package algosound.ui;
 
+import algosound.data.audio.OSCControllerWrapper;
+import algosound.data.audio.OSCControllerWrapper.*;
 import algosound.data.visuals.Visual;
 import algosound.data.algorithms.Algorithm;
-import algosound.data.audio.ControllerInterface;
 import algosound.data.audio.OSC;
 import algosound.util.AlgosoundUtil;
+import controlP5.*;
 import controlP5.Button;
-import controlP5.ControlEvent;
-import controlP5.ControlP5;
-import controlP5.Controller;
 import processing.core.PApplet;
 
 import java.awt.*;
@@ -78,7 +77,31 @@ public class Algosound extends PApplet {
         SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(45).setRange(1f, 1000f).setValue(FRAMERATE);
 
         // Init the sound panel of selected sonification
-        SELECTED_ALGORITHM.getSelectedSonification().initSoundPanel(cp5);
+        initSoundPanel(SELECTED_ALGORITHM.getSelectedSonification().getWrappers());
+    }
+
+    private void initSoundPanel(OSCControllerWrapper[] wrappers) {
+        // Get the knobs from wrapper
+        OSCKnob[] knobs = new OSCKnob[wrappers.length];
+        for(int i=0; i<knobs.length; ++i) {
+            knobs[i] = wrappers[i].getKnob(cp5);
+        }
+        int XINSET = 20, YINSET = 15;
+        // Set locations for knobs
+        int x0 = 15;
+        int y0 = 10;
+        int x = x0;
+        int y = y0;
+        for(int i=0; i<knobs.length; ++i) {
+            if(x >=SOUNDCONTROL_W - KNOBSIZE ) {
+                x = x0;
+                y += KNOBSIZE + YINSET;
+            }
+            knobs[i].setPosition(x,y)
+                    .setRadius(KNOBSIZE/2)
+                    .setDragDirection(Knob.HORIZONTAL);
+            x += KNOBSIZE + XINSET;
+        }
     }
 
     /**
