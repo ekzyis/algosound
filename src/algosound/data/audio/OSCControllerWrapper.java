@@ -5,6 +5,8 @@ import controlP5.ControlP5;
 import controlP5.Knob;
 import controlP5.Slider;
 
+import static algosound.util.AlgosoundUtil.KNOBSIZE;
+
 /**
  * OSCControllerWrapper. This class is used to wrap the information about audio input controllers
  * so that `Sonification` can pass these to `Algosound` which then draws them on the canvas.
@@ -44,11 +46,17 @@ public class OSCControllerWrapper {
     }
 
     public OSCKnob getKnob(ControlP5 cp5) {
-        return (OSCKnob) new OSCKnob(cp5, name, path).setRange(min , max).setDefaultValue(def);
+        return (OSCKnob) new OSCKnob(cp5, name, path)
+                .setRange(min , max)
+                .setDefaultValue(def)
+                .setRadius(KNOBSIZE/2)
+                .setDragDirection(Knob.HORIZONTAL);
     }
 
     public OSCSlider getSlider(ControlP5 cp5) {
-        return (OSCSlider) new OSCSlider(cp5, name, path).setRange(min, max).setDefaultValue(def);
+        return (OSCSlider) new OSCSlider(cp5, name, path)
+                .setRange(min, max)
+                .setDefaultValue(def);
     }
 
     public String getPath() {
@@ -187,6 +195,9 @@ class OSCFreqControllerWrapper extends OSCControllerWrapper {
             public void fire() {
                 type.fire((int) super.getValue(), path);
             }
-        }.setRange(min, max).setDefaultValue(def);
+        }.setRange(min, max)
+                .setDefaultValue(def)
+                .setRadius(KNOBSIZE/2)
+                .setDragDirection(Knob.HORIZONTAL);
     }
 }

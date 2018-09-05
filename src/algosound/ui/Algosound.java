@@ -97,9 +97,7 @@ public class Algosound extends PApplet {
                 x = x0;
                 y += KNOBSIZE + YINSET;
             }
-            knobs[i].setPosition(x,y)
-                    .setRadius(KNOBSIZE/2)
-                    .setDragDirection(Knob.HORIZONTAL);
+            knobs[i].setPosition(x,y);
             x += KNOBSIZE + XINSET;
         }
     }
