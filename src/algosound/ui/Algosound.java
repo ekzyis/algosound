@@ -6,8 +6,10 @@ import algosound.data.visuals.Visual;
 import algosound.data.algorithms.Algorithm;
 import algosound.data.audio.OSC;
 import algosound.util.AlgosoundUtil;
-import controlP5.*;
+import controlP5.ControlEvent;
+import controlP5.ControlP5;
 import controlP5.Button;
+import controlP5.Controller;
 import processing.core.PApplet;
 
 import java.awt.*;
