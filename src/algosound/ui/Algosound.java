@@ -34,6 +34,8 @@ public class Algosound extends PApplet {
     private Button SONI;
     private Button ALGO;
     private Controller SPEED;
+    // Audio controllers
+    private Controller[] controllers;
 
     @Override
     public void settings() {
@@ -81,11 +83,11 @@ public class Algosound extends PApplet {
     }
 
     private void initSoundPanel() {
-        OSCControllerWrapper[] wrappers = SELECTED_ALGORITHM.getSelectedSonification().getWrappers();
+        OSCControllerWrapper[] wrappers = sort.getSelectedSonification().getWrappers();
         // Get the knobs from wrapper
-        OSCKnob[] knobs = new OSCKnob[wrappers.length];
-        for(int i=0; i<knobs.length; ++i) {
-            knobs[i] = wrappers[i].getKnob(cp5);
+        controllers = new OSCKnob[wrappers.length];
+        for(int i=0; i<controllers.length; ++i) {
+            controllers[i] = wrappers[i].getKnob(cp5);
         }
         int XINSET = 20, YINSET = 15;
         // Set locations for knobs
@@ -93,13 +95,27 @@ public class Algosound extends PApplet {
         int y0 = 10;
         int x = x0;
         int y = y0;
-        for(int i=0; i<knobs.length; ++i) {
+        for(int i=0; i<controllers.length; ++i) {
             if(x >=SOUNDCONTROL_W - KNOBSIZE ) {
                 x = x0;
                 y += KNOBSIZE + YINSET;
             }
-            knobs[i].setPosition(x,y);
+            controllers[i].setPosition(x,y);
             x += KNOBSIZE + XINSET;
+        }
+    }
+
+    private void resetSoundPanel() {
+        OSCControllerWrapper[] wrappers = sort.getSelectedSonification().getWrappers();
+        assert(controllers.length == wrappers.length);
+        for(int i=0; i<controllers.length; ++i) {
+            controllers[i].setValue(wrappers[i].getDefaultValue());
+        }
+    }
+
+    private void clearSoundPanel() {
+        for(int i=0; i<controllers.length; ++i) {
+            controllers[i].remove();
         }
     }
 
@@ -155,21 +171,21 @@ public class Algosound extends PApplet {
             SPEED.setValue(PREFERRED_FRAMERATE);
             ALGORITHMFPS = PREFERRED_FRAMERATE;
             frameRate(PREFERRED_FRAMERATE);
-            // Reset sonifaction sound panel.
-            sort.getSelectedSonification().reset();
+            // Reset sonification sound panel.
+            resetSoundPanel();
         } else if (c == SONI && !sort.isAlive()) {
-            sort.getSelectedSonification().clearSoundPanel(cp5);
+            clearSoundPanel();
             sort.changeSonification();
-            sort.getSelectedSonification().initSoundPanel(cp5);
+            initSoundPanel();
             SONI.setLabel(sort.getSelectedSonification().NAME);
         } else if (c == ALGO && !sort.isAlive()) {
-            sort.getSelectedSonification().clearSoundPanel(cp5);
+            clearSoundPanel();
             AlgosoundUtil.changeAlgorithm();
             sort = SELECTED_ALGORITHM;
             // Also update the label of the sonification button
             SONI.setLabel(sort.getSelectedSonification().NAME);
             // Init sound panel
-            sort.getSelectedSonification().initSoundPanel(cp5);
+            initSoundPanel();
         } else if (c == SPEED) {
             // Only change framerate of sorting! Don't change framerate of actual redrawing.
             ALGORITHMFPS = c.getValue();

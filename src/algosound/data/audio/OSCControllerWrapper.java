@@ -59,6 +59,10 @@ public class OSCControllerWrapper {
                 .setDefaultValue(def);
     }
 
+    public float getDefaultValue() {
+        return def;
+    }
+
     public String getPath() {
         return path;
     }
@@ -75,7 +79,7 @@ public class OSCControllerWrapper {
      * @author ekzyis
      * @date 01/04/2018
      */
-    private interface ControllerInterface {
+    public interface ControllerInterface {
         // Send an osc message.
         void fire();
     }
