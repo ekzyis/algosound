@@ -77,10 +77,11 @@ public class Algosound extends PApplet {
         SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(45).setRange(1f, 1000f).setValue(FRAMERATE);
 
         // Init the sound panel of selected sonification
-        initSoundPanel(SELECTED_ALGORITHM.getSelectedSonification().getWrappers());
+        initSoundPanel();
     }
 
-    private void initSoundPanel(OSCControllerWrapper[] wrappers) {
+    private void initSoundPanel() {
+        OSCControllerWrapper[] wrappers = SELECTED_ALGORITHM.getSelectedSonification().getWrappers();
         // Get the knobs from wrapper
         OSCKnob[] knobs = new OSCKnob[wrappers.length];
         for(int i=0; i<knobs.length; ++i) {
