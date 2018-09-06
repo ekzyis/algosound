@@ -12,7 +12,6 @@ import static processing.core.PApplet.map;
 /**
  * Selectionsort implementation.
  * Handling of new frames and sending osc messages for sonification of selectionsort.
- * NOTE: The mod path does include two paths. They are meant to be splitted with the regex-pattern "~".
  * ================================
  *
  * @author ekzyis
@@ -61,13 +60,13 @@ public class Selectionsort extends SortingAlgorithm {
                         minIndex = i;
                         int arg2 = expmap(a[minIndex], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
                         float[] args = {arg2, 0};
-                        osc.sendMessage(sel.MODPATH.split("~")[1], args);
+                        osc.sendMessage(sel.MODPATHS.get(1), args);
                     }
                     // Mark element which is getting compared with current smallest element.
                     mark(minIndex);
                     mark(i);
                     float[] args = {arg1, pan};
-                    osc.sendMessage(sel.MODPATH.split("~")[0], args);
+                    osc.sendMessage(sel.MODPATHS.get(0), args);
                     notifyFrameReady();
                 }
                 int tmp = a[minIndex];

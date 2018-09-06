@@ -75,7 +75,7 @@ public class Bubblesort extends SortingAlgorithm {
                     float pan = map(i, 0, elements.length - 1, -1, 1);
                     float[] args = {AlgosoundUtil.expmap(value, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX), pan};
                     // System.out.println("mapped values: " + args[0]);
-                    osc.sendMessage(sel.MODPATH, args);
+                    osc.sendMessage(sel.MODPATHS.get(0), args);
                 }
             } while (swap);
             /**
