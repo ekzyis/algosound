@@ -21,7 +21,7 @@ public class AlgosoundUtil {
     // Height of Info area.
     public static final int INFO_H = 35;
     // Width of sound control area.
-    public static final int SOUNDCONTROL_W = 130;
+    public static final int SOUNDCONTROL_W = 60;
     // Size of knob
     public static final int KNOBSIZE = 20;
     // Width and height of sliders
