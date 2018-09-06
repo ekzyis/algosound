@@ -93,16 +93,18 @@ public class Algosound extends PApplet {
         }
         final int INSET_X = 20, INSET_Y = 15;
         // Set locations for knobs
-        int x0 = 15;
-        int y0 = 10;
+        int x0 = INSET_X;
+        int y0 = INSET_Y;
         int x = x0;
         int y = y0;
         for(int i=0; i<controllers.length; ++i) {
-            if(x >=SOUNDCONTROL_W - KNOBSIZE ) {
+            //System.out.println("before check: " + x + ", " + y);
+            if(x >= SOUNDCONTROL_W - KNOBSIZE - INSET_X ) {
                 x = x0;
                 y += KNOBSIZE + INSET_Y;
             }
-            controllers[i].setPosition(x,y);
+            //System.out.println("after check: " + x + ", " + y);
+            controllers[i].setPosition(W + GUI_W + x,y);
             x += KNOBSIZE + INSET_X;
         }
     }
