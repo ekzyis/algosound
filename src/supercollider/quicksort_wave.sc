@@ -1,16 +1,10 @@
-/*
-* @Author: ekzyis
-* @Date:   31-01-2018 21:26:36
-* @Last Modified by:   ekzyis
-* @Last Modified time: 16-02-2018 22:03:19
-*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
 // Test synths after creating
-x = Synth(\boot_wave_QUICKSORT);
-y = Synth(\algowave_wave_QUICKSORT)
+x = Synth(\wave_boot_QUICKSORT);
+y = Synth(\wave_algowave_QUICKSORT)
 y.set(\gate, 0)
 y.set(\freq, 700);
 y.set(\freqlag, 1)
@@ -20,7 +14,7 @@ y.free
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot_wave_QUICKSORT, {
+SynthDef(\wave_boot_QUICKSORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -31,7 +25,7 @@ SynthDef(\boot_wave_QUICKSORT, {
 /**
  * Synth which will be modified by individual element accesses while sorting.
  */
-SynthDef(\algowave_wave_QUICKSORT, {
+SynthDef(\wave_algowave_QUICKSORT, {
 	arg freq=440, freqlag=0.1, amptotal=0.6, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
@@ -45,21 +39,21 @@ SynthDef(\algowave_wave_QUICKSORT, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\boot_wave_OSC_QUICKSORT, {
+OSCdef(\wave_boot_OSC_QUICKSORT, {
 	"playing boot sound.".postln;
-	Synth(\boot_wave_QUICKSORT);
-}, "/boot_wave_QUICKSORT");
+	Synth(\wave_boot_QUICKSORT);
+}, "/wave_boot_QUICKSORT");
 
 // Define listener for start of synths.
-OSCdef(\start_wave_OSC_QUICKSORT, {
+OSCdef(\wave_start_OSC_QUICKSORT, {
 	"creating multiple algowaves".postln;
-	~algowave1 = Synth(\algowave_wave_QUICKSORT);
-	~algowave2 = Synth(\algowave_wave_QUICKSORT);
-	~algowave3 = Synth(\algowave_wave_QUICKSORT);
+	~algowave1 = Synth(\wave_algowave_QUICKSORT);
+	~algowave2 = Synth(\wave_algowave_QUICKSORT);
+	~algowave3 = Synth(\wave_algowave_QUICKSORT);
 }, "/wave_start_QUICKSORT");
 
 // Define listener for pausing of synths.
-OSCdef(\pause_wave_OSC_QUICKSORT, {
+OSCdef(\wave_pause_OSC_QUICKSORT, {
 	"pausing synths.".postln;
 	~algowave1.set(\amptotal, 0);
 	~algowave2.set(\amptotal, 0);
@@ -67,26 +61,49 @@ OSCdef(\pause_wave_OSC_QUICKSORT, {
 }, "/wave_pause_QUICKSORT");
 
 // Define listener for resuming of synths.
-OSCdef(\resume_wave_OSC_QUICKSORT, {
+OSCdef(\wave_resume_OSC_QUICKSORT, {
 	"resuming synths.".postln;
-	~algowave1.set(\amptotal, 0.6);
-	~algowave2.set(\amptotal, 0.6);
-	~algowave3.set(\amptotal, 0.6);
+	~algowave1.set(\amptotal, ~amp);
+	~algowave2.set(\amptotal, ~amp);
+	~algowave3.set(\amptotal, ~amp);
 }, "/wave_resume_QUICKSORT");
 
 // Define listeners for modifying.
-OSCdef(\mod_wave1_OSC_QUICKSORT, {
+OSCdef(\wave_set1_OSC_QUICKSORT, {
 	arg msg;
 	~algowave1.set(\freq, msg[1]);
+	~algowave1.set(\amptotal, ~amp);
 }, "/wave_set1_QUICKSORT");
-OSCdef(\mod_wave2_OSC_QUICKSORT, {
+OSCdef(\wave_set2_OSC_QUICKSORT, {
 	arg msg;
 	~algowave2.set(\freq, msg[1]);
+	~algowave2.set(\amptotal, ~amp);
 }, "/wave_set2_QUICKSORT");
-OSCdef(\mod_wave3_OSC_QUICKSORT, {
+OSCdef(\wave_set3_OSC_QUICKSORT, {
 	arg msg;
 	~algowave3.set(\freq, msg[1]);
+	~algowave3.set(\amptotal, ~amp);
 }, "/wave_set3_QUICKSORT");
+
+// Realtime modulating of synths
+OSCdef(\wave_set_freqlag_OSC_QUICKSORT, {
+	arg msg;
+	"\\wave_set_freqlag_OSC_QUICKSORTT - arguments: [".post;msg[1].post;"]".postln;
+	~algowave.set(\freqlag, msg[1]);
+}, "/wave_set_freqlag_QUICKSORT");
+
+~amp = 1;
+OSCdef(\wave_set_amp_OSC_QUICKSORT, {
+	arg msg;
+	"\\wave_set_amp_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	~amp = msg[1];
+}, "/wave_set_amp_QUICKSORT");
+
+OSCdef(\wave_set_amplag_OSC_QUICKSORT, {
+	arg msg;
+	"\\wave_set_amplag_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	~algowave.set(\amplag, msg[1]);
+}, "/wave_set_amplag_QUICKSORT");
 /**
  * Define listener for freeing of synths.
  * KNOWN ISSUES: After freeing, another free-attempt will
@@ -98,7 +115,7 @@ OSCdef(\mod_wave3_OSC_QUICKSORT, {
  * Tried with SYNTH.isNil but this leads to other possible
  * more severe bugs like orphaned synths.
  */
-OSCdef(\free_wave_OSC_QUICKSORT, {
+OSCdef(\wave_free_OSC_QUICKSORT, {
 	"freeing synths.".postln;
 	// Free it using gate.
 	~algowave1.set(\gate, 0);
@@ -111,12 +128,12 @@ OSCdef(\free_wave_OSC_QUICKSORT, {
 
 x = 0;
 // Define listener for checking if sc3-server is running.
-OSCdef(\status_wave_OSC_QUICKSORT, {
+OSCdef(\wave_status_OSC_QUICKSORT, {
 	if(x==0,
-		{ Synth(\boot_wave_QUICKSORT); x = 1; },
+		{ Synth(\wave_boot_QUICKSORT); x = 1; },
 		{}
 	);
 	~address.sendMsg("/hello");
-}, "/hellowave_QUICKSORT");
+}, "/wave_hello_QUICKSORT");
 
 )//--Parentheses end

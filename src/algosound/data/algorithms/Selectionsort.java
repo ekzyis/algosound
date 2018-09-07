@@ -60,7 +60,7 @@ public class Selectionsort extends SortingAlgorithm {
                         minIndex = i;
                         int arg2 = expmap(a[minIndex], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
                         float[] args = {arg2, 0};
-                        osc.sendMessage(sel.MODPATHS.get(1), args);
+                        osc.sendMessage(sel.MODPATHS.size() == 2 ? sel.MODPATHS.get(1) : sel.MODPATHS.get(0), args);
                     }
                     // Mark element which is getting compared with current smallest element.
                     mark(minIndex);

@@ -105,11 +105,11 @@ public class Quicksort extends SortingAlgorithm {
         args[0] = arg2;
         pan = map(pivotIndex, 0, a.length - 1, -1, 1);
         args[1] = pan;
-        osc.sendMessage(sel.MODPATHS.get(1), args);
+        osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(1) : sel.MODPATHS.get(0), args);
         args[0] = arg3;
         pan = map(r, 0, a.length - 1, -1, 1);
         args[1] = pan;
-        osc.sendMessage(sel.MODPATHS.get(2), args);
+        osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(2) : sel.MODPATHS.get(0), args);
 
         notifyFrameReady();
         do {
@@ -139,7 +139,7 @@ public class Quicksort extends SortingAlgorithm {
                 args[0] = arg3;
                 pan = map(r, 0, a.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATHS.get(2), args);
+                osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(2) : sel.MODPATHS.get(0), args);
 
                 notifyFrameReady();
             }
@@ -165,7 +165,7 @@ public class Quicksort extends SortingAlgorithm {
                 args[0] = arg3;
                 pan = map(r, 0, a.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATHS.get(2), args);
+                osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(2) : sel.MODPATHS.get(0), args);
 
                 notifyFrameReady();
                 l++;

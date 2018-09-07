@@ -91,7 +91,6 @@ public class Sonification {
                     new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
                     new OSCControllerWrapper("FREQLAG","set_freqlag",0f,2f,0.1f),
                     new OSCControllerWrapper("AMPLAG","set_amplag",0f,5f,0.1f),
-                    new OSCControllerWrapper("MINFREQ","min_set_pulsefreq",0f,10f,0f),
                     new OSCControllerWrapper("MINAMP","min_set_amp",0f,1f,0.3f)
             },
             Selectionsort.SUFFIX,

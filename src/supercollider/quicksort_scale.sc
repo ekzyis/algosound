@@ -1,22 +1,16 @@
-/*
-* @Author: ekzyis
-* @Date:   10-02-2018 02:07:25
-* @Last Modified by:   ekzyis
-* @Last Modified time: 16-02-2018 22:03:20
-*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
-Synth(\midisine_scale_QUICKSORT);
-Synth(\default_midifade_scale_QUICKSORT);
+Synth(\scale_midisine_QUICKSORT);
+Synth(\scale_default_midifade_QUICKSORT);
 
 (//--Parentheses begin
 
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot_scale_QUICKSORT, {
+SynthDef(\scale_boot_QUICKSORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -25,7 +19,7 @@ SynthDef(\boot_scale_QUICKSORT, {
 }).add;
 
 // Sinewave osc playing midi-notes.
-SynthDef(\midisine_scale_QUICKSORT, {
+SynthDef(\scale_midisine_QUICKSORT, {
 	arg midi=69, amp=0.1, atk=0.005, rel=0.3, pan=0;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
@@ -36,7 +30,7 @@ SynthDef(\midisine_scale_QUICKSORT, {
 }).add;
 
 // Modified default-synth ("fade+midi edition").
-SynthDef(\default_midifade_scale_QUICKSORT, {
+SynthDef(\scale_default_midifade_QUICKSORT, {
 	arg midi=69, amp=0.3, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
 	var z;
 	z = LPF.ar(
@@ -47,17 +41,17 @@ SynthDef(\default_midifade_scale_QUICKSORT, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\boot_scale_OSC_QUICKSORT, {
+OSCdef(\scale_boot_OSC_QUICKSORT, {
 	"playing boot sound.".postln;
 	// Play boot sound
-	Synth(\boot_scale_QUICKSORT);
-}, "/boot_scale_QUICKSORT");
+	Synth(\scale_boot_QUICKSORT);
+}, "/scale_boot_QUICKSORT");
 
 /**
  * Define listener for setting up of scale.
  * Setup depends on given minimal frequency and max frequency.
  */
-OSCdef(\start_scale_OSC_QUICKSORT, {
+OSCdef(\scale_start_OSC_QUICKSORT, {
 	arg msg;
 	var min_freq, max_freq, min_midi, max_midi;
 
@@ -87,8 +81,27 @@ OSCdef(\start_scale_OSC_QUICKSORT, {
 	"durations=".post;~durations.postln;*/
 }, "/scale_start_QUICKSORT");
 
+OSCdef(\scale_set_maxfreq_OSC_QUICKSORT, {
+	arg msg;
+	"\\scale_set_maxfreq_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+}, "/scale_set_maxfreq_QUICKSORT");
+
+OSCdef(\scale_set_minfreq_OSC_QUICKSORT, {
+	arg msg;
+	"\\scale_set_minfreq_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+}, "/scale_set_minfreq_QUICKSORT");
+
+~amp = 0.1;
+OSCdef(\scale_set_amp_OSC_QUICKSORT, {
+	arg msg;
+	"\\scale_set_amp_OSC_QUICKSORT - arguments: [";msg[1].post;"]".postln;
+	~amp = msg[1];
+}, "/scale_set_amp_QUICKSORT");
+
 // Define listener for playing a midi note.
-OSCdef(\midiplay_scale_OSC_QUICKSORT, {
+OSCdef(\scale_set_OSC_QUICKSORT, {
 	arg msg;
 	var midi;
 	i = ~scales.find([msg[1].cpsmidi.round]);
@@ -98,20 +111,20 @@ OSCdef(\midiplay_scale_OSC_QUICKSORT, {
 	);
 	"playing midi-note ".post;midi.postln;
 	"pan=".post;msg[2].postln;
-	Synth(\midisine_scale_QUICKSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2]]);
-}, "/scale_play_QUICKSORT");
+	Synth(\scale_midisine_QUICKSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
+}, "/scale_set_QUICKSORT");
 
 // Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
-OSCdef(\status_scale_OSC_QUICKSORT, {
+OSCdef(\scale_status_OSC_QUICKSORT, {
 	if(x==0,
-		{ Synth(\boot_scale_QUICKSORT); x = 1; },
+		{ Synth(\scale_boot_QUICKSORT); x = 1; },
 		{}
 	);
 	~address.sendMsg("/hello");
-}, "/helloscale_QUICKSORT");
+}, "/scale_hello_QUICKSORT");
 
 )//--Parentheses end
