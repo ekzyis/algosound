@@ -26,7 +26,7 @@ import static processing.core.PApplet.subset;
  */
 public class Quicksort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_QUICKSORT";
+    public static final String SUFFIX = "QUICKSORT";
 
     private QuicksortElement[] elements;
     private ArrayList<QuicksortElement> unmarkMe;

@@ -26,7 +26,7 @@ import static processing.core.PApplet.*;
  */
 public class Mergesort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_MERGESORT";
+    public static final String SUFFIX = "MERGESORT";
     // Variables to pass mergesort() to determine mode.
     final static byte NATIVE = 1;
     final static byte THREAD = 2;

@@ -19,7 +19,7 @@ import static processing.core.PApplet.map;
  */
 public class Selectionsort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_SELECTIONSORT";
+    public static final String SUFFIX = "SELECTIONSORT";
 
     public Selectionsort(int N) {
         super(N);

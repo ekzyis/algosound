@@ -18,7 +18,7 @@ import static processing.core.PApplet.map;
  */
 public class Bubblesort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_BUBBLESORT";
+    public static final String SUFFIX = "BUBBLESORT";
 
     public Bubblesort(int N) {
         super(N);

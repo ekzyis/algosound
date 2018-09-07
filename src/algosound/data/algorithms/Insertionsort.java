@@ -21,7 +21,7 @@ import static algosound.util.AlgosoundUtil.expmap;
  */
 public class Insertionsort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_INSERTIONSORT";
+    public static final String SUFFIX = "INSERTIONSORT";
 
     public Insertionsort(int N) {
         super(N);
