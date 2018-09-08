@@ -50,13 +50,15 @@ public class OSCControllerWrapper {
                 .setRange(min , max)
                 .setDefaultValue(def)
                 .setRadius(KNOBSIZE/2)
-                .setDragDirection(Knob.HORIZONTAL);
+                .setDragDirection(Knob.HORIZONTAL)
+                .setValue(def);
     }
 
     public OSCSlider getSlider(ControlP5 cp5) {
         return (OSCSlider) new OSCSlider(cp5, name, path)
                 .setRange(min, max)
-                .setDefaultValue(def);
+                .setDefaultValue(def)
+                .setValue(def);
     }
 
     public float getDefaultValue() {
@@ -202,6 +204,7 @@ class OSCFreqControllerWrapper extends OSCControllerWrapper {
         }.setRange(min, max)
                 .setDefaultValue(def)
                 .setRadius(KNOBSIZE/2)
-                .setDragDirection(Knob.HORIZONTAL);
+                .setDragDirection(Knob.HORIZONTAL)
+                .setValue(def);
     }
 }
