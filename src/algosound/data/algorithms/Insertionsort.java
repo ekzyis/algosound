@@ -21,7 +21,7 @@ import static algosound.util.AlgosoundUtil.expmap;
  */
 public class Insertionsort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_INSERTIONSORT";
+    public static final String SUFFIX = "INSERTIONSORT";
 
     public Insertionsort(int N) {
         super(N);
@@ -94,7 +94,7 @@ public class Insertionsort extends SortingAlgorithm {
                     System.out.println("values to map: " + a[j] + ", " + value);
                     int[] args = {expmap(a[j], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX), expmap(value, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX)};
                     System.out.println("mapped values: " + args[0] + ", " + args[1]);
-                    osc.sendMessage(sel.MODPATH, args);
+                    osc.sendMessage(sel.MODPATHS.get(0), args);
                 }
                 // Place to insert has been found!
                 a[j] = value;

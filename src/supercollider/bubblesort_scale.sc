@@ -1,22 +1,16 @@
-/*
-* @Author: ekzyis
-* @Date:   08-02-2018 21:41:37
-* @Last Modified by:   ekzyis
-* @Last Modified time: 16-02-2018 21:58:33
-*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
-Synth(\midisine_scale_BUBBLESORT);
-Synth(\default_midifade_scale_BUBBLESORT);
+Synth(\scale_midisine_BUBBLESORT);
+Synth(\scale_default_midifade_BUBBLESORT);
 
 (//--Parentheses begin
 
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot_scale_BUBBLESORT, {
+SynthDef(\scale_boot_BUBBLESORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -25,7 +19,7 @@ SynthDef(\boot_scale_BUBBLESORT, {
 }).add;
 
 // Sinewave osc playing midi-notes.
-SynthDef(\midisine_scale_BUBBLESORT, {
+SynthDef(\scale_midisine_BUBBLESORT, {
 	arg midi=69, amp=0.1, atk=0.005, rel=0.3, pan=0;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
@@ -36,7 +30,7 @@ SynthDef(\midisine_scale_BUBBLESORT, {
 }).add;
 
 // Modified default-synth ("fade+midi edition").
-SynthDef(\default_midifade_scale_BUBBLESORT, {
+SynthDef(\scale_default_midifade_BUBBLESORT, {
 	arg midi=69, amp=0.5, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
 	var z;
 	z = LPF.ar(
@@ -47,11 +41,11 @@ SynthDef(\default_midifade_scale_BUBBLESORT, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\boot_scale_OSC_BUBBLESORT, {
-	"\\boot_scale_OSC_BUBBLESORT".postln;
+OSCdef(\scale_boot_OSC_BUBBLESORT, {
+	"\\scale_boot_OSC_BUBBLESORT".postln;
 	// Play boot sound
-	Synth(\boot_scale_BUBBLESORT);
-}, "/boot_scale_BUBBLESORT");
+	Synth(\scale_boot_BUBBLESORT);
+}, "/scale_boot_BUBBLESORT");
 
 /**
  * Define listener for setting up of scale.
@@ -91,32 +85,32 @@ OSCdef(\boot_scale_OSC_BUBBLESORT, {
 	"durations=".post;~durations.postln;*/
 };
 
-OSCdef(\start_scale_OSC_BUBBLESORT, {
-	"\\start_scale_OSC_BUBBLESORT".postln;
+OSCdef(\scale_start_OSC_BUBBLESORT, {
+	"\\scale_start_OSC_BUBBLESORT".postln;
 	~initscale;
 }, "/scale_start_BUBBLESORT");
 
-OSCdef(\mod_scale_MAXFREQ_OSC_BUBBLESORT, {
+OSCdef(\scale_set_maxfreq_OSC_BUBBLESORT, {
 	arg msg;
-	"\\mod_scale_MAXFREQ_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\scale_set_maxfreq_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
-}, "/scale_set_MAXFREQ_BUBBLESORT");
+}, "/scale_set_maxfreq_BUBBLESORT");
 
-OSCdef(\mod_scale_MINFREQ_OSC_BUBBLESORT, {
+OSCdef(\scale_set_minfreq_OSC_BUBBLESORT, {
 	arg msg;
-	"\\mod_scale_MINFREQ_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\scale_set_minfreq_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
-}, "/scale_set_MINFREQ_BUBBLESORT");
+}, "/scale_set_minfreq_BUBBLESORT");
 
 ~amp = 0.1;
-OSCdef(\mod_scale_amp_OSC_BUBBLESORT, {
+OSCdef(\scale_set_amp_OSC_BUBBLESORT, {
 	arg msg;
-	"\\mod_scale_amp_OSC_BUBBLESORT - arguments: [";msg[1].post;"]".postln;
+	"\\scale_set_amp_OSC_BUBBLESORT - arguments: [";msg[1].post;"]".postln;
 	~amp = msg[1];
 }, "/scale_set_amp_BUBBLESORT");
 
 // Define listener for playing a midi note.
-OSCdef(\midiplay_scale_OSC_BUBBLESORT, {
+OSCdef(\scale_set_OSC_BUBBLESORT, {
 	arg msg;
 	var midi;
 	i = ~scales.find([msg[1].cpsmidi.round]);
@@ -124,21 +118,21 @@ OSCdef(\midiplay_scale_OSC_BUBBLESORT, {
 		{ midi = (msg[1].cpsmidi.round)-1 },
 		{ midi = ~scales.at(i); },
 	);
-	"\\midiplay_scale_OSC_BUBBLESORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
-	Synth(\midisine_scale_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
-}, "/scale_play_BUBBLESORT");
+	"\\scale_set_OSC_BUBBLESORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
+	Synth(\scale_midisine_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
+}, "/scale_set_BUBBLESORT");
 
 // Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
-OSCdef(\status_scale_OSC_BUBBLESORT, {
+OSCdef(\scale_status_OSC_BUBBLESORT, {
 	if(x==0,
-		{ Synth(\boot_scale_BUBBLESORT); x = 1; },
+		{ Synth(\scale_boot_BUBBLESORT); x = 1; },
 		{}
 	);
 	~address.sendMsg("/hello");
-}, "/helloscale_BUBBLESORT");
+}, "/scale_hello_BUBBLESORT");
 
 )//--Parentheses end

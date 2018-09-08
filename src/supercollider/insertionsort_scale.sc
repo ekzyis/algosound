@@ -1,22 +1,16 @@
-/*
-* @Author: ekzyis
-* @Date:   10-02-2018 00:50:49
-* @Last Modified by:   ekzyis
-* @Last Modified time: 16-02-2018 22:00:19
-*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
-Synth(\midisine_scale_INSERTIONSORT);
-Synth(\default_midifade_scale_INSERTIONSORT);
+Synth(\scale_midisine_INSERTIONSORT);
+Synth(\scale_default_midifade_INSERTIONSORT);
 
 (//--Parentheses begin
 
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot_scale_INSERTIONSORT, {
+SynthDef(\scale_boot_INSERTIONSORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -25,7 +19,7 @@ SynthDef(\boot_scale_INSERTIONSORT, {
 }).add;
 
 // Sinewave osc playing midi-notes.
-SynthDef(\midisine_scale_INSERTIONSORT, {
+SynthDef(\scale_midisine_INSERTIONSORT, {
 	arg midi=69, amp=0.1, atk=0.005, rel=0.3;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
@@ -36,7 +30,7 @@ SynthDef(\midisine_scale_INSERTIONSORT, {
 }).add;
 
 // Modified default-synth ("fade+midi edition").
-SynthDef(\default_midifade_scale_INSERTIONSORT, {
+SynthDef(\scale_default_midifade_INSERTIONSORT, {
 	arg midi=69, amp=0.5, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
 	var z;
 	z = LPF.ar(
@@ -47,11 +41,11 @@ SynthDef(\default_midifade_scale_INSERTIONSORT, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\boot_scale_OSC_INSERTIONSORT, {
+OSCdef(\scale_boot_OSC_INSERTIONSORT, {
 	"playing boot sound.".postln;
 	// Play boot sound
-	Synth(\boot_scale_INSERTIONSORT);
-}, "/boot_scale_INSERTIONSORT");
+	Synth(\scale_boot_INSERTIONSORT);
+}, "/scale_boot_INSERTIONSORT");
 
 /**
  * Define listener for setting up of scale.
@@ -95,32 +89,32 @@ OSCdef(\boot_scale_OSC_INSERTIONSORT, {
  * Define listener for setting up of scale.
  * Setup depends on given minimal frequency and max frequency.
  */
-OSCdef(\start_scale_OSC_INSERTIONSORT, {
-	"\\start_scale_OSC_INSERTIONSORT".postln;
+OSCdef(\scale_start_OSC_INSERTIONSORT, {
+	"\\scale_start_OSC_INSERTIONSORT".postln;
 	~initscale;
 }, "/scale_start_INSERTIONSORT");
 
-OSCdef(\mod_scale_MAXFREQ_OSC_INSERTIONSORT, {
+OSCdef(\scale_set_maxfreq_OSC_INSERTIONSORT, {
 	arg msg;
-	"\\mod_scale_MAXFREQ_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\scale_set_maxfreq_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
 	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
-}, "/scale_set_MAXFREQ_INSERTIONSORT");
+}, "/scale_set_maxfreq_INSERTIONSORT");
 
-OSCdef(\mod_scale_MINFREQ_OSC_INSERTIONSORT, {
+OSCdef(\scale_set_minfreq_OSC_INSERTIONSORT, {
 	arg msg;
-	"\\mod_scale_MINFREQ_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\scale_set_minfreq_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
 	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
-}, "/scale_set_MINFREQ_INSERTIONSORT");
+}, "/scale_set_minfreq_INSERTIONSORT");
 
 ~amp = 0.1;
-OSCdef(\mod_scale_amp_OSC_INSERTIONSORT, {
+OSCdef(\scale_set_amp_OSC_INSERTIONSORT, {
 	arg msg;
-	"\\mod_scale_amp_OSC_INSERTIONSORT - arguments: [";msg[1].post;"]".postln;
+	"\\scale_set_amp_OSC_INSERTIONSORT - arguments: [";msg[1].post;"]".postln;
 	~amp = msg[1];
 }, "/scale_set_amp_INSERTIONSORT");
 
 // Define listener for playing a midi note.
-OSCdef(\midiplay_scale_OSC_INSERTIONSORT, {
+OSCdef(\scale_set_OSC_INSERTIONSORT, {
 	arg msg;
 	var midi;
 	i = ~scales.find([msg[1].cpsmidi.round]);
@@ -128,21 +122,21 @@ OSCdef(\midiplay_scale_OSC_INSERTIONSORT, {
 		{ midi = (msg[1].cpsmidi.round)-1 },
 		{ midi = ~scales.at(i); },
 	);
-	"\\midiplay_scale_OSC_INSERTIONSORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
-	Synth(\midisine_scale_INSERTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
-}, "/scale_play_INSERTIONSORT");
+	"\\scale_set_OSC_INSERTIONSORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
+	Synth(\scale_midisine_INSERTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
+}, "/scale_set_INSERTIONSORT");
 
 // Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
-OSCdef(\status_scale_OSC_INSERTIONSORT, {
+OSCdef(\scale_status_OSC_INSERTIONSORT, {
 	if(x==0,
-		{ Synth(\boot_scale_INSERTIONSORT); x = 1; },
+		{ Synth(\scale_boot_INSERTIONSORT); x = 1; },
 		{}
 	);
 	~address.sendMsg("/hello");
-}, "/helloscale_INSERTIONSORT");
+}, "/scale_hello_INSERTIONSORT");
 
 )//--Parentheses end

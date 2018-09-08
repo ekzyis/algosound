@@ -1,13 +1,14 @@
 package algosound.ui;
 
+import algosound.data.audio.OSCControllerWrapper;
+import algosound.data.audio.OSCControllerWrapper.*;
 import algosound.data.visuals.Visual;
 import algosound.data.algorithms.Algorithm;
-import algosound.data.audio.ControllerInterface;
 import algosound.data.audio.OSC;
 import algosound.util.AlgosoundUtil;
-import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.Button;
 import controlP5.Controller;
 import processing.core.PApplet;
 
@@ -26,7 +27,7 @@ import static algosound.util.AlgosoundUtil.*;
 public class Algosound extends PApplet {
 
     private static Algosound instance;
-    private Algorithm sort;
+    private Algorithm algorithm;
     // `GUI`-instance
     private ControlP5 cp5;
     private Button START;
@@ -35,6 +36,8 @@ public class Algosound extends PApplet {
     private Button SONI;
     private Button ALGO;
     private Controller SPEED;
+    // Audio controllers
+    private Controller[] controllers;
 
     @Override
     public void settings() {
@@ -44,7 +47,7 @@ public class Algosound extends PApplet {
     @Override
     public void setup() {
         frameRate(AlgosoundUtil.FRAMERATE);
-        sort = AlgosoundUtil.SELECTED_ALGORITHM;
+        algorithm = AlgosoundUtil.SELECTED_ALGORITHM;
         initGUI();
         Algosound.getInstance().getSurface().setResizable(true);
     }
@@ -72,13 +75,52 @@ public class Algosound extends PApplet {
          */
         EXIT = cp5.addButton("exit").setPosition(x0, yPos[len - 1]).setLabel("Exit");
         RESET = cp5.addButton("reset").setPosition(x0, yPos[1]).setLabel("Reset");
-        SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(sort.getSelectedSonification().NAME);
+        SONI = cp5.addButton("change").setPosition(x0, yPos[2]).setLabel(algorithm.getSelectedSonification().NAME);
         ALGO = cp5.addButton("algo").setPosition(x0, yPos[3]).setLabel("ALGO");
         // Initialize the controller for algorithm speed.
         SPEED = cp5.addSlider("algofps").setPosition(x0, yPos[4]).setLabel("FPS").setWidth(45).setRange(1f, 1000f).setValue(FRAMERATE);
 
         // Init the sound panel of selected sonification
-        SELECTED_ALGORITHM.getSelectedSonification().initSoundPanel(cp5);
+        initSoundPanel();
+    }
+
+    private void initSoundPanel() {
+        OSCControllerWrapper[] wrappers = algorithm.getSelectedSonification().getWrappers();
+        // Get the knobs from wrapper
+        controllers = new OSCKnob[wrappers.length];
+        for(int i=0; i<controllers.length; ++i) {
+            controllers[i] = wrappers[i].getKnob(cp5);
+        }
+        final int INSET_X = 20, INSET_Y = 18;
+        // Set locations for knobs
+        int x0 = INSET_X;
+        int y0 = 10;
+        int x = x0;
+        int y = y0;
+        for(int i=0; i<controllers.length; ++i) {
+            //System.out.println("before check: " + x + ", " + y);
+            if(x > SOUNDCONTROL_W - KNOBSIZE - INSET_X ) {
+                x = x0;
+                y += KNOBSIZE + INSET_Y;
+            }
+            //System.out.println("after check: " + x + ", " + y);
+            controllers[i].setPosition(W + GUI_W + x,y);
+            x += KNOBSIZE + INSET_X;
+        }
+    }
+
+    private void resetSoundPanel() {
+        OSCControllerWrapper[] wrappers = algorithm.getSelectedSonification().getWrappers();
+        assert(controllers.length == wrappers.length);
+        for(int i=0; i<controllers.length; ++i) {
+            controllers[i].setValue(wrappers[i].getDefaultValue());
+        }
+    }
+
+    private void clearSoundPanel() {
+        for(int i=0; i<controllers.length; ++i) {
+            controllers[i].remove();
+        }
     }
 
     /**
@@ -97,9 +139,9 @@ public class Algosound extends PApplet {
                      * statement when it would be false since the label will never be again "Start"
                      * so it's actually unnecessary.)
                      */
-                    if (!sort.isAlive()) {
+                    if (!algorithm.isAlive()) {
                         // println("---starting audio");
-                        sort.start();
+                        algorithm.start();
                         // Lock selected sonification.
                         SONI.lock();
                         // Lock selected algorithm.
@@ -109,21 +151,21 @@ public class Algosound extends PApplet {
                     break;
                 case "Pause":
                     // println("---pause audio");
-                    sort.pause();
+                    algorithm.pause();
                     c.setLabel("Resume");
                     break;
                 case "Resume":
                     // println("---resume audio");
-                    sort.resumeAlgorithm();
+                    algorithm.resumeAlgorithm();
                     c.setLabel("Pause");
                     break;
             }
             // ### RESET
         } else if (c == RESET) {
             START.setLabel("Start");
-            System.out.println("--- sort: reset");
-            OSC.getInstance().sendMessage(sort.getSelectedSonification().FREEPATH);
-            sort = sort.reset();
+            System.out.println("--- algorithm: reset");
+            OSC.getInstance().sendMessage(algorithm.getSelectedSonification().FREEPATH);
+            algorithm = algorithm.reset();
             // Unlock selection of sonifications.
             SONI.unlock();
             // Unlock selection of algorithms.
@@ -133,21 +175,21 @@ public class Algosound extends PApplet {
             SPEED.setValue(PREFERRED_FRAMERATE);
             ALGORITHMFPS = PREFERRED_FRAMERATE;
             frameRate(PREFERRED_FRAMERATE);
-            // Reset sonifaction sound panel.
-            sort.getSelectedSonification().reset();
-        } else if (c == SONI && !sort.isAlive()) {
-            sort.getSelectedSonification().clearSoundPanel(cp5);
-            sort.changeSonification();
-            sort.getSelectedSonification().initSoundPanel(cp5);
-            SONI.setLabel(sort.getSelectedSonification().NAME);
-        } else if (c == ALGO && !sort.isAlive()) {
-            sort.getSelectedSonification().clearSoundPanel(cp5);
+            // Reset sonification sound panel.
+            resetSoundPanel();
+        } else if (c == SONI && !algorithm.isAlive()) {
+            clearSoundPanel();
+            algorithm.changeSonification();
+            initSoundPanel();
+            SONI.setLabel(algorithm.getSelectedSonification().NAME);
+        } else if (c == ALGO && !algorithm.isAlive()) {
+            clearSoundPanel();
             AlgosoundUtil.changeAlgorithm();
-            sort = SELECTED_ALGORITHM;
+            algorithm = SELECTED_ALGORITHM;
             // Also update the label of the sonification button
-            SONI.setLabel(sort.getSelectedSonification().NAME);
+            SONI.setLabel(algorithm.getSelectedSonification().NAME);
             // Init sound panel
-            sort.getSelectedSonification().initSoundPanel(cp5);
+            initSoundPanel();
         } else if (c == SPEED) {
             // Only change framerate of sorting! Don't change framerate of actual redrawing.
             ALGORITHMFPS = c.getValue();
@@ -170,32 +212,32 @@ public class Algosound extends PApplet {
 
     @Override
     public void draw() {
-        synchronized (sort) {
+        synchronized (algorithm) {
             background(25);
-            if (sort.isAlive() && !sort.isPaused() && !sort.isExiting() && !sort.isWaitingDueToFPS()) {
+            if (algorithm.isAlive() && !algorithm.isPaused() && !algorithm.isExiting() && !algorithm.isWaitingDueToFPS()) {
                 // Wait until new frame is ready.
-                while (!sort.frameIsReady()) {
+                while (!algorithm.frameIsReady()) {
                     try {
-                        sort.wait();
+                        algorithm.wait();
                     } catch (InterruptedException e) {
                     }
                 }
             }
             translate(0, INFO_H);
-            for (Visual v : sort.getVisuals()) {
+            for (Visual v : algorithm.getVisuals()) {
                 v.show();
             }
-            if (sort.isPaused()) {
+            if (algorithm.isPaused()) {
                 drawPause();
             }
             translate(0, -INFO_H);
             drawInfo();
             /**
-             * Notify sort thread that frame has been drawn.
+             * Notify algorithm thread that frame has been drawn.
              */
-            if (sort.isAlive() && !sort.isPaused() && !sort.isWaitingDueToFPS()) {
-                sort.notifyFrameDraw();
-                sort.notify();
+            if (algorithm.isAlive() && !algorithm.isPaused() && !algorithm.isWaitingDueToFPS()) {
+                algorithm.notifyFrameDraw();
+                algorithm.notify();
             }
         }
     }
@@ -252,7 +294,7 @@ public class Algosound extends PApplet {
 
     private void drawCurrentSortAlgoName() {
         fill(255);
-        text(sort.getString(), 120, 15);
+        text(algorithm.getString(), 120, 15);
     }
 
     // Draw status of IPC.
@@ -272,14 +314,14 @@ public class Algosound extends PApplet {
     }
 
     public Algorithm getAlgorithm() {
-        return sort;
+        return algorithm;
     }
 
     // This function is called during exit.
     @Override
     public void exit() {
         // Exit the sorting thread using its own implemented exit-method.
-        sort.exit();
+        algorithm.exit();
         /**
          * Interrupt status-thread which checks connection between OSC and sc3-server.
          * This will terminate the status-thread in a clean way.
@@ -294,7 +336,7 @@ public class Algosound extends PApplet {
         OSC.getInstance().getStatusThread().interrupt();
         try {
             // Wait for threads to terminate.
-            sort.join();
+            algorithm.join();
             OSC.getInstance().getStatusThread().join();
         } catch (Exception e) {
         }

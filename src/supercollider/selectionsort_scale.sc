@@ -1,22 +1,16 @@
-/*
-* @Author: ekzyis
-* @Date:   10-02-2018 02:36:21
-* @Last Modified by:   ekzyis
-* @Last Modified time: 16-02-2018 22:05:14
-*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
-Synth(\midisine_scale_SELECTIONSORT);
-Synth(\default_midifade_scale_SELECTIONSORT);
+Synth(\scale_midisine_SELECTIONSORT);
+Synth(\scale_default_midifade_SELECTIONSORT);
 
 (//--Parentheses begin
 
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot_scale_SELECTIONSORT, {
+SynthDef(\scale_boot_SELECTIONSORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -25,7 +19,7 @@ SynthDef(\boot_scale_SELECTIONSORT, {
 }).add;
 
 // Sinewave osc playing midi-notes.
-SynthDef(\midisine_scale_SELECTIONSORT, {
+SynthDef(\scale_midisine_SELECTIONSORT, {
 	arg midi=69, amp=0.1, atk=0.005, rel=0.3, pan=0;
 	var sig, env;
 	env = EnvGen.kr(Env([0,1,0],[atk, rel]),doneAction:2);
@@ -36,7 +30,7 @@ SynthDef(\midisine_scale_SELECTIONSORT, {
 }).add;
 
 // Modified default-synth ("fade+midi edition").
-SynthDef(\default_midifade_scale_SELECTIONSORT, {
+SynthDef(\scale_default_midifade_SELECTIONSORT, {
 	arg midi=69, amp=0.3, pan=0, att=0.005, sustain=0.2, releaseTime=0.1;
 	var z;
 	z = LPF.ar(
@@ -47,17 +41,19 @@ SynthDef(\default_midifade_scale_SELECTIONSORT, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\boot_scale_OSC_SELECTIONSORT, {
+OSCdef(\scale_boot_OSC_SELECTIONSORT, {
 	"playing boot sound.".postln;
 	// Play boot sound
-	Synth(\boot_scale_SELECTIONSORT);
-}, "/boot_scale_SELECTIONSORT");
+	Synth(\scale_boot_SELECTIONSORT);
+}, "/scale_boot_SELECTIONSORT");
 
 /**
  * Define listener for setting up of scale.
  * Setup depends on given minimal frequency and max frequency.
  */
-OSCdef(\start_scale_OSC_SELECTIONSORT, {
+~minfreq = 200;
+~maxfreq = 4000;
+~initscale = {
 	arg msg;
 	var min_freq, max_freq, min_midi, max_midi;
 
@@ -73,7 +69,9 @@ OSCdef(\start_scale_OSC_SELECTIONSORT, {
 		|i|
 		~scales = ~scales ++ (Scale.minor.degrees+(min_midi+(12*i)));
 	};
-	"scales=".post;~scales.postln;
+	~minfreq = min_freq;
+	~maxfreq = max_freq;
+	"~initscale: scales=".post;~scales.postln;
 
 	/**
 	 * Generate a random sequence of duration times.
@@ -85,10 +83,34 @@ OSCdef(\start_scale_OSC_SELECTIONSORT, {
 		Array.fill(6,{ arg i; (i*0.25) + 0.25;}).choose
 	}); // Array.fill inception
 	"durations=".post;~durations.postln;*/
+};
+
+OSCdef(\scale_start_OSC_SELECTIONSORT, {
+	"\\scale_start_OSC_SELECTIONSORT".postln;
+	~initscale;
 }, "/scale_start_SELECTIONSORT");
 
+OSCdef(\scale_set_maxfreq_OSC_SELECTIONSORT, {
+	arg msg;
+	"\\scale_set_maxfreq_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+}, "/scale_set_maxfreq_SELECTIONSORT");
+
+OSCdef(\scale_set_minfreq_OSC_SELECTIONSORT, {
+	arg msg;
+	"\\scale_set_minfreq_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+}, "/scale_set_minfreq_SELECTIONSORT");
+
+~amp = 0.1;
+OSCdef(\scale_set_amp_OSC_SELECTIONSORT, {
+	arg msg;
+	"\\scale_set_amp_OSC_SELECTIONSORT - arguments: [";msg[1].post;"]".postln;
+	~amp = msg[1];
+}, "/scale_set_amp_SELECTIONSORT");
+
 // Define listener for playing a midi note.
-OSCdef(\midiplay_scale_OSC_SELECTIONSORT, {
+OSCdef(\scale_set_OSC_SELECTIONSORT, {
 	arg msg;
 	var midi;
 	i = ~scales.find([msg[1].cpsmidi.round]);
@@ -98,20 +120,20 @@ OSCdef(\midiplay_scale_OSC_SELECTIONSORT, {
 	);
 	"playing midi-note ".post;midi.postln;
 	"pan=".post;msg[2].postln;
-	Synth(\midisine_scale_SELECTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2]]);
-}, "/scale_play_SELECTIONSORT");
+	Synth(\scale_midisine_SELECTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
+}, "/scale_set_SELECTIONSORT");
 
 // Create address to fire messages to Processing client
 ~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
-OSCdef(\status_scale_OSC_SELECTIONSORT, {
+OSCdef(\scale_status_OSC_SELECTIONSORT, {
 	if(x==0,
-		{ Synth(\boot_scale_SELECTIONSORT); x = 1; },
+		{ Synth(\scale_boot_SELECTIONSORT); x = 1; },
 		{}
 	);
 	~address.sendMsg("/hello");
-}, "/helloscale_SELECTIONSORT");
+}, "/scale_hello_SELECTIONSORT");
 
 )//--Parentheses end

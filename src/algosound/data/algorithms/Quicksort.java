@@ -26,7 +26,7 @@ import static processing.core.PApplet.subset;
  */
 public class Quicksort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_QUICKSORT";
+    public static final String SUFFIX = "QUICKSORT";
 
     private QuicksortElement[] elements;
     private ArrayList<QuicksortElement> unmarkMe;
@@ -101,15 +101,15 @@ public class Quicksort extends SortingAlgorithm {
         int arg3 = expmap(a[r], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
         float pan = map(l, 0, a.length - 1, -1, 1);
         float[] args = {arg1, pan};
-        osc.sendMessage(sel.MODPATH.split("~")[0], args);
+        osc.sendMessage(sel.MODPATHS.get(0), args);
         args[0] = arg2;
         pan = map(pivotIndex, 0, a.length - 1, -1, 1);
         args[1] = pan;
-        osc.sendMessage(sel.MODPATH.split("~")[1], args);
+        osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(1) : sel.MODPATHS.get(0), args);
         args[0] = arg3;
         pan = map(r, 0, a.length - 1, -1, 1);
         args[1] = pan;
-        osc.sendMessage(sel.MODPATH.split("~")[2], args);
+        osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(2) : sel.MODPATHS.get(0), args);
 
         notifyFrameReady();
         do {
@@ -124,7 +124,7 @@ public class Quicksort extends SortingAlgorithm {
                 args[0] = arg1;
                 pan = map(l, 0, a.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATH.split("~")[0], args);
+                osc.sendMessage(sel.MODPATHS.get(0), args);
 
                 notifyFrameReady();
             }
@@ -139,7 +139,7 @@ public class Quicksort extends SortingAlgorithm {
                 args[0] = arg3;
                 pan = map(r, 0, a.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATH.split("~")[2], args);
+                osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(2) : sel.MODPATHS.get(0), args);
 
                 notifyFrameReady();
             }
@@ -160,12 +160,12 @@ public class Quicksort extends SortingAlgorithm {
                 args[0] = arg1;
                 pan = map(l, 0, a.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATH.split("~")[0], args);
+                osc.sendMessage(sel.MODPATHS.get(0), args);
                 arg3 = expmap(a[r], 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
                 args[0] = arg3;
                 pan = map(r, 0, a.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATH.split("~")[2], args);
+                osc.sendMessage(sel.MODPATHS.size() == 3 ? sel.MODPATHS.get(2) : sel.MODPATHS.get(0), args);
 
                 notifyFrameReady();
                 l++;

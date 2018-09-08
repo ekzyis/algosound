@@ -1,16 +1,10 @@
-/*
-* @Author: ekzyis
-* @Date:   08-02-2018 21:41:37
-* @Last Modified by:   ekzyis
-* @Last Modified time: 16-02-2018 21:58:38
-*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
 // Test synths after creating
-x = Synth(\boot_wave_BUBBLESORT);
-y = Synth(\algowave_wave_BUBBLESORT)
+x = Synth(\wave_boot_BUBBLESORT);
+y = Synth(\wave_algowave_BUBBLESORT)
 y.set(\gate, 0)
 y.set(\freq, 700);
 y.set(\freqlag, 1)
@@ -20,7 +14,7 @@ y.free
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot_wave_BUBBLESORT, {
+SynthDef(\wave_boot_BUBBLESORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -31,7 +25,7 @@ SynthDef(\boot_wave_BUBBLESORT, {
 /**
  * Synth which will be modified by individual element accesses while sorting.
  */
-SynthDef(\algowave_wave_BUBBLESORT, {
+SynthDef(\wave_algowave_BUBBLESORT, {
 	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
@@ -45,54 +39,54 @@ SynthDef(\algowave_wave_BUBBLESORT, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\boot_wave_OSC_BUBBLESORT, {
-	"\\boot_wave_OSC_BUBBLESORT".postln;
-	Synth(\boot_wave_BUBBLESORT);
-}, "/boot_wave_BUBBLESORT");
+OSCdef(\wave_boot_OSC_BUBBLESORT, {
+	"\\wave_boot_OSC_BUBBLESORT".postln;
+	Synth(\wave_boot_BUBBLESORT);
+}, "/wave_boot_BUBBLESORT");
 
 // Define listener for start of algowave-synth.
-OSCdef(\start_wave_OSC_BUBBLESORT, {
-	"\\start_wave_OSC_BUBBLESORT".postln;
-	~algowave = Synth(\algowave_wave_BUBBLESORT);
+OSCdef(\wave_start_BUBBLESORT, {
+	"\\wave_start_BUBBLESORT".postln;
+	~algowave = Synth(\wave_algowave_BUBBLESORT);
 }, "/wave_start_BUBBLESORT");
 
 // Define listener for pausing of algowave-synth.
-OSCdef(\pause_wave_OSC_BUBBLESORT, {
-	"\\pause_wave_OSC_BUBBLESORT".postln;
+OSCdef(\wave_pause_OSC_BUBBLESORT, {
+	"\\wave_pause_OSC_BUBBLESORT".postln;
 	~algowave.set(\amptotal, 0);
 }, "/wave_pause_BUBBLESORT");
 
 // Define listener for resuming of algowave-synth.
-OSCdef(\resume_wave_OSC_BUBBLESORT, {
-	"\\resume_wave_OSC_BUBBLESORT".postln;
+OSCdef(\wave_resume_OSC_BUBBLESORT, {
+	"\\wave_resume_OSC_BUBBLESORT".postln;
 	~algowave.set(\amptotal, ~amp);
 }, "/wave_resume_BUBBLESORT");
 
 // Define listener for modifying.
-OSCdef(\mod_wave_OSC_BUBBLESORT, {
+OSCdef(\wave_set_OSC_BUBBLESORT, {
 	arg msg;
-	"\\mod_wave_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\wave_set_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~algowave.set(\freq, msg[1]);
 	~algowave.set(\amptotal, ~amp);
 }, "/wave_set_BUBBLESORT");
 
 // Realtime modulating of synths
-OSCdef(\mod_wave_freqlag_OSC_BUBBLESORT, {
+OSCdef(\wave_set_freqlag_OSC_BUBBLESORT, {
 	arg msg;
-	"\\mod_wave_freqlag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\wave_set_freqlag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~algowave.set(\freqlag, msg[1]);
 }, "/wave_set_freqlag_BUBBLESORT");
 
 ~amp = 1;
-OSCdef(\mod_wave_amp_OSC_BUBBLESORT, {
+OSCdef(\wave_set_amp_OSC_BUBBLESORT, {
 	arg msg;
-	"\\mod_wave_amp_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\wave_set_amp_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~amp = msg[1];
 }, "/wave_set_amp_BUBBLESORT");
 
-OSCdef(\mod_wave_amplag_OSC_BUBBLESORT, {
+OSCdef(\wave_set_amplag_OSC_BUBBLESORT, {
 	arg msg;
-	"\\mod_wave_amplag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	"\\wave_set_amplag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	~algowave.set(\amplag, msg[1]);
 }, "/wave_set_amplag_BUBBLESORT");
 /**
@@ -106,8 +100,8 @@ OSCdef(\mod_wave_amplag_OSC_BUBBLESORT, {
  * Tried with SYNTH.isNil but this leads to other possible
  * more severe bugs like orphaned synths.
  */
-OSCdef(\free_wave_OSC_BUBBLESORT, {
-	"\\free_wave_OSC_BUBBLESORT".postln;
+OSCdef(\wave_free_OSC_BUBBLESORT, {
+	"\\wave_free_OSC_BUBBLESORT".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
 }, "/wave_free_BUBBLESORT");
@@ -117,12 +111,12 @@ OSCdef(\free_wave_OSC_BUBBLESORT, {
 
 x = 0;
 // Define listener for checking if sc3-server is running.
-OSCdef(\status_wave_OSC_BUBBLESORT, {
+OSCdef(\wave_status_OSC_BUBBLESORT, {
 	if(x==0,
-		{ Synth(\boot_wave_BUBBLESORT); x = 1; },
+		{ Synth(\wave_boot_BUBBLESORT); x = 1; },
 		{}
 	);
 	~address.sendMsg("/hello");
-}, "/hellowave_BUBBLESORT");
+}, "/wave_hello_BUBBLESORT");
 
 )//--Parentheses end

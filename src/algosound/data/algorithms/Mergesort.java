@@ -26,7 +26,7 @@ import static processing.core.PApplet.*;
  */
 public class Mergesort extends SortingAlgorithm {
 
-    public static final String SUFFIX = "_MERGESORT";
+    public static final String SUFFIX = "MERGESORT";
     // Variables to pass mergesort() to determine mode.
     final static byte NATIVE = 1;
     final static byte THREAD = 2;
@@ -182,7 +182,7 @@ public class Mergesort extends SortingAlgorithm {
                 // Update pan value since real cut index has changed.
                 pan = map(realCut, 0, elements.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATH, args);
+                osc.sendMessage(sel.MODPATHS.get(0), args);
                 notifyFrameReady();
             }
             if (MODE == THREAD & !isExiting()) {
@@ -199,7 +199,7 @@ public class Mergesort extends SortingAlgorithm {
                 // Update pan value since real cut index has changed.
                 pan = map(realCut, 0, elements.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATH, args);
+                osc.sendMessage(sel.MODPATHS.get(0), args);
                 notifyFrameReady();
             }
             left = mergesort(left, MODE);
@@ -225,7 +225,7 @@ public class Mergesort extends SortingAlgorithm {
                 // Update pan value since real cut index has changed.
                 pan = map(realCut, 0, elements.length - 1, -1, 1);
                 args[1] = pan;
-                osc.sendMessage(sel.MODPATH, args);
+                osc.sendMessage(sel.MODPATHS.get(0), args);
                 notifyFrameReady();
             }
             right = mergesort(right, MODE);
@@ -235,7 +235,7 @@ public class Mergesort extends SortingAlgorithm {
                  * Mark cut index.
                  */
                 mark(realCut);
-                osc.sendMessage(sel.MODPATH, args);
+                osc.sendMessage(sel.MODPATHS.get(0), args);
                 notifyFrameReady();
             }
             /**
@@ -361,7 +361,7 @@ public class Mergesort extends SortingAlgorithm {
                 // Pan value is mapped index of merged element.
                 pan = map(leftStart + i, 0, elements.length - 1, -1, 1);
                 float[] args = {arg1, pan};
-                osc.sendMessage(sel.MODPATH, args);
+                osc.sendMessage(sel.MODPATHS.get(0), args);
                 notifyFrameReady();
             }
             i++;
@@ -380,7 +380,7 @@ public class Mergesort extends SortingAlgorithm {
                     // Pan value is mapped index of merged element.
                     pan = map(leftStart + i, 0, elements.length - 1, -1, 1);
                     float[] args = {arg1, pan};
-                    osc.sendMessage(sel.MODPATH, args);
+                    osc.sendMessage(sel.MODPATHS.get(0), args);
                     notifyFrameReady();
                 }
                 i++;
@@ -398,7 +398,7 @@ public class Mergesort extends SortingAlgorithm {
                     // Pan value is mapped index of merged element.
                     pan = map(leftStart + i, 0, elements.length - 1, -1, 1);
                     float[] args = {arg1, pan};
-                    osc.sendMessage(sel.MODPATH, args);
+                    osc.sendMessage(sel.MODPATHS.get(0), args);
                     notifyFrameReady();
                 }
                 i++;

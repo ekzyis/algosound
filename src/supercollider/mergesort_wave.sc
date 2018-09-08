@@ -1,16 +1,10 @@
-/*
-* @Author: ekzyis
-* @Date:   31-01-2018 21:13:29
-* @Last Modified by:   ekzyis
-* @Last Modified time: 16-02-2018 22:01:44
-*/
 FreqScope.new
 Stethoscope.new
 s.queryAllNodes
 
 // Test synths after creating
-x = Synth(\boot_wave_MERGESORT);
-y = Synth(\algowave_wave_MERGESORT);
+x = Synth(\wave_boot_MERGESORT);
+y = Synth(\wave_algowave_MERGESORT);
 y.set(\gate, 0)
 y.set(\freq, 700);
 y.set(\freqlag, 1)
@@ -20,7 +14,7 @@ y.free
 /**
  * Futuristic booting sound.
  */
-SynthDef(\boot_wave_MERGESORT, {
+SynthDef(\wave_boot_MERGESORT, {
 	var ampEnv,freqEnv,src;
 	ampEnv = EnvGen.kr(Env([0.01,1,1,0.01], [0.4,0.6,0.2], curve:\exp), doneAction:2);
 	freqEnv = EnvGen.kr(Env([0.1,1,2.71828], [1,0.5], curve:\exp));
@@ -31,7 +25,7 @@ SynthDef(\boot_wave_MERGESORT, {
 /**
  * Synth which will be modified by individual swaps happening while sorting.
  */
-SynthDef(\algowave_wave_MERGESORT, {
+SynthDef(\wave_algowave_MERGESORT, {
 	arg freq=440, freqlag=0.1, amptotal=1, amp=0.2, amplag=0.5, gate=1;
 	var sig, ampmod;
 	// Make higher pitches less loud.
@@ -45,36 +39,55 @@ SynthDef(\algowave_wave_MERGESORT, {
 }).add;
 
 // Define listener for boot sound.
-OSCdef(\boot_wave_OSC_MERGESORT, {
+OSCdef(\wave_boot_OSC_MERGESORT, {
 	"playing boot sound.".postln;
-	Synth(\boot_wave_MERGESORT);
-}, "/boot_wave_MERGESORT");
+	Synth(\wave_boot_MERGESORT);
+}, "/wave_boot_MERGESORT");
 
 // Define listener for start of algowave-synth.
-OSCdef(\start_wave_OSC_MERGESORT, {
+OSCdef(\wave_start_OSC_MERGESORT, {
 	"creating algowave.".postln;
-	~algowave = Synth(\algowave_wave_MERGESORT);
+	~algowave = Synth(\wave_algowave_MERGESORT);
 }, "/wave_start_MERGESORT");
 
 // Define listener for pausing of algowave-synth.
-OSCdef(\pause_wave_OSC_MERGESORT, {
+OSCdef(\wave_pause_OSC_MERGESORT, {
 	"pausing algowave.".postln;
 	~algowave.set(\amptotal, 0);
 }, "/wave_pause_MERGESORT");
 
 // Define listener for resuming of algowave-synth.
-OSCdef(\resume_wave_OSC_MERGESORT, {
+OSCdef(\wave_resume_OSC_MERGESORT, {
 	"resuming algowave.".postln;
-	~algowave.set(\amptotal, 1);
+	~algowave.set(\amptotal, ~amp);
 }, "/wave_resume_MERGESORT");
 
 // Define listener for modifying.
-OSCdef(\mod_wave_OSC_MERGESORT, {
+OSCdef(\wave_set_OSC_MERGESORT, {
 	arg msg;
-	~algowave.set(\amptotal, 1);
+	~algowave.set(\amptotal, ~amp);
 	~algowave.set(\freq, msg[1]);
 }, "/wave_set_MERGESORT");
 
+// Realtime modulating of synths
+OSCdef(\wave_set_freqlag_OSC_MERGESORT, {
+	arg msg;
+	"\\wave_set_freqlag_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	~algowave.set(\freqlag, msg[1]);
+}, "/wave_set_freqlag_MERGESORT");
+
+~amp = 1;
+OSCdef(\wave_set_amp_OSC_MERGESORT, {
+	arg msg;
+	"\\wave_set_amp_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	~amp = msg[1];
+}, "/wave_set_amp_MERGESORT");
+
+OSCdef(\wave_set_amplag_OSC_MERGESORT, {
+	arg msg;
+	"\\wave_set_amplag_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	~algowave.set(\amplag, msg[1]);
+}, "/wave_set_amplag_MERGESORT");
 /**
  * Define listener for freeing of synth.
  * KNOWN ISSUES: After freeing, another free-attempt will
@@ -86,7 +99,7 @@ OSCdef(\mod_wave_OSC_MERGESORT, {
  * Tried with SYNTH.isNil but this leads to other possible
  * more severe bugs like orphaned synths.
  */
-OSCdef(\free_wave_OSC_MERGESORT, {
+OSCdef(\wave_free_OSC_MERGESORT, {
 	"freeing algowave.".postln;
 	// Free it using gate.
 	~algowave.set(\gate, 0);
@@ -97,12 +110,12 @@ OSCdef(\free_wave_OSC_MERGESORT, {
 
 x = 0;
 // Define listener for checking if sc3-server is running.
-OSCdef(\status_wave_OSC_MERGESORT, {
+OSCdef(\wave_status_OSC_MERGESORT, {
 	if(x==0,
-		{ Synth(\boot_wave_MERGESORT); x = 1; },
+		{ Synth(\wave_boot_MERGESORT); x = 1; },
 		{}
 	);
 	~address.sendMsg("/hello");
-}, "/hellowave_MERGESORT");
+}, "/wave_hello_MERGESORT");
 
 )//--Parentheses end
