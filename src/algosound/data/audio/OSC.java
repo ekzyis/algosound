@@ -178,6 +178,7 @@ public class OSC extends PApplet {
     }
 
     public boolean getStatus(String s) {
+        if(connected.get(s) == null) return false;
         return connected.get(s);
     }
 
