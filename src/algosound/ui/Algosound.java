@@ -308,7 +308,7 @@ public class Algosound extends PApplet {
         } else {
             fill(255, 0, 0);
         }
-        text("SC3-server", 20, 15);
+        text("sc3 server", 20, 15);
         ellipse(10, 10, 8, 8);
         stroke(0);
     }
