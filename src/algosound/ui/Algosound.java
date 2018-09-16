@@ -301,21 +301,38 @@ public class Algosound extends PApplet {
     private void drawIPCStatus() {
         ellipseMode(CENTER);
         noStroke();
-        fill(255);
-        ellipse(10, 10, 10, 10);
+        fill(255); // white for background ellipse
+        int x = 10, y = 10, r = 10;
+        ellipse(x, y, r, r); // STATUSPATH
         String infolabel = "sc3 server";
-        Rectangle inforec = new Rectangle(10,5,(int)(10+textWidth(infolabel)), 10);
+        Rectangle inforec = new Rectangle(x,y-y/2,(int)(x+textWidth(infolabel)), r);
         // Draw more info when mouse is over icon
+        algosound.data.audio.Sonification selected = algorithm.getSelectedSonification();
         if(mouseOver(inforec)) {
-            ellipse(10,25,10,10);
+            int y_diff = 5, y2 = y + r + y_diff;
+            for(String p : OSC.getInstance().getStatusMap().keySet()) {
+                // skip STATUSPATH since it's always shown
+                if(p != selected.STATUSPATH) {
+                    ellipse(x, y2, r, r);
+                    y2 += r + y_diff;
+                }
+            }
         }
-        if (OSC.getInstance().getStatus(algorithm.getSelectedSonification().STATUSPATH)) {
-            fill(0, 255, 0);
-        } else {
-            fill(255, 0, 0);
+        if (OSC.getInstance().getStatus(selected.STATUSPATH)) fill(0,255,0); else fill(255,0,0);
+        text(infolabel, x+r, y+5);
+        ellipse(x, y, r-2, r-2);
+        if(mouseOver(inforec)) {
+            int y_diff = 5, y2 = y + r + y_diff;
+            for(String p : OSC.getInstance().getStatusMap().keySet()) {
+                // skip STATUSPATH since it's always shown
+                if(p != selected.STATUSPATH) {
+                    if(OSC.getInstance().getStatus(p)) fill(0,255,0); else fill(255,0,0);
+                    ellipse(x, y2, r-2, r-2);
+                    text(p, x+r, y2+r);
+                    y2 += r + y_diff;
+                }
+            }
         }
-        text(infolabel, 20, 15);
-        ellipse(10, 10, 8, 8);
         stroke(0);
     }
 

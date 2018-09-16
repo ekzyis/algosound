@@ -181,6 +181,10 @@ public class OSC extends PApplet {
         return connected.get(s);
     }
 
+    public Map<String, Boolean> getStatusMap() {
+        return connected;
+    }
+
     public Thread getStatusThread() {
         return status;
     }
