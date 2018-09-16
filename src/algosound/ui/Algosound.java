@@ -309,7 +309,7 @@ public class Algosound extends PApplet {
         if(mouseOver(inforec)) {
             ellipse(10,25,10,10);
         }
-        if (OSC.getInstance().getStatus()) {
+        if (OSC.getInstance().getStatus(algorithm.getSelectedSonification().STATUSPATH)) {
             fill(0, 255, 0);
         } else {
             fill(255, 0, 0);
