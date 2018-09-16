@@ -303,14 +303,40 @@ public class Algosound extends PApplet {
         noStroke();
         fill(255);
         ellipse(10, 10, 10, 10);
+        String infolabel = "sc3 server";
+        Rectangle inforec = new Rectangle(10,5,(int)(10+textWidth(infolabel)), 10);
+        // Draw more info when mouse is over icon
+        if(mouseOver(inforec)) {
+            ellipse(10,25,10,10);
+        }
         if (OSC.getInstance().getStatus()) {
             fill(0, 255, 0);
         } else {
             fill(255, 0, 0);
         }
-        text("sc3 server", 20, 15);
+        text(infolabel, 20, 15);
         ellipse(10, 10, 8, 8);
         stroke(0);
+    }
+
+    // Check if mouse is over circle
+    private boolean mouseOver(int x, int y, int diameter) {
+        float disX = x - mouseX;
+        float disY = y - mouseY;
+        if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Check if mouse is over rectangle
+    private boolean mouseOver(Rectangle rec) {
+        if (mouseX >= rec.x && mouseX <= rec.x+rec.width &&
+                mouseY >= rec.y && mouseY <= rec.y+rec.height) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Algorithm getAlgorithm() {
