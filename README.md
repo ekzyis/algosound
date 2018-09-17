@@ -15,18 +15,19 @@ This project's goal is to create visualization and sonification of algorithms us
 A good example is this video on YouTube: https://www.youtube.com/watch?v=kPRA0W1kECg&t=36s <br />
 While in the video there are only sorting algorithms, other algorithms like Dijkstra and A* should also be included in this project.
 
-If possible, the sonification should be independent of the algorithm and visual implementation. This will ultimately - as far as I can see - lead to parsing, analyzing and rewriting of the Processing source code to include SuperCollider calls.
+If possible, the sonification should be independent of the algorithm and visual implementation. This will ultimately - as far as I can see - lead to parsing, analyzing and rewriting of the ~Processing~ Java source code to include SuperCollider calls.
 
 First, I am going to make some basic visualization of different algorithms and sonificate them with SuperCollider by using  the network protocol OSC. So to say, I will first do what in the end the "compiling" algorithm should do by itself.
 
 ### Getting started
 
-```shell
- cd ~
- git clone https://github.com/ekzyis/algosound.git
- cat algosound/lib/LIB_README
-```
 For compiling the source you need these four libraries which are available to download at the specified location (listed in lib/LIB_README).
+- Processing: https://processing.org/download/
+- Processing-SuperCollider: http://www.erase.net/projects/processing-sc/
+- OscP5: http://www.sojamo.de/libraries/oscP5/
+- ControlP5: http://www.sojamo.de/libraries/controlP5/
+
+Since this repository is in **active development**, there is currently no way of running without building.
 
 To make the process of downloading and unzipping the libraries easier, you can use the script *algosound_lib_dl* inside the lib/ folder.
 
