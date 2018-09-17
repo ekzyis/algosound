@@ -46,7 +46,7 @@ SynthDef(\scale_default_midifade_BUBBLESORT, {
 // Define listener for boot sound.
 OSCdef(\scale_boot_OSC_BUBBLESORT, {
 	arg msg;
-	"\\scale_boot_OSC_BUBBLESORT".postln;
+	"\\scale_boot_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	if(msg[1]=='status',
 		{
 			~address.sendMsg("/scale_boot_BUBBLESORT");
@@ -98,7 +98,7 @@ OSCdef(\scale_boot_OSC_BUBBLESORT, {
 
 OSCdef(\scale_start_OSC_BUBBLESORT, {
 	arg msg;
-	"\\scale_start_OSC_BUBBLESORT".postln;
+	"\\scale_start_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	if(msg[1]=='status',
 		{
 			~address.sendMsg("/scale_start_BUBBLESORT");
@@ -138,7 +138,7 @@ OSCdef(\scale_set_minfreq_OSC_BUBBLESORT, {
 ~amp = 0.1;
 OSCdef(\scale_set_amp_OSC_BUBBLESORT, {
 	arg msg;
-	"\\scale_set_amp_OSC_BUBBLESORT - arguments: [";msg[1].post;"]".postln;
+	"\\scale_set_amp_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	if(msg[1]=='status',
 		{
 			~address.sendMsg("/scale_set_amp_BUBBLESORT");
@@ -153,6 +153,7 @@ OSCdef(\scale_set_amp_OSC_BUBBLESORT, {
 OSCdef(\scale_set_OSC_BUBBLESORT, {
 	arg msg;
 	var midi;
+	"\\scale_set_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
 	if(msg[1]=='status',
 		{
 			~address.sendMsg("/scale_set_BUBBLESORT");
@@ -163,10 +164,10 @@ OSCdef(\scale_set_OSC_BUBBLESORT, {
 				{ midi = (msg[1].cpsmidi.round)-1 },
 				{ midi = ~scales.at(i); },
 			);
+			"\\scale_set_OSC_BUBBLESORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
+			Synth(\scale_midisine_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
 		}
 	);
-	"\\scale_set_OSC_BUBBLESORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
-	Synth(\scale_midisine_BUBBLESORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
 }, "/scale_set_BUBBLESORT");
 
 x = 0;
