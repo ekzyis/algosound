@@ -63,10 +63,13 @@ public class OSC extends PApplet {
                 //System.out.println("PROCESS @ checkSC3Status started.");
                 System.out.println(s);
                 LambdaInterface resetPathStatus = (String p) -> {
-                    // reset status
-                    connected.put(p, false);
-                    // send message to see if OSCdef replies
-                    sendMessage(p, "status");
+                    // Some paths can be null since selected sonification does not use it.
+                    if(p!=null) {
+                        // reset status
+                        connected.put(p, false);
+                        // send message to see if OSCdef replies
+                        sendMessage(p, "status");
+                    }
                 };
                 while (!isInterrupted()) {
                     // Update sonification (has maybe been changed)

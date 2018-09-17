@@ -156,17 +156,26 @@ public class Sonification {
         this.NAME = type.getName();
         this.uniquifyer = (String x) -> "/" + NAME.toLowerCase() + "_" + x + "_" + suffix;
         this.STARTPATH = uniquifyer.call("start");
-        this.PAUSEPATH = uniquifyer.call("pause");
-        this.RESUMEPATH = uniquifyer.call("resume");
+        // SCALE type does not have PAUSE, RESUME or FREE path
+        if(type == Type.SCALE) {
+            this.PAUSEPATH = null;
+            this.RESUMEPATH = null;
+            this.FREEPATH = null;
+        }
+        else {
+            this.PAUSEPATH = uniquifyer.call("pause");
+            this.RESUMEPATH = uniquifyer.call("resume");
+            this.FREEPATH = uniquifyer.call("free");
+        }
         this.MODPATHS = new ArrayList<String>();
         this.MODPATHS.add(uniquifyer.call("set"));
-        this.FREEPATH = uniquifyer.call("free");
         this.STATUSPATH = uniquifyer.call("hello");
         this.BOOTPATH = uniquifyer.call("boot");
         for(int i=0; i<wrappers.length; ++i) {
             wrappers[i].setPath(uniquifyer.call(wrappers[i].getPath()));
         }
         this.wrappers = wrappers;
+
     }
 
     /**
