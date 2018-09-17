@@ -26,7 +26,10 @@ import static processing.core.PApplet.*;
  */
 public class Mergesort extends SortingAlgorithm {
 
+    // Static field for access during creation of sonifications.
+    // This cannot be static in SortingAlgorithm since all subclasses need their own definition of this.
     public static final String SUFFIX = "MERGESORT";
+
     // Variables to pass mergesort() to determine mode.
     final static byte NATIVE = 1;
     final static byte THREAD = 2;
@@ -46,6 +49,7 @@ public class Mergesort extends SortingAlgorithm {
         // Needed for proper cut index and subset visualization.
         cutStack.push(0);
         name = "Mergesort";
+        suffix = SUFFIX;
         sonifications.add(MERGESORT_WAVE);
         sonifications.add(MERGESORT_SCALE);
         selected_sonification = sonifications.get(0);

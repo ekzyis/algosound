@@ -1,18 +1,10 @@
 package algosound.data.audio;
 
 import algosound.data.algorithms.*;
-import algosound.ui.Algosound;
-import algosound.util.AlgosoundUtil;
-import controlP5.ControlP5;
-import controlP5.Controller;
-import controlP5.Knob;
-import algosound.data.audio.OSCFreqControllerWrapper.Type.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-
-import static algosound.util.AlgosoundUtil.*;
 
 /**
  * Sonification class. This class is used in the implemented algorithms

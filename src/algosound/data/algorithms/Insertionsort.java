@@ -21,11 +21,14 @@ import static algosound.util.AlgosoundUtil.expmap;
  */
 public class Insertionsort extends SortingAlgorithm {
 
+    // Static field for access during creation of sonifications.
+    // This cannot be static in SortingAlgorithm since all subclasses need their own definition of this.
     public static final String SUFFIX = "INSERTIONSORT";
 
     public Insertionsort(int N) {
         super(N);
         name = "Insertionsort";
+        suffix = SUFFIX;
         sonifications.add(INSERTIONSORT_WAVE);
         sonifications.add(INSERTIONSORT_SCALE);
         selected_sonification = sonifications.get(0);

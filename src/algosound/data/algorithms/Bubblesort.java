@@ -18,11 +18,14 @@ import static processing.core.PApplet.map;
  */
 public class Bubblesort extends SortingAlgorithm {
 
+    // Static field for access during creation of sonifications.
+    // This cannot be static in SortingAlgorithm since all subclasses need their own definition of this.
     public static final String SUFFIX = "BUBBLESORT";
 
     public Bubblesort(int N) {
         super(N);
         name = "Bubblesort";
+        suffix = SUFFIX;
         sonifications.add(BUBBLESORT_WAVE);
         sonifications.add(BUBBLESORT_SCALE);
         selected_sonification = sonifications.get(0);

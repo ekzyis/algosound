@@ -301,34 +301,30 @@ public class Algosound extends PApplet {
     private void drawIPCStatus() {
         ellipseMode(CENTER);
         noStroke();
+        algosound.data.audio.Sonification selected = algorithm.getSelectedSonification();
         fill(255); // white for background ellipse
         int x = 10, y = 10, r = 10;
         ellipse(x, y, r, r); // STATUSPATH
         String infolabel = "sc3 server";
-        Rectangle inforec = new Rectangle(x,y-y/2,(int)(x+textWidth(infolabel)), r);
-        // Draw more info when mouse is over icon
-        algosound.data.audio.Sonification selected = algorithm.getSelectedSonification();
-        if(mouseOver(inforec)) {
-            int y_diff = 5, y2 = y + r + y_diff;
-            for(String p : OSC.getInstance().getStatusMap().keySet()) {
-                // skip STATUSPATH since it's always shown
-                if(p != selected.STATUSPATH) {
-                    ellipse(x, y2, r, r);
-                    y2 += r + y_diff;
-                }
-            }
-        }
         if (OSC.getInstance().getStatus(selected.STATUSPATH)) fill(0,255,0); else fill(255,0,0);
         text(infolabel, x+r, y+5);
         ellipse(x, y, r-2, r-2);
+        Rectangle inforec = new Rectangle(x,y-y/2,(int)(x+textWidth(infolabel)), r);
+        // Draw more info when mouse is over icon
         if(mouseOver(inforec)) {
             int y_diff = 5, y2 = y + r + y_diff;
             for(String p : OSC.getInstance().getStatusMap().keySet()) {
-                // skip STATUSPATH since it's always shown
-                if(p != selected.STATUSPATH) {
+                // skip STATUSPATH since it's always shown and only show status of paths of current selected sonification
+                if(p != selected.STATUSPATH && p.matches("^/" + selected.NAME.toLowerCase() + ".*$" )
+                        && p.matches(".*"+ algorithm.getSuffix() + "$")) {
+                    // draw black background
+                    fill(0);
+                    rect(x, y2-y/2-2, (int)(x+textWidth(p)), r+4);
+                    fill(255);
+                    ellipse(x, y2, r, r);
                     if(OSC.getInstance().getStatus(p)) fill(0,255,0); else fill(255,0,0);
                     ellipse(x, y2, r-2, r-2);
-                    text(p, x+r, y2+r);
+                    text(p, x+r, y2-5+r);
                     y2 += r + y_diff;
                 }
             }

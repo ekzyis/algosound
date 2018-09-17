@@ -32,6 +32,8 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
     public final static SortingAlgorithm QUICKSORT = new Quicksort(N);
     // Name of sorting algorithm to display in info area.
     protected String name;
+    // Used suffix for uniquifying sonifications.
+    protected String suffix;
     // Array which should be sorted.
     protected int[] a;
     // Elements which have to be swapped according to integers.
@@ -76,6 +78,10 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
 
     public String getString() {
         return name;
+    }
+
+    public String getSuffix() {
+        return suffix;
     }
 
     public boolean frameIsReady() {
