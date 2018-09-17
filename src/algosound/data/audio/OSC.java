@@ -59,33 +59,19 @@ public class OSC extends PApplet {
             public void run() {
                 String s = TIMEFORMAT.format(new java.util.Date());
                 s += "PROCESS @ checkSC3Status started.";
-                //System.out.print(TIMEFORMAT.format(new java.util.Date()));
-                //System.out.println("PROCESS @ checkSC3Status started.");
                 System.out.println(s);
                 LambdaInterface resetPathStatus = (String p) -> {
-                    // Some paths can be null since selected sonification does not use it.
-                    if(p!=null) {
-                        // reset status
-                        connected.put(p, false);
-                        // send message to see if OSCdef replies
-                        sendMessage(p, "status");
-                    }
+                    // reset status
+                    connected.put(p, false);
+                    // send message to see if OSCdef replies
+                    sendMessage(p, "status");
                 };
                 while (!isInterrupted()) {
                     // Update sonification (has maybe been changed)
                     Sonification sonification = Algosound.getInstance().getAlgorithm().getSelectedSonification();
-                    String[] paths = {sonification.STATUSPATH,
-                            sonification.STARTPATH,
-                            sonification.PAUSEPATH,
-                            sonification.RESUMEPATH,
-                            sonification.FREEPATH,
-                            sonification.BOOTPATH,
-                    };
+                    String[] paths = sonification.getPaths();
                     for(String p : paths) {
                         resetPathStatus.call(p);
-                    }
-                    for(String mod : sonification.MODPATHS) {
-                        resetPathStatus.call(mod);
                     }
                     /**
                      * TODO: This implementation depends on order of execution. If 1. connected gets
@@ -104,8 +90,6 @@ public class OSC extends PApplet {
                 }
                 s = TIMEFORMAT.format(new java.util.Date());
                 s += "PROCESS @ checkSC3Status stopped.";
-                //System.out.print(TIMEFORMAT.format(new java.util.Date()));
-                //System.out.println("PROCESS @ checkSC3Status stopped.");
                 System.out.println(s);
             }
         };

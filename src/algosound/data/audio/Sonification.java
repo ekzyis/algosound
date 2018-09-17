@@ -198,4 +198,23 @@ public class Sonification {
     public OSCControllerWrapper[] getWrappers() {
         return wrappers;
     }
+
+    // Return all used OSC paths
+    public String[] getPaths() {
+        ArrayList<String> paths = new ArrayList<>();
+        String[] defaultpaths = new String[]{STARTPATH, PAUSEPATH, RESUMEPATH, FREEPATH, STATUSPATH, BOOTPATH};
+        for(String p : defaultpaths) {
+            // Default paths can be null when they are not used
+            if(p!=null) {
+                paths.add(p);
+            }
+        }
+        for(String p : MODPATHS) {
+            paths.add(p);
+        }
+        for(OSCControllerWrapper w : wrappers)  {
+            paths.add(w.getPath());
+        }
+        return paths.toArray(new String[paths.size()]);
+    }
 }
