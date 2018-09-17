@@ -120,7 +120,7 @@ public class Sonification {
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
                     new OSCControllerWrapper("FREQLAG","set_freqlag",0f,2f,0.1f),
-                    new OSCControllerWrapper("AMPLAG","set_freqlag",0f,5f,0.1f)
+                    new OSCControllerWrapper("AMPLAG","set_amplag",0f,5f,0.1f)
             },
             Quicksort.SUFFIX,
             new ArrayList<String>(Arrays.asList("set1","set2","set3"))
