@@ -113,6 +113,7 @@ public class OSC extends PApplet {
         }
     }
 
+    // NOTE use `Object` as arg type so you only need one method?
     /**
      * Send a message to an osc listener with given path and arguments.
      *
@@ -120,6 +121,7 @@ public class OSC extends PApplet {
      * @args arguments within osc message
      */
     public void sendMessage(String path, int[] args) {
+        if(path==null) return;
         String out = TIMEFORMAT.format(new java.util.Date());
         out += "OSC @ SEND_MSG to: " + path;
         OscMessage msg = new OscMessage(path);
@@ -137,6 +139,7 @@ public class OSC extends PApplet {
     }
 
     public void sendMessage(String path, float[] args) {
+        if(path==null) return;
         String out = TIMEFORMAT.format(new java.util.Date());
         out += "OSC @ SEND_MSG to: " + path;
         OscMessage msg = new OscMessage(path);
@@ -154,6 +157,7 @@ public class OSC extends PApplet {
     }
 
     public void sendMessage(String path, String msg) {
+        if(path==null) return;
         String out = TIMEFORMAT.format(new java.util.Date());
         out += "OSC @ SEND_MSG to: " + path;
         OscMessage oscmsg = new OscMessage(path);
@@ -168,6 +172,7 @@ public class OSC extends PApplet {
 
     // Convenience method.
     public void sendMessage(String path) {
+        if(path==null) return;
         sendMessage(path, new int[0]);
     }
 
