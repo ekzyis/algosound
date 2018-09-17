@@ -117,7 +117,7 @@ OSCdef(\wave_set_OSC_BUBBLESORT, {
 OSCdef(\wave_set_freqlag_OSC_BUBBLESORT, {
 	arg msg;
 	"\\wave_set_freqlag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
-	if(msg[1]=="status",
+	if(msg[1]=='status',
 		{
 			~address.sendMsg("/wave_set_freqlag_BUBBLESORT");
 		},
