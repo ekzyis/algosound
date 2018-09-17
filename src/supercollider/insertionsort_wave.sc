@@ -177,7 +177,7 @@ OSCdef(\wave_set_amplag_OSC_INSERTIONSORT, {
 	"\\wave_set_amplag_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
 	if(msg[1]=='status',
 		{
-			~address.sendMsg("/wave_pulse_set_amplag_INSERTIONSORT");
+			~address.sendMsg("/wave_set_amplag_INSERTIONSORT");
 		},
 		{
 			~algowave.set(\amplag, msg[1]);
@@ -203,7 +203,7 @@ OSCdef(\wave_set_pulseamp_OSC_INSERTIONSORT, {
 	"\\wave_set_pulseamp_OSC_INSERTIONSORT - arguments: [".post;msg[1].post;"]".postln;
 	if(msg[1]=='status',
 		{
-			~address.sendMsg("/wave_pulse_set_amp_OSC_INSERTIONSORT");
+			~address.sendMsg("/wave_pulse_set_amp_INSERTIONSORT");
 		},
 		{
 			~insertamp = msg[1];
@@ -252,7 +252,6 @@ OSCdef(\wave_status_OSC_INSERTIONSORT, {
 			);
 		}
 	);
-	~address.sendMsg("/hello");
 }, "/wave_hello_INSERTIONSORT");
 
 )//--Parentheses end

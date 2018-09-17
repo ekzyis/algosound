@@ -190,7 +190,6 @@ OSCdef(\scale_status_OSC_INSERTIONSORT, {
 			);
 		}
 	);
-	~address.sendMsg("/hello");
 }, "/scale_hello_INSERTIONSORT");
 
 )//--Parentheses end

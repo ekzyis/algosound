@@ -57,9 +57,9 @@ public class OSC extends PApplet {
         status = new Thread() {
             @Override
             public void run() {
-                String s = TIMEFORMAT.format(new java.util.Date());
-                s += "PROCESS @ checkSC3Status started.";
-                System.out.println(s);
+                String out = TIMEFORMAT.format(new java.util.Date());
+                out += "PROCESS @ checkSC3Status started.";
+                System.out.println(out);
                 LambdaInterface resetPathStatus = (String p) -> {
                     // reset status
                     connected.put(p, false);
@@ -88,9 +88,9 @@ public class OSC extends PApplet {
                         this.interrupt();
                     }
                 }
-                s = TIMEFORMAT.format(new java.util.Date());
-                s += "PROCESS @ checkSC3Status stopped.";
-                System.out.println(s);
+                out = TIMEFORMAT.format(new java.util.Date());
+                out += "PROCESS @ checkSC3Status stopped.";
+                System.out.println(out);
             }
         };
         status.start();
@@ -99,11 +99,18 @@ public class OSC extends PApplet {
     // Listen for messages.
     // NOTE we only expect status replies
     public void oscEvent(OscMessage msg) {
-        String s = TIMEFORMAT.format(new java.util.Date());
-        s += "OSC @ RECV_MSG: " + msg.addrPattern();
-        System.out.println(s);
         // SC3 will reply with path of received OSCdef
-        connected.put(msg.addrPattern(), true);
+        String key = msg.addrPattern();
+        String out = TIMEFORMAT.format(new java.util.Date());
+        if(connected.containsKey(key)) {
+            out += "OSC @ RECV_MSG: " + key;
+            System.out.println(out);
+            connected.put(key, true);
+        }
+        else {
+            out += "OSC @ RECV_MSG: ERROR: UNEXPECTED MESSAGE: " + key;
+            System.err.println(out);
+        }
     }
 
     /**
@@ -113,50 +120,50 @@ public class OSC extends PApplet {
      * @args arguments within osc message
      */
     public void sendMessage(String path, int[] args) {
-        String s = TIMEFORMAT.format(new java.util.Date());
-        s += "OSC @ SEND_MSG to: " + path;
+        String out = TIMEFORMAT.format(new java.util.Date());
+        out += "OSC @ SEND_MSG to: " + path;
         OscMessage msg = new OscMessage(path);
-        s += ", ARGS: [ ";
+        out += ", ARGS: [ ";
         for (int n : args) {
             msg.add(n);
-            s += n + " ";
+            out += n + " ";
         }
-        s += "]";
+        out += "]";
         if (OSC != null) {
             OSC.send(msg, SUPERCOLLIDER);
-            System.out.println(s);
+            System.out.println(out);
         }
-        else System.err.println(s + " FAILED SENDING MESSAGE");
+        else System.err.println(out + " FAILED SENDING MESSAGE");
     }
 
     public void sendMessage(String path, float[] args) {
-        String s = TIMEFORMAT.format(new java.util.Date());
-        s += "OSC @ SEND_MSG to: " + path;
+        String out = TIMEFORMAT.format(new java.util.Date());
+        out += "OSC @ SEND_MSG to: " + path;
         OscMessage msg = new OscMessage(path);
-        s += ", ARGS: [ ";
+        out += ", ARGS: [ ";
         for (float n : args) {
             msg.add(n);
-            s += n + " ";
+            out += n + " ";
         }
-        s += "]";
+        out += "]";
         if (OSC != null) {
             OSC.send(msg, SUPERCOLLIDER);
-            System.out.println(s);
+            System.out.println(out);
         }
-        else System.err.println(s + " FAILED SENDING MESSAGE");
+        else System.err.println(out + " FAILED SENDING MESSAGE");
     }
 
     public void sendMessage(String path, String msg) {
-        String s = TIMEFORMAT.format(new java.util.Date());
-        s += "OSC @ SEND_MSG to: " + path;
+        String out = TIMEFORMAT.format(new java.util.Date());
+        out += "OSC @ SEND_MSG to: " + path;
         OscMessage oscmsg = new OscMessage(path);
-        s += ", ARGS: [ " + msg + " ]";
+        out += ", ARGS: [ " + msg + " ]";
         oscmsg.add(msg);
         if (OSC != null) {
             OSC.send(oscmsg, SUPERCOLLIDER);
-            System.out.println(s);
+            System.out.println(out);
         }
-        else System.err.println(s + " FAILED SENDING MESSAGE");
+        else System.err.println(out + " FAILED SENDING MESSAGE");
     }
 
     // Convenience method.
