@@ -7,6 +7,9 @@ Synth(\scale_default_midifade_QUICKSORT);
 
 (//--Parentheses begin
 
+// Create address to fire messages to Processing client
+~address = NetAddr.new("127.0.0.1", 12000);
+
 /**
  * Futuristic booting sound.
  */
@@ -42,16 +45,26 @@ SynthDef(\scale_default_midifade_QUICKSORT, {
 
 // Define listener for boot sound.
 OSCdef(\scale_boot_OSC_QUICKSORT, {
-	"playing boot sound.".postln;
-	// Play boot sound
-	Synth(\scale_boot_QUICKSORT);
+	arg msg;
+	"\\scale_boot_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_boot_QUICKSORT");
+		},
+		{
+			// Play boot sound
+			Synth(\scale_boot_QUICKSORT);
+		}
+	);
 }, "/scale_boot_QUICKSORT");
 
 /**
  * Define listener for setting up of scale.
  * Setup depends on given minimal frequency and max frequency.
  */
-OSCdef(\scale_start_OSC_QUICKSORT, {
+~minfreq = 200;
+~maxfreq = 4000;
+~initscale = {
 	arg msg;
 	var min_freq, max_freq, min_midi, max_midi;
 
@@ -67,7 +80,9 @@ OSCdef(\scale_start_OSC_QUICKSORT, {
 		|i|
 		~scales = ~scales ++ (Scale.minor.degrees+(min_midi+(12*i)));
 	};
-	"scales=".post;~scales.postln;
+	~minfreq = min_freq;
+	~maxfreq = max_freq;
+	"~initscale: scales=".post;~scales.postln;
 
 	/**
 	 * Generate a random sequence of duration times.
@@ -79,52 +94,98 @@ OSCdef(\scale_start_OSC_QUICKSORT, {
 		Array.fill(6,{ arg i; (i*0.25) + 0.25;}).choose
 	}); // Array.fill inception
 	"durations=".post;~durations.postln;*/
+};
+
+OSCdef(\scale_start_OSC_QUICKSORT, {
+	arg msg;
+	"\\scale_start_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_start_QUICKSORT");
+		},
+		{
+			~initscale;
+		}
+	);
 }, "/scale_start_QUICKSORT");
 
 OSCdef(\scale_set_maxfreq_OSC_QUICKSORT, {
 	arg msg;
 	"\\scale_set_maxfreq_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
-	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_maxfreq_QUICKSORT");
+		},
+		{
+			~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+		}
+	);
 }, "/scale_set_maxfreq_QUICKSORT");
 
 OSCdef(\scale_set_minfreq_OSC_QUICKSORT, {
 	arg msg;
 	"\\scale_set_minfreq_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
-	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_minfreq_QUICKSORT");
+		},
+		{
+			~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+		}
+	);
 }, "/scale_set_minfreq_QUICKSORT");
 
 ~amp = 0.1;
 OSCdef(\scale_set_amp_OSC_QUICKSORT, {
 	arg msg;
-	"\\scale_set_amp_OSC_QUICKSORT - arguments: [";msg[1].post;"]".postln;
-	~amp = msg[1];
+	"\\scale_set_amp_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_amp_QUICKSORT");
+		},
+		{
+			~amp = msg[1];
+		}
+	);
 }, "/scale_set_amp_QUICKSORT");
 
 // Define listener for playing a midi note.
 OSCdef(\scale_set_OSC_QUICKSORT, {
 	arg msg;
 	var midi;
-	i = ~scales.find([msg[1].cpsmidi.round]);
-	if( i.isNil,
-		{ midi = (msg[1].cpsmidi.round)-1 },
-		{ midi = ~scales.at(i); },
+	"\\scale_set_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_QUICKSORT");
+		},
+		{
+			i = ~scales.find([msg[1].cpsmidi.round]);
+			if( i.isNil,
+				{ midi = (msg[1].cpsmidi.round)-1 },
+				{ midi = ~scales.at(i); },
+			);
+			"\\scale_set_OSC_QUICKSORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
+			Synth(\scale_midisine_QUICKSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
+		}
 	);
-	"playing midi-note ".post;midi.postln;
-	"pan=".post;msg[2].postln;
-	Synth(\scale_midisine_QUICKSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
 }, "/scale_set_QUICKSORT");
-
-// Create address to fire messages to Processing client
-~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
 OSCdef(\scale_status_OSC_QUICKSORT, {
-	if(x==0,
-		{ Synth(\scale_boot_QUICKSORT); x = 1; },
-		{}
+	arg msg;
+	"\\scale_status_OSC_QUICKSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_hello_QUICKSORT");
+		},
+		{
+			if(x==0,
+				{ Synth(\scale_boot_QUICKSORT); x = 1; },
+				{}
+			);
+		}
 	);
-	~address.sendMsg("/hello");
 }, "/scale_hello_QUICKSORT");
 
 )//--Parentheses end

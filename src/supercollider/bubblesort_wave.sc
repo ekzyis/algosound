@@ -11,6 +11,10 @@ y.set(\freqlag, 1)
 y.free
 
 (//--Parentheses begin
+
+// Create address to fire messages to Processing client
+~address = NetAddr.new("127.0.0.1", 12000);
+
 /**
  * Futuristic booting sound.
  */
@@ -40,54 +44,114 @@ SynthDef(\wave_algowave_BUBBLESORT, {
 
 // Define listener for boot sound.
 OSCdef(\wave_boot_OSC_BUBBLESORT, {
-	"\\wave_boot_OSC_BUBBLESORT".postln;
-	Synth(\wave_boot_BUBBLESORT);
+	arg msg;
+	"\\wave_boot_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_boot_BUBBLESORT");
+		},
+		{
+			Synth(\wave_boot_BUBBLESORT);
+		}
+	);
 }, "/wave_boot_BUBBLESORT");
 
 // Define listener for start of algowave-synth.
 OSCdef(\wave_start_BUBBLESORT, {
-	"\\wave_start_BUBBLESORT".postln;
-	~algowave = Synth(\wave_algowave_BUBBLESORT);
+	arg msg;
+	"\\wave_start_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_start_BUBBLESORT");
+		},
+		{
+			~algowave = Synth(\wave_algowave_BUBBLESORT);
+		}
+	);
 }, "/wave_start_BUBBLESORT");
 
 // Define listener for pausing of algowave-synth.
 OSCdef(\wave_pause_OSC_BUBBLESORT, {
-	"\\wave_pause_OSC_BUBBLESORT".postln;
-	~algowave.set(\amptotal, 0);
+	arg msg;
+	"\\wave_pause_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_pause_BUBBLESORT");
+		},
+		{
+			~algowave.set(\amptotal, 0);
+		}
+	);
 }, "/wave_pause_BUBBLESORT");
 
 // Define listener for resuming of algowave-synth.
 OSCdef(\wave_resume_OSC_BUBBLESORT, {
-	"\\wave_resume_OSC_BUBBLESORT".postln;
-	~algowave.set(\amptotal, ~amp);
+	arg msg;
+	"\\wave_resume_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_resume_BUBBLESORT");
+		},
+		{
+			~algowave.set(\amptotal, ~amp);
+		}
+	);
 }, "/wave_resume_BUBBLESORT");
 
 // Define listener for modifying.
 OSCdef(\wave_set_OSC_BUBBLESORT, {
 	arg msg;
 	"\\wave_set_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
-	~algowave.set(\freq, msg[1]);
-	~algowave.set(\amptotal, ~amp);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_BUBBLESORT");
+		},
+		{
+			~algowave.set(\freq, msg[1]);
+			~algowave.set(\amptotal, ~amp);
+		}
+	);
 }, "/wave_set_BUBBLESORT");
 
 // Realtime modulating of synths
 OSCdef(\wave_set_freqlag_OSC_BUBBLESORT, {
 	arg msg;
 	"\\wave_set_freqlag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
-	~algowave.set(\freqlag, msg[1]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_freqlag_BUBBLESORT");
+		},
+		{
+			~algowave.set(\freqlag, msg[1]);
+		}
+	);
 }, "/wave_set_freqlag_BUBBLESORT");
 
 ~amp = 1;
 OSCdef(\wave_set_amp_OSC_BUBBLESORT, {
 	arg msg;
 	"\\wave_set_amp_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
-	~amp = msg[1];
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_amp_BUBBLESORT");
+		},
+		{
+			~amp = msg[1];
+		}
+	);
 }, "/wave_set_amp_BUBBLESORT");
 
 OSCdef(\wave_set_amplag_OSC_BUBBLESORT, {
 	arg msg;
 	"\\wave_set_amplag_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
-	~algowave.set(\amplag, msg[1]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_amplag_BUBBLESORT");
+		},
+		{
+			~algowave.set(\amplag, msg[1]);
+		}
+	);
 }, "/wave_set_amplag_BUBBLESORT");
 /**
  * Define listener for freeing of synth.
@@ -101,22 +165,34 @@ OSCdef(\wave_set_amplag_OSC_BUBBLESORT, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\wave_free_OSC_BUBBLESORT, {
-	"\\wave_free_OSC_BUBBLESORT".postln;
-	// Free it using gate.
-	~algowave.set(\gate, 0);
+	arg msg;
+	"\\wave_free_OSC_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_free_BUBBLESORT");
+		},
+		{ // Free it using gate.
+			~algowave.set(\gate, 0);
+		}
+	);
 }, "/wave_free_BUBBLESORT");
-
-// Create address to fire messages to Processing client
-~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
 OSCdef(\wave_status_OSC_BUBBLESORT, {
-	if(x==0,
-		{ Synth(\wave_boot_BUBBLESORT); x = 1; },
-		{}
+	arg msg;
+	"\\wave_hello_BUBBLESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_hello_BUBBLESORT");
+		},
+		{
+			if(x==0,
+				{ Synth(\wave_boot_BUBBLESORT); x = 1; },
+				{}
+			);
+		}
 	);
-	~address.sendMsg("/hello");
 }, "/wave_hello_BUBBLESORT");
 
 )//--Parentheses end

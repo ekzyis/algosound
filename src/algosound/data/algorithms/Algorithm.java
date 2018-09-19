@@ -15,6 +15,9 @@ public interface Algorithm {
     // Name of algorithm
     String getString();
 
+    // Suffix of algorithm
+    String getSuffix();
+
     // Start the algorithm
     void start();
 

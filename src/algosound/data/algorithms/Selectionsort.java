@@ -19,11 +19,14 @@ import static processing.core.PApplet.map;
  */
 public class Selectionsort extends SortingAlgorithm {
 
+    // Static field for access during creation of sonifications.
+    // This cannot be static in SortingAlgorithm since all subclasses need their own definition of this.
     public static final String SUFFIX = "SELECTIONSORT";
 
     public Selectionsort(int N) {
         super(N);
         name = "Selectionsort";
+        suffix = SUFFIX;
         sonifications.add(SELECTIONSORT_WAVE);
         sonifications.add(SELECTIONSORT_SCALE);
         selected_sonification = sonifications.get(0);

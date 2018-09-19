@@ -301,16 +301,55 @@ public class Algosound extends PApplet {
     private void drawIPCStatus() {
         ellipseMode(CENTER);
         noStroke();
-        fill(255);
-        ellipse(10, 10, 10, 10);
-        if (OSC.getInstance().getStatus()) {
-            fill(0, 255, 0);
-        } else {
-            fill(255, 0, 0);
+        algosound.data.audio.Sonification selected = algorithm.getSelectedSonification();
+        fill(255); // white for background ellipse
+        int x = 10, y = 10, r = 10;
+        ellipse(x, y, r, r); // STATUSPATH
+        String infolabel = "sc3 server";
+        if (OSC.getInstance().getStatus(selected.STATUSPATH)) fill(0,255,0); else fill(255,0,0);
+        text(infolabel, x+r, y+5);
+        ellipse(x, y, r-2, r-2);
+        Rectangle inforec = new Rectangle(x,y-y/2,(int)(x+textWidth(infolabel)), r);
+        // Draw more info when mouse is over icon
+        if(mouseOver(inforec)) {
+            int y_diff = 5, y2 = y + r + y_diff;
+            for(String p : OSC.getInstance().getStatusMap().keySet()) {
+                // skip STATUSPATH since it's always shown and only show status of paths of current selected sonification
+                if(p != selected.STATUSPATH && p.matches("^/" + selected.NAME.toLowerCase() + ".*$" )
+                        && p.matches(".*"+ algorithm.getSuffix() + "$")) {
+                    // draw black background
+                    fill(0);
+                    rect(x, y2-y/2-2, (int)(x+textWidth(p)), r+4);
+                    fill(255);
+                    ellipse(x, y2, r, r);
+                    if(OSC.getInstance().getStatus(p)) fill(0,255,0); else fill(255,0,0);
+                    ellipse(x, y2, r-2, r-2);
+                    text(p, x+r, y2-5+r);
+                    y2 += r + y_diff;
+                }
+            }
         }
-        text("SC3-server", 20, 15);
-        ellipse(10, 10, 8, 8);
         stroke(0);
+    }
+
+    // Check if mouse is over circle
+    private boolean mouseOver(int x, int y, int diameter) {
+        float disX = x - mouseX;
+        float disY = y - mouseY;
+        if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Check if mouse is over rectangle
+    private boolean mouseOver(Rectangle rec) {
+        if (mouseX >= rec.x && mouseX <= rec.x+rec.width &&
+                mouseY >= rec.y && mouseY <= rec.y+rec.height) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Algorithm getAlgorithm() {

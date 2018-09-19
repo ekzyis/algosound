@@ -11,6 +11,10 @@ y.set(\freqlag, 1)
 y.free
 
 (//--Parentheses begin
+
+// Create address to fire messages to Processing client
+~address = NetAddr.new("127.0.0.1", 12000);
+
 /**
  * Futuristic booting sound.
  */
@@ -40,53 +44,114 @@ SynthDef(\wave_algowave_MERGESORT, {
 
 // Define listener for boot sound.
 OSCdef(\wave_boot_OSC_MERGESORT, {
-	"playing boot sound.".postln;
-	Synth(\wave_boot_MERGESORT);
+	arg msg;
+	"\\wave_boot_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_boot_MERGESORT");
+		},
+		{
+			Synth(\wave_boot_MERGESORT);
+		}
+	);
 }, "/wave_boot_MERGESORT");
 
 // Define listener for start of algowave-synth.
 OSCdef(\wave_start_OSC_MERGESORT, {
-	"creating algowave.".postln;
-	~algowave = Synth(\wave_algowave_MERGESORT);
+	arg msg;
+	"\\wave_start_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_start_MERGESORT");
+		},
+		{
+			~algowave = Synth(\wave_algowave_MERGESORT);
+		}
+	);
 }, "/wave_start_MERGESORT");
 
 // Define listener for pausing of algowave-synth.
 OSCdef(\wave_pause_OSC_MERGESORT, {
-	"pausing algowave.".postln;
-	~algowave.set(\amptotal, 0);
+	arg msg;
+	"\\wave_pause_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_pause_MERGESORT");
+		},
+		{
+			~algowave.set(\amptotal, 0);
+		}
+	);
 }, "/wave_pause_MERGESORT");
 
 // Define listener for resuming of algowave-synth.
 OSCdef(\wave_resume_OSC_MERGESORT, {
-	"resuming algowave.".postln;
-	~algowave.set(\amptotal, ~amp);
+	arg msg;
+	"\\wave_resume_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_resume_MERGESORT");
+		},
+		{
+			~algowave.set(\amptotal, ~amp);
+		}
+	);
 }, "/wave_resume_MERGESORT");
 
 // Define listener for modifying.
 OSCdef(\wave_set_OSC_MERGESORT, {
 	arg msg;
-	~algowave.set(\amptotal, ~amp);
-	~algowave.set(\freq, msg[1]);
+	"\\wave_set_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_MERGESORT");
+		},
+		{
+			~algowave.set(\amptotal, ~amp);
+			~algowave.set(\freq, msg[1]);
+		}
+	);
 }, "/wave_set_MERGESORT");
 
 // Realtime modulating of synths
 OSCdef(\wave_set_freqlag_OSC_MERGESORT, {
 	arg msg;
 	"\\wave_set_freqlag_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
-	~algowave.set(\freqlag, msg[1]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_freqlag_MERGESORT");
+		},
+		{
+			~algowave.set(\freqlag, msg[1]);
+		}
+	);
 }, "/wave_set_freqlag_MERGESORT");
 
 ~amp = 1;
 OSCdef(\wave_set_amp_OSC_MERGESORT, {
 	arg msg;
 	"\\wave_set_amp_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
-	~amp = msg[1];
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_amp_MERGESORT");
+		},
+		{
+			~amp = msg[1];
+		}
+	);
 }, "/wave_set_amp_MERGESORT");
 
 OSCdef(\wave_set_amplag_OSC_MERGESORT, {
 	arg msg;
 	"\\wave_set_amplag_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
-	~algowave.set(\amplag, msg[1]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_amplag_MERGESORT");
+		},
+		{
+			~algowave.set(\amplag, msg[1]);
+		}
+	);
 }, "/wave_set_amplag_MERGESORT");
 /**
  * Define listener for freeing of synth.
@@ -100,22 +165,35 @@ OSCdef(\wave_set_amplag_OSC_MERGESORT, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\wave_free_OSC_MERGESORT, {
-	"freeing algowave.".postln;
-	// Free it using gate.
-	~algowave.set(\gate, 0);
+	arg msg;
+	"\\wave_free_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_free_MERGESORT");
+		},
+		{
+			// Free it using gate.
+			~algowave.set(\gate, 0);
+		}
+	);
 }, "/wave_free_MERGESORT");
-
-// Create address to fire messages to Processing client
-~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
 OSCdef(\wave_status_OSC_MERGESORT, {
-	if(x==0,
-		{ Synth(\wave_boot_MERGESORT); x = 1; },
-		{}
+	arg msg;
+	"\\wave_status_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_hello_MERGESORT");
+		},
+		{
+			if(x==0,
+				{ Synth(\wave_boot_MERGESORT); x = 1; },
+				{}
+			);
+		}
 	);
-	~address.sendMsg("/hello");
 }, "/wave_hello_MERGESORT");
 
 )//--Parentheses end

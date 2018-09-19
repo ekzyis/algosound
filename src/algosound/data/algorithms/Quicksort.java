@@ -26,6 +26,8 @@ import static processing.core.PApplet.subset;
  */
 public class Quicksort extends SortingAlgorithm {
 
+    // Static field for access during creation of sonifications.
+    // This cannot be static in SortingAlgorithm since all subclasses need their own definition of this.
     public static final String SUFFIX = "QUICKSORT";
 
     private QuicksortElement[] elements;
@@ -38,6 +40,7 @@ public class Quicksort extends SortingAlgorithm {
     public Quicksort(int N) {
         super(N);
         name = "Quicksort";
+        suffix = SUFFIX;
         elements = QuicksortElement.createElements(N, Algosound.getInstance());
         a = Element.getValues(elements);
         unmarkMe = new ArrayList<QuicksortElement>();

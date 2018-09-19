@@ -1,18 +1,10 @@
 package algosound.data.audio;
 
 import algosound.data.algorithms.*;
-import algosound.ui.Algosound;
-import algosound.util.AlgosoundUtil;
-import controlP5.ControlP5;
-import controlP5.Controller;
-import controlP5.Knob;
-import algosound.data.audio.OSCFreqControllerWrapper.Type.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-
-import static algosound.util.AlgosoundUtil.*;
 
 /**
  * Sonification class. This class is used in the implemented algorithms
@@ -128,7 +120,7 @@ public class Sonification {
             new OSCControllerWrapper[]{
                     new OSCControllerWrapper("AMP","set_amp",0f,3f,0.2f),
                     new OSCControllerWrapper("FREQLAG","set_freqlag",0f,2f,0.1f),
-                    new OSCControllerWrapper("AMPLAG","set_freqlag",0f,5f,0.1f)
+                    new OSCControllerWrapper("AMPLAG","set_amplag",0f,5f,0.1f)
             },
             Quicksort.SUFFIX,
             new ArrayList<String>(Arrays.asList("set1","set2","set3"))
@@ -164,17 +156,26 @@ public class Sonification {
         this.NAME = type.getName();
         this.uniquifyer = (String x) -> "/" + NAME.toLowerCase() + "_" + x + "_" + suffix;
         this.STARTPATH = uniquifyer.call("start");
-        this.PAUSEPATH = uniquifyer.call("pause");
-        this.RESUMEPATH = uniquifyer.call("resume");
+        // SCALE type does not have PAUSE, RESUME or FREE path
+        if(type == Type.SCALE) {
+            this.PAUSEPATH = null;
+            this.RESUMEPATH = null;
+            this.FREEPATH = null;
+        }
+        else {
+            this.PAUSEPATH = uniquifyer.call("pause");
+            this.RESUMEPATH = uniquifyer.call("resume");
+            this.FREEPATH = uniquifyer.call("free");
+        }
         this.MODPATHS = new ArrayList<String>();
         this.MODPATHS.add(uniquifyer.call("set"));
-        this.FREEPATH = uniquifyer.call("free");
         this.STATUSPATH = uniquifyer.call("hello");
         this.BOOTPATH = uniquifyer.call("boot");
         for(int i=0; i<wrappers.length; ++i) {
             wrappers[i].setPath(uniquifyer.call(wrappers[i].getPath()));
         }
         this.wrappers = wrappers;
+
     }
 
     /**
@@ -196,5 +197,24 @@ public class Sonification {
 
     public OSCControllerWrapper[] getWrappers() {
         return wrappers;
+    }
+
+    // Return all used OSC paths
+    public String[] getPaths() {
+        ArrayList<String> paths = new ArrayList<>();
+        String[] defaultpaths = new String[]{STARTPATH, PAUSEPATH, RESUMEPATH, FREEPATH, STATUSPATH, BOOTPATH};
+        for(String p : defaultpaths) {
+            // Default paths can be null when they are not used
+            if(p!=null) {
+                paths.add(p);
+            }
+        }
+        for(String p : MODPATHS) {
+            paths.add(p);
+        }
+        for(OSCControllerWrapper w : wrappers)  {
+            paths.add(w.getPath());
+        }
+        return paths.toArray(new String[paths.size()]);
     }
 }
