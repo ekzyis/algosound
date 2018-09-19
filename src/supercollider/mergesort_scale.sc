@@ -139,7 +139,7 @@ OSCdef(\scale_set_minfreq_OSC_MERGESORT, {
 ~amp = 0.1;
 OSCdef(\scale_set_amp_OSC_MERGESORT, {
 	arg msg;
-	"\\scale_set_amp_OSC_MERGESORT - arguments: [";msg[1].post;"]".postln;
+	"\\scale_set_amp_OSC_MERGESORT - arguments: [".post;msg[1].post;"]".postln;
 	if(msg[1]=='status',
 		{
 			~address.sendMsg("/scale_set_amp_MERGESORT");
