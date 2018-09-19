@@ -2,6 +2,7 @@ package algosound.data.audio;
 
 import algosound.data.algorithms.SortingAlgorithm;
 import controlP5.ControlP5;
+import controlP5.Controller;
 import controlP5.Knob;
 import controlP5.Slider;
 
@@ -147,12 +148,15 @@ class OSCFreqControllerWrapper extends OSCControllerWrapper {
      public enum Type {
         MINFREQ {
             @Override
-            protected void fire(int value, String path) {
+            protected void fire(int value, String path, Controller c) {
                 SortingAlgorithm s = (SortingAlgorithm) algosound.ui.Algosound.getInstance().getAlgorithm();
                 if (value <= s.FREQ_MAX) {
                     float[] args = {value};
                     OSC.getInstance().sendMessage(path, args);
                     s.FREQ_MIN = value;
+                }
+                else {
+                    c.setValue(s.FREQ_MAX);
                 }
             }
             @Override
@@ -166,12 +170,15 @@ class OSCFreqControllerWrapper extends OSCControllerWrapper {
         },
         MAXFREQ {
             @Override
-            protected void fire(int value, String path) {
+            protected void fire(int value, String path, Controller c) {
                 SortingAlgorithm s = (SortingAlgorithm) algosound.ui.Algosound.getInstance().getAlgorithm();
                 if (value >= s.FREQ_MIN) {
                     float[] args = {value};
                     OSC.getInstance().sendMessage(path, args);
                     s.FREQ_MAX = value;
+                }
+                else {
+                    c.setValue(s.FREQ_MIN);
                 }
             }
             @Override
@@ -185,7 +192,7 @@ class OSCFreqControllerWrapper extends OSCControllerWrapper {
         };
         abstract String getName();
         abstract String getPath();
-        abstract void fire(int value, String path);
+        abstract void fire(int value, String path, Controller c);
     }
 
     private Type type;
@@ -198,8 +205,9 @@ class OSCFreqControllerWrapper extends OSCControllerWrapper {
     @Override
     public OSCKnob getKnob(ControlP5 cp5) {
         return (OSCKnob) new OSCKnob(cp5, name, path) {
+            @Override
             public void fire() {
-                type.fire((int) super.getValue(), path);
+                type.fire((int) super.getValue(), path, this);
             }
         }.setRange(min, max)
                 .setDefaultValue(def)
