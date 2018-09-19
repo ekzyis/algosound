@@ -7,6 +7,9 @@ Synth(\scale_default_midifade_SELECTIONSORT);
 
 (//--Parentheses begin
 
+// Create address to fire messages to Processing client
+~address = NetAddr.new("127.0.0.1", 12000);
+
 /**
  * Futuristic booting sound.
  */
@@ -42,9 +45,17 @@ SynthDef(\scale_default_midifade_SELECTIONSORT, {
 
 // Define listener for boot sound.
 OSCdef(\scale_boot_OSC_SELECTIONSORT, {
-	"playing boot sound.".postln;
-	// Play boot sound
-	Synth(\scale_boot_SELECTIONSORT);
+	arg msg;
+	"\\scale_boot_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_boot_SELECTIONSORT");
+		},
+		{
+			// Play boot sound
+			Synth(\scale_boot_SELECTIONSORT);
+		}
+	);
 }, "/scale_boot_SELECTIONSORT");
 
 /**
@@ -86,54 +97,95 @@ OSCdef(\scale_boot_OSC_SELECTIONSORT, {
 };
 
 OSCdef(\scale_start_OSC_SELECTIONSORT, {
-	"\\scale_start_OSC_SELECTIONSORT".postln;
-	~initscale;
+	arg msg;
+	"\\scale_start_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_start_SELECTIONSORT");
+		},
+		{
+			~initscale;
+		}
+	);
 }, "/scale_start_SELECTIONSORT");
 
 OSCdef(\scale_set_maxfreq_OSC_SELECTIONSORT, {
 	arg msg;
 	"\\scale_set_maxfreq_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
-	~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_maxfreq_SELECTIONSORT");
+		},
+		{
+			~initscale.value(msg: [msg[0], ~minfreq, msg[1]]);
+		}
+	);
 }, "/scale_set_maxfreq_SELECTIONSORT");
 
 OSCdef(\scale_set_minfreq_OSC_SELECTIONSORT, {
 	arg msg;
 	"\\scale_set_minfreq_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
-	~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_minfreq_SELECTIONSORT");
+		},
+		{
+			~initscale.value(msg: [msg[0], msg[1], ~maxfreq]);
+		}
+	);
 }, "/scale_set_minfreq_SELECTIONSORT");
 
 ~amp = 0.1;
 OSCdef(\scale_set_amp_OSC_SELECTIONSORT, {
 	arg msg;
-	"\\scale_set_amp_OSC_SELECTIONSORT - arguments: [";msg[1].post;"]".postln;
-	~amp = msg[1];
+	"\\scale_set_amp_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_amp_SELECTIONSORT");
+		},
+		{
+			~amp = msg[1];
+		}
+	);
 }, "/scale_set_amp_SELECTIONSORT");
 
 // Define listener for playing a midi note.
 OSCdef(\scale_set_OSC_SELECTIONSORT, {
 	arg msg;
 	var midi;
-	i = ~scales.find([msg[1].cpsmidi.round]);
-	if( i.isNil,
-		{ midi = (msg[1].cpsmidi.round)-1 },
-		{ midi = ~scales.at(i); },
+	"\\scale_set_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_set_SELECTIONSORT");
+		},
+		{
+			i = ~scales.find([msg[1].cpsmidi.round]);
+			if( i.isNil,
+				{ midi = (msg[1].cpsmidi.round)-1 },
+				{ midi = ~scales.at(i); },
+			);
+			"\\scale_set_OSC_SELECTIONSORT - arguments: [\midi: ".post;midi.post;", \pan: ".post;msg[2].post;", amp: ".post;~amp.post;"]".postln;
+			Synth(\scale_midisine_SELECTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
+		}
 	);
-	"playing midi-note ".post;midi.postln;
-	"pan=".post;msg[2].postln;
-	Synth(\scale_midisine_SELECTIONSORT, [\midi, midi, \rel, rrand(0.1,1.75), \pan, msg[2], \amp, ~amp]);
 }, "/scale_set_SELECTIONSORT");
-
-// Create address to fire messages to Processing client
-~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
 OSCdef(\scale_status_OSC_SELECTIONSORT, {
-	if(x==0,
-		{ Synth(\scale_boot_SELECTIONSORT); x = 1; },
-		{}
+	arg msg;
+	"\\scale_status_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/scale_hello_SELECTIONSORT");
+		},
+		{
+			if(x==0,
+				{ Synth(\scale_boot_SELECTIONSORT); x = 1; },
+				{}
+			);
+		}
 	);
-	~address.sendMsg("/hello");
 }, "/scale_hello_SELECTIONSORT");
 
 )//--Parentheses end

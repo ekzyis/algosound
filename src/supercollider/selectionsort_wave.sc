@@ -12,6 +12,10 @@ y.free
 z = Synth(\wave_minimum_SELECTIONSORT);
 
 (//--Parentheses begin
+
+// Create address to fire messages to Processing client
+~address = NetAddr.new("127.0.0.1", 12000);
+
 /**
  * Futuristic booting sound.
  */
@@ -57,65 +61,141 @@ SynthDef(\wave_minimum_SELECTIONSORT, {
 
 // Define listener for boot sound.
 OSCdef(\wave_boot_OSC_SELECTIONSORT, {
-	"playing boot sound.".postln;
-	Synth(\wave_boot_SELECTIONSORT);
+	arg msg;
+	"\\wave_boot_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_boot_SELECTIONSORT");
+		},
+		{
+			Synth(\wave_boot_SELECTIONSORT);
+		}
+	);
 }, "/wave_boot_SELECTIONSORT");
 
 // Define listener for start of algowave-synth.
 OSCdef(\wave_start_OSC_SELECTIONSORT, {
-	"creating synths.".postln;
-	~algowave = Synth(\wave_algowave_SELECTIONSORT);
+	arg msg;
+	"\\wave_start_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_start_SELECTIONSORT");
+		},
+		{
+			~algowave = Synth(\wave_algowave_SELECTIONSORT);
+		}
+	);
 }, "/wave_start_SELECTIONSORT");
 
 // Define listener for pausing of algowave-synth.
 OSCdef(\wave_pause_OSC_SELECTIONSORT, {
-	"pausing sound.".postln;
-	~algowave.set(\amptotal, 0);
+	arg msg;
+	"\\wave_pause_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_pause_SELECTIONSORT");
+		},
+		{
+			~algowave.set(\amptotal, 0);
+		}
+	);
 }, "/wave_pause_SELECTIONSORT");
 
 // Define listener for resuming of algowave-synth.
 OSCdef(\wave_resume_OSC_SELECTIONSORT, {
-	"resuming sound.".postln;
-	~algowave.set(\amptotal, ~amp);
+	arg msg;
+	"\\wave_resume_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_resume_SELECTIONSORT");
+		},
+		{
+			~algowave.set(\amptotal, ~amp);
+		}
+	);
 }, "/wave_resume_SELECTIONSORT");
 
 // Define listener for modifying.
 OSCdef(\wave_set_OSC_SELECTIONSORT, {
 	arg msg;
-	~algowave.set(\amptotal, ~amp);
-	~algowave.set(\freq, msg[1]);
+	"\\wave_set_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_SELECTIONSORT");
+		},
+		{
+			~algowave.set(\amptotal, ~amp);
+			~algowave.set(\freq, msg[1]);
+		}
+	);
 }, "/wave_set_SELECTIONSORT");
 
 OSCdef(\wave_min_set_OSC_SELECTIONSORT, {
 	arg msg;
-	Synth(\wave_minimum_SELECTIONSORT, [\amp, ~minamp, \freq, msg[1]]);
+	"\\wave_min_set_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_min_set_SELECTIONSORT");
+		},
+		{
+			Synth(\wave_minimum_SELECTIONSORT, [\amp, ~minamp, \freq, msg[1]]);
+		}
+	);
 }, "/wave_min_set_SELECTIONSORT");
 
 // Realtime modulating of synths
 OSCdef(\wave_set_freqlag_OSC_SELECTIONSORT, {
 	arg msg;
 	"\\wave_set_freqlag_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
-	~algowave.set(\freqlag, msg[1]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_freqlag_SELECTIONSORT");
+		},
+		{
+			~algowave.set(\freqlag, msg[1]);
+		}
+	);
 }, "/wave_set_freqlag_SELECTIONSORT");
 
 ~amp = 1;
 OSCdef(\wave_set_amp_OSC_SELECTIONSORT, {
 	arg msg;
 	"\\wave_set_amp_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
-	~amp = msg[1];
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_amp_SELECTIONSORT");
+		},
+		{
+			~amp = msg[1];
+		}
+	);
 }, "/wave_set_amp_SELECTIONSORT");
 
 OSCdef(\wave_set_amplag_OSC_SELECTIONSORT, {
 	arg msg;
 	"\\wave_set_amplag_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
-	~algowave.set(\amplag, msg[1]);
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_set_amplag_SELECTIONSORT");
+		},
+		{
+			~algowave.set(\amplag, msg[1]);
+		}
+	);
 }, "/wave_set_amplag_SELECTIONSORT");
 
 ~minamp = 0.2;
 OSCdef(\wave_min_set_amp_OSC_SELECTIONSORT, {
 	arg msg;
 	"\\wave_min_set_amp_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
-	~minamp = msg[1];
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_min_set_amp_SELECTIONSORT");
+		},
+		{
+			~minamp = msg[1];
+		}
+	);
 }, "/wave_min_set_amp_SELECTIONSORT");
 
 /**
@@ -130,22 +210,35 @@ OSCdef(\wave_min_set_amp_OSC_SELECTIONSORT, {
  * more severe bugs like orphaned synths.
  */
 OSCdef(\wave_free_OSC_SELECTIONSORT, {
-	"freeing synths.".postln;
-	// Free it using gate.
-	~algowave.set(\gate, 0);
+	arg msg;
+	"\\wave_free_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_free_SELECTIONSORT");
+		},
+		{
+			// Free it using gate.
+			~algowave.set(\gate, 0);
+		}
+	);
 }, "/wave_free_SELECTIONSORT");
-
-// Create address to fire messages to Processing client
-~address = NetAddr.new("127.0.0.1", 12000);
 
 x = 0;
 // Define listener for checking if sc3-server is running.
 OSCdef(\wave_status_OSC_SELECTIONSORT, {
-	if(x==0,
-		{ Synth(\wave_boot_SELECTIONSORT); x = 1; },
-		{}
+	arg msg;
+	"\\wave_status_OSC_SELECTIONSORT - arguments: [".post;msg[1].post;"]".postln;
+	if(msg[1]=='status',
+		{
+			~address.sendMsg("/wave_hello_SELECTIONSORT");
+		},
+		{
+			if(x==0,
+				{ Synth(\wave_boot_SELECTIONSORT); x = 1; },
+				{}
+			);
+		}
 	);
-	~address.sendMsg("/hello");
 }, "/wave_hello_SELECTIONSORT");
 
 )//--Parentheses end
