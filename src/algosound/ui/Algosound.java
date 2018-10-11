@@ -49,7 +49,7 @@ public class Algosound extends PApplet {
         frameRate(AlgosoundUtil.FRAMERATE);
         algorithm = AlgosoundUtil.SELECTED_ALGORITHM;
         initGUI();
-        Algosound.getInstance().getSurface().setResizable(true);
+        Algosound.getInstance().getSurface().setResizable(false);
     }
 
     public void initGUI() {
