@@ -378,6 +378,8 @@ public class Algosound extends PApplet {
             algorithm.join();
             OSC.getInstance().getStatusThread().join();
         } catch (Exception e) {
+            // TODO proper error handling
+            e.printStackTrace();
         }
         // Close OSC after execution to prevent blocking of OSC_PORT.
         OSC.getInstance().dispose();
