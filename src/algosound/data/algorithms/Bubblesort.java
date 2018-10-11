@@ -48,13 +48,13 @@ public class Bubblesort extends SortingAlgorithm {
         synchronized (this) {
             // Wait until first frame has been drawn.
             notifyFrameReady();
-            /**
+            /*
              * Start of actual sorting algorithm.
              */
             boolean swap;
             do {
                 swap = false;
-                /**
+                /*
                  * Notice that thread will terminate when interrupted-flag is (still) set when
                  * the boolean expression is evaluated.
                  */
@@ -81,7 +81,7 @@ public class Bubblesort extends SortingAlgorithm {
                     osc.sendMessage(sel.MODPATHS.get(0), args);
                 }
             } while (swap);
-            /**
+            /*
              * Bubblesort keeps iterating through the whole array until not a single time a
              * swap has happened or the thread has been interrupted.
              */

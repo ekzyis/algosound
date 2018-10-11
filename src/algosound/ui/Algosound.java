@@ -68,7 +68,7 @@ public class Algosound extends PApplet {
             yPos[i] = (i + 1) * y0 - Button.autoHeight;
         }
         START = cp5.addButton("start/pause").setPosition(x0, yPos[0]).setLabel("Start");
-        /**
+        /*
          * Naming the button like the exit()-function triggers the function when
          * pressing thus no need of defining a if-Statement for this button in
          * controlEvent().
@@ -134,7 +134,7 @@ public class Algosound extends PApplet {
             // Do action corresponding to current label.
             switch (currentLabel) {
                 case "Start":
-                    /**
+                    /*
                      * Did thread already start? If not, start it. (Execution never reaches this
                      * statement when it would be false since the label will never be again "Start"
                      * so it's actually unnecessary.)
@@ -232,7 +232,7 @@ public class Algosound extends PApplet {
             }
             translate(0, -INFO_H);
             drawInfo();
-            /**
+            /*
              * Notify algorithm thread that frame has been drawn.
              */
             if (algorithm.isAlive() && !algorithm.isPaused() && !algorithm.isWaitingDueToFPS()) {
@@ -361,7 +361,7 @@ public class Algosound extends PApplet {
     public void exit() {
         // Exit the sorting thread using its own implemented exit-method.
         algorithm.exit();
-        /**
+        /*
          * Interrupt status-thread which checks connection between OSC and sc3-server.
          * This will terminate the status-thread in a clean way.
          * TODO: Set status-thread as daemon thread so JVM will exit even when status is still running.

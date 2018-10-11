@@ -83,7 +83,7 @@ public class Quicksort extends SortingAlgorithm {
         int l = lower;
         int r = upper;
         int pivotIndex = (int) ((l + r) / 2);
-        /**
+        /*
          * After one do-loop, the element at the pivot index will be inserted
          * where the iterating indizes l and r met. The pivot element will be sorted then
          * since all elements left to it will be smaller and right to it larger than itself.

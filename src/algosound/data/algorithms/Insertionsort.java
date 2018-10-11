@@ -53,18 +53,18 @@ public class Insertionsort extends SortingAlgorithm {
             // First frame of insertionsort consists only of marking first element as sorted.
             elements[0].setSorted();
             notifyFrameReady();
-            /**
+            /*
              * ==================================
              * Start of actual sorting algorithm.
              * ==================================
              */
-            /**
+            /*
              * Starts with second element because insertionsort
              * assumes the first element as sorted.
              * (If you only have one element, it can not not be sorted.)
              */
             for (int i = 1; i < a.length && !isInterrupted(); ++i) {
-                /**
+                /*
                  * All elements to the left of current element are sorted.
                  * To visualize this, everytime the left element will be marked as sorted.
                  * This leads to all element to the left of the current element being sorted.
@@ -76,12 +76,12 @@ public class Insertionsort extends SortingAlgorithm {
                 Color insertColor = elements[i].getColor();
                 // Also save index of that element.
                 int j = i;
-                /**
+                /*
                  * Iterate through the array to the left until
                  * correct place to insert element is found.
                  */
                 while (j > 0 && a[j - 1] > value && !isInterrupted()) {
-                    /**
+                    /*
                      * The integers don't swap places;
                      * the left element moves to the right
                      * overwriting the previous element on their right
@@ -116,7 +116,7 @@ public class Insertionsort extends SortingAlgorithm {
      * On its previous place, there is still the same element.
      */
     private void moveRight(int i) {
-        /**
+        /*
          * Change the right element to look like the left element
          * to visualize overriding.
          */

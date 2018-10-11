@@ -170,14 +170,14 @@ public class Mergesort extends SortingAlgorithm {
             int[] left = subset(a, 0, cut);
             // Arguments for sonification (times two to compensate for height limit.)
             int arg1 = expmap(a[cut] * 2, 0, AlgosoundUtil.H, FREQ_MIN, FREQ_MAX);
-            /**
+            /*
              * Calculate pan value. If real cut index is at start of array, pan to left. If real cut index is at
              * end of array, pan to right.
              */
             pan = map(realCut, 0, elements.length - 1, -1, 1);
             float[] args = {arg1, pan};
             if (MODE == THREAD & !isExiting()) {
-                /**
+                /*
                  * First (logical) frame:
                  * Mark cut index element.
                  */
@@ -190,7 +190,7 @@ public class Mergesort extends SortingAlgorithm {
                 notifyFrameReady();
             }
             if (MODE == THREAD & !isExiting()) {
-                /**
+                /*
                  * Second (logical) frame:
                  * Mark cut index element and left subset.
                  */
@@ -209,11 +209,11 @@ public class Mergesort extends SortingAlgorithm {
             left = mergesort(left, MODE);
             int[] right = subset(a, cut);
             if (MODE == THREAD & !isExiting()) {
-                /**
+                /*
                  * Third (logical) frame:
                  * Mark cut index element and right subset.
                  */
-                /**
+                /*
                  * Will go right now. Push current cut index to stack to know
                  * where the index is at base level (=real cut index).
                  */
@@ -234,7 +234,7 @@ public class Mergesort extends SortingAlgorithm {
             }
             right = mergesort(right, MODE);
             if (MODE == THREAD & !isExiting()) {
-                /**
+                /*
                  * Third (logical) frame:
                  * Mark cut index.
                  */
@@ -242,7 +242,7 @@ public class Mergesort extends SortingAlgorithm {
                 osc.sendMessage(sel.MODPATHS.get(0), args);
                 notifyFrameReady();
             }
-            /**
+            /*
              * Next frames:
              * See comments in merge().
              */
@@ -254,7 +254,7 @@ public class Mergesort extends SortingAlgorithm {
 
     // Merge sets together into a.
     private int[] merge(int[] left, int[] right, byte MODE) {
-        /**
+        /*
          * If one array should be empty (which shouldn't be the case),
          * return the other one since we can assume it's already sorted.
          */
@@ -263,7 +263,7 @@ public class Mergesort extends SortingAlgorithm {
 
         OSC osc = OSC.getInstance();
         Sonification sel = selected_sonification;
-        /**
+        /*
          * ======================
          *   VISUALIZATION CODE
          * ======================
@@ -284,7 +284,7 @@ public class Mergesort extends SortingAlgorithm {
             rightStart = cutStack.pop();
             // Length of right subset.
             int rightLen = (int) Math.ceil(len / 2.0);
-            /**
+            /*
              * Real startindex of left subset is now - after pop() at initializing rightStart -
              * the last pushed real cut index.
              */
@@ -322,7 +322,7 @@ public class Mergesort extends SortingAlgorithm {
                 assert (rightSub[i].getHeight() == right[i]);
             }
         }
-        /**
+        /*
          * ================
          *  MERGESORT CODE
          * ================
@@ -412,7 +412,7 @@ public class Mergesort extends SortingAlgorithm {
             assert (false);
         }
         if (MODE == THREAD & !isExiting()) {
-            /**
+            /*
              * Merging complete. Now unmark merge markers from elements next frame
              * and decrement level of recursion.
              */
@@ -431,7 +431,7 @@ public class Mergesort extends SortingAlgorithm {
     @Override
     // Mark currently accessed elements.
     public void mark(int i) {
-        /**
+        /*
          * Mark left element since in show(), the marker will be between
          * the cut index (=i) and its left element. When left element is marked,
          * order of drawing is like following:

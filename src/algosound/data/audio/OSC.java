@@ -73,7 +73,7 @@ public class OSC extends PApplet {
                     for(String p : paths) {
                         resetPathStatus.call(p);
                     }
-                    /**
+                    /*
                      * TODO: This implementation depends on order of execution. If 1. connected gets
                      * set to false, 2. a frame gets drawn, the ICP status is marked as lost in the
                      * frame even though connection may not be lost. -> Find a way without setting

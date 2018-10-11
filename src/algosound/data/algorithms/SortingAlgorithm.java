@@ -96,7 +96,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
     public void notifyFrameReady() {
         frameReady = true;
         this.notify();
-        /**
+        /*
          * Boolean expressions make sure that thread will only wait in this loop if it
          * is actually waiting for a new frame. If thread is paused, it will wait in the
          * next loop. If it's exiting, it will not wait but exit.
@@ -109,7 +109,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
                 this.interrupt();
             }
         }
-        /**
+        /*
          * Check if this frame the user did press the pause button. If yes and thread is
          * not exiting, the thread will pause until the user wants to resume.
          */
@@ -141,7 +141,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
         clearMarkers();
         frameDrawn = false;
 
-        /**
+        /*
          * If thread is exiting, the interrupt-flag will be still set at this point.
          * This causes to escape from the for-loop, set swap to false, and then leave
          * the do-while-loop and finally terminate this thread. If thread was paused or
@@ -151,7 +151,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
          * unsets the interrupted-flag so the thread will not exit when interrupted
          * while pausing or waiting for a new frame.
          */
-        /**
+        /*
          * Measure time of frame calculating for waiting to match ALGORITHMFPS
          * @see ALGORITHMFPS
          */
@@ -239,7 +239,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
 
     // Swap element at given index with neighbour to ensure visualization.
     void swap(int i, int j) {
-        /**
+        /*
          * Elements need to swap their x-position AND their position in the array!
          * Otherwise, next iteration of the for-loop would cause severe bugs since
          * Bubblesort swaps the integers in the array (= change their index) and assumes
@@ -277,7 +277,7 @@ public abstract class SortingAlgorithm extends Thread implements Algorithm {
     public SortingAlgorithm reset() {
         // Save current selected sonification index.
         int index = this.getIndex();
-        /**
+        /*
          * We need to get the concrete constructor first
          * since we can't use the abstract constructor.
          */

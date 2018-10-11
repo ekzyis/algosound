@@ -48,7 +48,7 @@ public class Selectionsort extends SortingAlgorithm {
         synchronized (this) {
             // Wait until first frame has been drawn.
             notifyFrameReady();
-            /**
+            /*
              * ==================================
              * Start of actual sorting algorithm.
              * ==================================

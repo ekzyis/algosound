@@ -120,7 +120,7 @@ public class MergesortElement extends Element {
         int xd = 0;
         // color array offset
         int cd = 0;
-        /**
+        /*
          * Heightlimit for elements. Without this, elements could go higher
          * than actual canvas height due to recursion lifting the elements.
          */
