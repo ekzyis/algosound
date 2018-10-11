@@ -336,20 +336,11 @@ public class Algosound extends PApplet {
     private boolean mouseOver(int x, int y, int diameter) {
         float disX = x - mouseX;
         float disY = y - mouseY;
-        if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
-            return true;
-        } else {
-            return false;
-        }
+        return sqrt(sq(disX) + sq(disY)) < diameter/2;
     }
     // Check if mouse is over rectangle
     private boolean mouseOver(Rectangle rec) {
-        if (mouseX >= rec.x && mouseX <= rec.x+rec.width &&
-                mouseY >= rec.y && mouseY <= rec.y+rec.height) {
-            return true;
-        } else {
-            return false;
-        }
+        return mouseX >= rec.x && mouseX <= rec.x+rec.width && mouseY >= rec.y && mouseY <= rec.y+rec.height;
     }
 
     public Algorithm getAlgorithm() {
