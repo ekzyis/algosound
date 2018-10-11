@@ -52,7 +52,7 @@ public class Algosound extends PApplet {
         Algosound.getInstance().getSurface().setResizable(false);
     }
 
-    public void initGUI() {
+    private void initGUI() {
         // Initialize the graphical user interface.
         cp5 = new ControlP5(this);
 
