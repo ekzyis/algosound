@@ -21,9 +21,8 @@ First, I am going to make some basic visualization of different algorithms and s
 
 ### Getting started
 
-For compiling the source you need these four libraries which are available to download at the specified location (listed in lib/LIB_README).
+For compiling the source you need these three libraries which are available to download at the specified location (listed in lib/LIB_README).
 - Processing: https://processing.org/download/
-- Processing-SuperCollider: http://www.erase.net/projects/processing-sc/
 - OscP5: http://www.sojamo.de/libraries/oscP5/
 - ControlP5: http://www.sojamo.de/libraries/controlP5/
 

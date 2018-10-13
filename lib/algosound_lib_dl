@@ -1,14 +1,11 @@
 #!/bin/bash
 
-printf "Downloading http://www.erase.net/projects/processing-sc/files/processing-sc.zip"
-curl -LO http://www.erase.net/projects/processing-sc/files/processing-sc.zip
 printf "Downloading http://download.processing.org/processing-3.3.7-linux64.tgz"
 curl -LO http://download.processing.org/processing-3.3.7-linux64.tgz
 printf "Downloading http://www.sojamo.de/libraries/oscP5/download/oscP5-0.9.8.zip"
 curl -LO http://www.sojamo.de/libraries/oscP5/download/oscP5-0.9.8.zip
 printf "Downloading https://github.com/sojamo/controlp5/releases/download/v2.2.5/controlP5-2.2.5.zip"
 curl -LO https://github.com/sojamo/controlp5/releases/download/v2.2.5/controlP5-2.2.5.zip
-unzip processing-sc.zip -d processing-sc
 unzip oscP5-0.9.8.zip -d oscP5
 unzip controlP5-2.2.5.zip -d controlP5
 tar -xvf processing-3.3.7-linux64.tgz
