@@ -187,7 +187,7 @@ public class Sonification {
      * @param suffix        suffix of Algorithm for which this sonification is created (used to uniquify paths)
      * @param modpaths      multiple mod paths inside a List
      */
-    public Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix, List<String> modpaths) {
+    private Sonification(Sonification.Type type, OSCControllerWrapper[] wrappers, String suffix, List<String> modpaths) {
         this(type,wrappers,suffix);
         this.MODPATHS = modpaths;
         for(int i=0; i<MODPATHS.size(); ++i) {
