@@ -11,8 +11,8 @@ import controlP5.ControlP5;
 import controlP5.Button;
 import controlP5.Controller;
 import processing.core.PApplet;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Rectangle;
 
 import static algosound.util.AlgosoundUtil.*;
 
