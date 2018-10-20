@@ -2,6 +2,7 @@
 ![showcase](images/algosound_showcase_v2.png) <br />
 Project for a computermusic seminar about SuperCollider with ~Processing~ Java and OSC protocol.
 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ## Index
 [What is this project about?](https://github.com/ekzyis/algosound#what-is-this-project-about) <br />
 [Getting started](https://github.com/ekzyis/algosound#getting-started) <br />
